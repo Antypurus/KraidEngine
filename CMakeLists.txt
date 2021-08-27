@@ -8,4 +8,4 @@ file(GLOB_RECURSE SOURCES
         )
 
 add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
-add_compile_definitions(${PROJECT_NAME} /MT)
+add_compile_definitions(${PROJECT_NAME} /MP)
