@@ -4,6 +4,16 @@
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
-    std::cout << "hello there" << std::endl;
+    using namespace hvrt;
+    Window window(hInst);
+
+    MSG msg;
+    while (1)
+    {
+        GetMessage(&msg, NULL, 0, 0);
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
     return MessageBox(NULL, "hello, world 21234", "caption", 0);
 }
