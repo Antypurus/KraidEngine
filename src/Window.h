@@ -10,5 +10,6 @@ namespace hvrt
         HWND window_handle;
 
         Window(HINSTANCE instance);
+        ~Window();
     };
 }

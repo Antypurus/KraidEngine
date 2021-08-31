@@ -7,13 +7,10 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace hvrt;
     Window window(hInst);
 
-    MSG msg;
-    while (1)
+    while(true)
     {
-        GetMessage(&msg, NULL, 0, 0);
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        OutputDebugString("running...\n");
     }
-
+    
     return MessageBox(NULL, "hello, world 21234", "caption", 0);
 }
