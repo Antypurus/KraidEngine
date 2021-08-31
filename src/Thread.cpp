@@ -13,6 +13,7 @@ namespace hvrt {
         {
             MessageBox(NULL, "Failed to create request thread", "Thread", 0);
         }
+        SetThreadDescription(this->thread_handle, L"My grea thread");
     }
 
 }

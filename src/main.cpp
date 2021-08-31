@@ -7,10 +7,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace hvrt;
     Window window(hInst);
 
-    while(true)
+    while(!window.closed)
     {
-        OutputDebugString("running...\n");
     }
     
-    return MessageBox(NULL, "hello, world 21234", "caption", 0);
+    return 0;
 }

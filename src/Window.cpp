@@ -1,9 +1,12 @@
 #include "Window.h"
 #include "Thread.h"
 #include "stdlib.h"
+#include <unordered_map>
 
 namespace hvrt
 {
+
+    std::unordered_map<HWND, Window*> g_handle_map;
 
     LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -11,6 +14,11 @@ namespace hvrt
         {
             case WM_CLOSE:
             {
+                Window* window = g_handle_map[hwnd];
+                if(window != nullptr)
+                {
+                    window->closed = true;
+                }
                 DestroyWindow(hwnd);
                 return 0;
             }
@@ -70,16 +78,19 @@ namespace hvrt
             return 0;
         }
 
+        g_handle_map[args.window_obj->window_handle] = args.window_obj;
+
         ShowWindow(args.window_obj->window_handle, SW_SHOW);
         
         MSG msg;
-        while (1)
+        while (!args.window_obj->closed && !args.window_obj->force_close)
         {
             GetMessage(&msg, NULL, 0, 0);
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-
+        
+        return 1;
     }
 
     Window::Window(HINSTANCE instance)
@@ -93,6 +104,7 @@ namespace hvrt
 
     Window::~Window()
     {
-        TerminateThread(this->window_handle, 1);
+        this->force_close = true;
+        g_handle_map[this->window_handle] = nullptr;
     }
 }
