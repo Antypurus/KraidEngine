@@ -6,7 +6,7 @@
 namespace hvrt
 {
 
-    std::unordered_map<HWND, Window*> g_handle_map;
+    static std::unordered_map<HWND, Window*> g_handle_map;
 
     LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
@@ -17,7 +17,7 @@ namespace hvrt
                 Window* window = g_handle_map[hwnd];
                 if(window != nullptr)
                 {
-                    window->closed = true;
+                    window->open = false;
                 }
                 DestroyWindow(hwnd);
                 return 0;
@@ -74,6 +74,7 @@ namespace hvrt
 
         if(args.window_obj->window_handle == NULL)
         {
+            args.window_obj->open = false;
             __debugbreak();
             return 0;
         }
@@ -81,9 +82,11 @@ namespace hvrt
         g_handle_map[args.window_obj->window_handle] = args.window_obj;
 
         ShowWindow(args.window_obj->window_handle, SW_SHOW);
-        
+       
+        args.window_obj->open = true;
+
         MSG msg;
-        while (!args.window_obj->closed && !args.window_obj->force_close)
+        while (args.window_obj->open)
         {
             GetMessage(&msg, NULL, 0, 0);
             TranslateMessage(&msg);
@@ -93,7 +96,7 @@ namespace hvrt
         return 1;
     }
 
-    Window::Window(HINSTANCE instance)
+    Window::Window(HINSTANCE instance):open(true)
     {
         CreateWindowFunctionParameters* params = (CreateWindowFunctionParameters*)malloc(sizeof(CreateWindowFunctionParameters));
         params->window_obj = this;
@@ -104,7 +107,7 @@ namespace hvrt
 
     Window::~Window()
     {
-        this->force_close = true;
+        this->open = false;
         g_handle_map[this->window_handle] = nullptr;
     }
 }

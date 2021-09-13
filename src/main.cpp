@@ -7,7 +7,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace hvrt;
     Window window(hInst);
 
-    while(!window.closed)
+    while(window.open)
     {
     }
     

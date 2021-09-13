@@ -9,8 +9,7 @@ namespace hvrt
     struct Window
     {
         HWND window_handle;
-        bool closed = false;
-        bool force_close = false;
+        bool open = false;
 
         Window(HINSTANCE instance);
         ~Window();
