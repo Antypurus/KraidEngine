@@ -96,7 +96,7 @@ namespace hvrt
         return 1;
     }
 
-    Window::Window(HINSTANCE instance):open(true)
+    Window::Window(HINSTANCE instance, const std::wstring& title, uint16 width, uint16 heigth):open(true)
     {
         CreateWindowFunctionParameters* params = (CreateWindowFunctionParameters*)malloc(sizeof(CreateWindowFunctionParameters));
         params->window_obj = this;
