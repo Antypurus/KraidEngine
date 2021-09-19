@@ -8,16 +8,6 @@
 #include "types.h"
 #include <functional>
 
-double test2(void* args)
-{
-    return 0;
-}
-
-void testfn(const std::function<double(void*)>& func)
-{
-    return;
-}
-
 namespace hvrt
 {
     struct Window
