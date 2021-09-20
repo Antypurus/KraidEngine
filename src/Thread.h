@@ -12,5 +12,9 @@ namespace hvrt
 
         Thread();
         Thread(DWORD (*thread_function)(void*), void* parameters);
+        explicit Thread(const std::function<DWORD(void*)>& thread_function, void* parameters);
+
+    private:
+        static DWORD lambda_thread_function_caller(void* args);
     };
 }
