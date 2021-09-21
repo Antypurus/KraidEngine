@@ -25,7 +25,7 @@ namespace hvrt {
     DWORD Thread::lambda_thread_function_caller(void* args)
     {
         lamba_caller_params lambda_params = *(lamba_caller_params*)args;
-        delete args;
+        delete (lamba_caller_params*)args;
 
         return lambda_params.lambda(lambda_params.args);
     }
@@ -35,6 +35,7 @@ namespace hvrt {
         lamba_caller_params* args = new lamba_caller_params;
         if (args == nullptr)
         {
+            //TODO(Tiago): we need to create a better logging system
             MessageBox(NULL, "Failed to create request thread", "Thread", 0);
             return;
         }
@@ -44,6 +45,7 @@ namespace hvrt {
         this->thread_handle = CreateThread(NULL, NULL, lambda_thread_function_caller, args, 0, &this->thread_id);
         if (this->thread_handle == NULL)
         {
+            //TODO(Tiago): we need to create a better logging system
             MessageBox(NULL, "Failed to create request thread", "Thread", 0);
         }
         SetThreadDescription(this->thread_handle, L"My grea thread");
