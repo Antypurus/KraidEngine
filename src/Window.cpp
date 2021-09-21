@@ -15,10 +15,7 @@ namespace hvrt
 		case WM_CLOSE:
 		{
 			Window* window = g_handle_map[hwnd];
-			if (window != nullptr)
-			{
-				window->open = false;
-			}
+			window->open = false;
 			DestroyWindow(hwnd);
 			return 0;
 		}

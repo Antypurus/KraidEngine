@@ -13,9 +13,9 @@ namespace hvrt
 {
     struct Window
     {
-        HWND window_handle;
-        uint16 width;
-        uint16 height;
+        HWND window_handle = NULL;
+        uint16 width = 0;
+        uint16 height = 0;
         bool open = false;
 
         Window(HINSTANCE instance, const std::wstring& title, uint16 width, uint16 heigth);
