@@ -8,7 +8,7 @@
 #include <functional>
 #include <unordered_map>
 
-#include "types.h"
+#include "../types.h"
 
 namespace hvrt
 {

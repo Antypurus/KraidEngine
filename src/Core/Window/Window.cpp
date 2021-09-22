@@ -1,7 +1,9 @@
 #include "Window.h"
-#include "Thread.h"
-#include "stdlib.h"
+
+#include <stdlib.h>
 #include <unordered_map>
+
+#include "../Threading/Thread.h"
 
 namespace hvrt
 {
