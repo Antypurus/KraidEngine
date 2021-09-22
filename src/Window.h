@@ -24,8 +24,10 @@ namespace hvrt
     public:
         Window(HINSTANCE instance, const std::wstring& title, uint16 width, uint16 heigth);
         ~Window();
+        void RegisterUniversalEventCallback(const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback);
         void RegisterEventCallback(uint32 event,const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback);
     private:
-        LRESULT ExecuteEventCallbacks(uint32 event);
+        LRESULT ExecuteEventCallbacks(uint32 event,HWND window_handle, WPARAM wParam, LPARAM lParam);
+        static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     };
 }

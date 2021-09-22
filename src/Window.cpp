@@ -8,40 +8,60 @@ namespace hvrt
 
 	static std::unordered_map<HWND, Window*> g_handle_map;
 
-	LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
+        //NOTE(Tiago): when the window is initially created, a message is immeditely sent
+        //at that point we still dont have the window handle and as such the window ptr
+        //has yet to be registered into the map, which forces nullptr to be a valid condition
+        //for the window ptr
+        Window* window = g_handle_map[hwnd];
+        if(window != nullptr)
+        {
+            window->ExecuteEventCallbacks(uMsg,hwnd,wParam,lParam);
+        }
+
+        //NOTE(Tiago):I think that for now the way I want to handle this is that callbacks are
+        //called at the begginig outside of the switch. And, then any special behavior we want
+        //from inside the window class itself will be inside this switch. This way we kinda
+        //have a pretty clear seperation between the "user" code that gets called and the internal
+        //window class code.
 		switch (uMsg)
 		{
-		case WM_CLOSE:
-		{
-			Window* window = g_handle_map[hwnd];
-			window->open = false;
-			DestroyWindow(hwnd);
-			return 0;
-		}
-        case WM_SIZE:
-        {
-            uint32 new_width = LOWORD(lParam);
-            uint32 new_height = HIWORD(lParam);
+            case WM_CLOSE:
+            {
+                if(window != nullptr)
+                {
+                    window->open = false;
+                }
 
-			Window* window = g_handle_map[hwnd];
-			window->height = new_height;
-			window->width = new_width;
-        }
-		case WM_DESTROY:
-		{
-			PostQuitMessage(0);
-			return 0;
-		}
-		case WM_PAINT:
-		{
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hwnd, &ps);
-			FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-			EndPaint(hwnd, &ps);
-			return 0;
-		}
-		default: return DefWindowProc(hwnd, uMsg, wParam, lParam);
+                DestroyWindow(hwnd);
+                return 0;
+            }
+            case WM_SIZE:
+            {
+                uint32 new_width = LOWORD(lParam);
+                uint32 new_height = HIWORD(lParam);
+
+                if(window != nullptr)
+                {
+                    window->height = new_height;
+                    window->width = new_width;
+                }
+            }
+            case WM_DESTROY:
+            {
+                PostQuitMessage(0);
+                return 0;
+            }
+            case WM_PAINT:
+            {
+                PAINTSTRUCT ps;
+                HDC hdc = BeginPaint(hwnd, &ps);
+                FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+                EndPaint(hwnd, &ps);
+                return 0;
+            }
+            default: return DefWindowProc(hwnd, uMsg, wParam, lParam);
 		}
 	}
 
@@ -74,7 +94,7 @@ namespace hvrt
 			WNDCLASS window_class = {};
 			window_class.lpszClassName = window_class_name;
 			window_class.hInstance = instance;
-			window_class.lpfnWndProc = WindowProc;
+			window_class.lpfnWndProc = Window::WindowProc;
 			RegisterClass(&window_class);
 
 			this->window_handle = CreateWindowExW(
@@ -125,4 +145,41 @@ namespace hvrt
 		this->open = false;
 		g_handle_map[this->window_handle] = nullptr;
 	}
+
+    void Window::RegisterUniversalEventCallback(const std::function<LRESULT (HWND, uint32, WPARAM, LPARAM)> &callback)
+    {
+        this->event_callbacks.insert({0,callback});
+    }
+
+    void Window::RegisterEventCallback(uint32 event, const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback)
+    {
+        this->event_callbacks.insert({event,callback});
+    }
+
+    LRESULT Window::ExecuteEventCallbacks(uint32 event, HWND window_handle, WPARAM wParam, LPARAM lParam)
+    {
+        //execute universal callbacks
+        {
+            auto [start,end] = this->event_callbacks.equal_range(0); 
+            while(start != end)
+            {
+                start->second(window_handle,event,wParam,lParam);
+                start++;
+            }
+        }
+
+        //execute callbacks registered to this event specifically
+        {
+            auto [start,end] = this->event_callbacks.equal_range(event);
+            while(start != end)
+            {
+                start->second(window_handle,event,wParam,lParam);
+                start++;
+            }
+        }
+
+        return 0;
+    }
 }
+
+
