@@ -19,6 +19,15 @@ namespace hvrt
 			DestroyWindow(hwnd);
 			return 0;
 		}
+        case WM_SIZE:
+        {
+            uint32 new_width = LOWORD(lParam);
+            uint32 new_height = HIWORD(lParam);
+
+			Window* window = g_handle_map[hwnd];
+			window->height = new_height;
+			window->width = new_width;
+        }
 		case WM_DESTROY:
 		{
 			PostQuitMessage(0);
@@ -73,8 +82,10 @@ namespace hvrt
 				window_class_name,
 				title.c_str(),
 				WS_OVERLAPPEDWINDOW,
-				//size and position
-				CW_USEDEFAULT, CW_USEDEFAULT, client_rect.right, client_rect.bottom,
+				//position
+				CW_USEDEFAULT, CW_USEDEFAULT,
+                //size (width, heigth)
+				client_rect.right - client_rect.left, client_rect.bottom - client_rect.top,	
 				NULL,
 				NULL,
 				instance,
