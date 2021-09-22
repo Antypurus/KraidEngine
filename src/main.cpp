@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <iostream>
 
-#include "Core/Core.h"
+#include <Core/Core.h>
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
