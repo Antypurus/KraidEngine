@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Windows.h>
 #include <functional>
+#include <Core/Windows.h>
 
 namespace hvrt
 {

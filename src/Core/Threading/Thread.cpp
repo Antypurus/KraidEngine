@@ -11,7 +11,7 @@ namespace hvrt {
         this->thread_handle = CreateThread(NULL, NULL, thread_function, parameters, 0, &this->thread_id);
         if (this->thread_handle == NULL)
         {
-            MessageBox(NULL, "Failed to create request thread", "Thread", 0);
+            MessageBoxA(NULL, "Failed to create request thread", "Thread", 0);
         }
     }
 
@@ -29,7 +29,7 @@ namespace hvrt {
         if (args == nullptr)
         {
             //TODO(Tiago): we need to create a better logging system
-            MessageBox(NULL, "Failed to create request thread", "Thread", 0);
+            MessageBoxA(NULL, "Failed to create request thread", "Thread", 0);
             return;
         }
         args->lambda = thread_function;
@@ -39,7 +39,7 @@ namespace hvrt {
         if (this->thread_handle == NULL)
         {
             //TODO(Tiago): we need to create a better logging system
-            MessageBox(NULL, "Failed to create request thread", "Thread", 0);
+            MessageBoxA(NULL, "Failed to create request thread", "Thread", 0);
         }
     }
 

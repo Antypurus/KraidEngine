@@ -1,13 +1,10 @@
 #pragma once
 
-#define UNICODE
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-
 #include <string>
 #include <functional>
 #include <unordered_map>
 
+#include <Core/Windows.h>
 #include <Core/types.h>
 
 namespace hvrt
