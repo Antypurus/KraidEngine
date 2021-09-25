@@ -10,7 +10,7 @@
 namespace hvrt
 {
 
-	static std::unordered_map<HWND, Window*> g_handle_map;
+	static std::unordered_map<HWND, Window*>* g_handle_map = new std::unordered_map<HWND, Window*>;
 
 	LRESULT CALLBACK Window::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
@@ -18,7 +18,7 @@ namespace hvrt
         //at that point we still dont have the window handle and as such the window ptr
         //has yet to be registered into the map, which forces nullptr to be a valid condition
         //for the window ptr
-        Window* window = g_handle_map[hwnd];
+        Window* window = (*g_handle_map)[hwnd];
         if(window != nullptr)
         {
             window->ExecuteEventCallbacks(uMsg,hwnd,wParam,lParam);
@@ -74,7 +74,7 @@ namespace hvrt
 		//NOTE(Tiago): i could use a thread barrier to wait for the window to be created in its thread, but really
 		//there is no need since only one thread updates it and the other thread reads it, and it will be updated
 		//only once, so there is no need to pay the cost of a thread barrier.
-		bool windows_was_created = false;
+		volatile bool windows_was_created = false;
 
 		std::function<DWORD(void*)> thread_function = [&windows_was_created, this, instance, &title](void* args) -> DWORD
 		{
@@ -123,7 +123,7 @@ namespace hvrt
 				return 1;
 			}
 
-			g_handle_map[this->window_handle] = this;
+            (*g_handle_map)[this->window_handle] = this;
 			ShowWindow(this->window_handle, SW_SHOW);
 
 			this->open = true;
@@ -147,7 +147,7 @@ namespace hvrt
 	Window::~Window()
 	{
 		this->open = false;
-		g_handle_map[this->window_handle] = nullptr;
+        (*g_handle_map)[this->window_handle] = nullptr;
 	}
 
     void Window::RegisterUniversalEventCallback(const std::function<LRESULT (HWND, uint32, WPARAM, LPARAM)> &callback)

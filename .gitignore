@@ -39,6 +39,7 @@ out
 x64
 x86
 Debug
+RelWithDebInfo
 *.dir
 
 #build

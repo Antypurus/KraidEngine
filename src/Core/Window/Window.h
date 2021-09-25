@@ -15,7 +15,7 @@ namespace hvrt
         HWND window_handle = NULL;
         uint16 width = 0;
         uint16 height = 0;
-        bool open = false;
+        volatile bool open = false;
         std::unordered_multimap<uint32, std::function<LRESULT(HWND, uint32, WPARAM, LPARAM)>> event_callbacks;
 
     public:
