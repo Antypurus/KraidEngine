@@ -46,13 +46,13 @@ namespace hvrt
 #define __FILENAME__ (wcsrchr(__FILEW__, '\\') ? wcsrchr(__FILEW__, '\\') + 1 : __FILEW__)
 
 #if LOGGING
-#define INFO(Message, ...) hvrt::LogConsole::LogInfo(__FILENAME__, __LINE__, Message, __VA_ARGS__);
-#define WARNING(Message, ...) hvrt::LogConsole::LogWarning(__FILENAME__, __LINE__, Message, __VA_ARGS__);
-#define ERROR(Message, ...) hvrt::LogConsole::LogError(__FILENAME__, __LINE__, Message, __VA_ARGS__);
-#define SUCCESS(Message, ...) hvrt::LogConsole::LogSuccess(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LINFO(Message, ...) hvrt::LogConsole::LogInfo(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LWARNING(Message, ...) hvrt::LogConsole::LogWarning(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LERROR(Message, ...) hvrt::LogConsole::LogError(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LSUCCESS(Message, ...) hvrt::LogConsole::LogSuccess(__FILENAME__, __LINE__, Message, __VA_ARGS__);
 #else
-#define INFO(Message, ...)
-#define WARNING(Message, ...)
-#define ERROR(Message, ...)
-#define SUCCESS(Message, ...)
+#define LINFO(Message, ...)
+#define LWARNING(Message, ...)
+#define LERROR(Message, ...)
+#define LSUCCESS(Message, ...)
 #endif
