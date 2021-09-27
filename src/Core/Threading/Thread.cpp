@@ -1,5 +1,7 @@
 #include "Thread.h"
 
+#include <Core/Utils/Log.h>
+
 namespace hvrt {
 
     Thread::Thread()

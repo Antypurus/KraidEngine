@@ -1,0 +1,22 @@
+[
+{
+  "directory": "C:/Users/Antypurus/Desktop/HVRTRenderer",
+  "command": "C:\\PROGRA~1\\MIB055~1\\2022\\Preview\\VC\\Tools\\MSVC\\1430~1.305\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\.\\src -MDd -std:c++20 /FoCMakeFiles\\hvrt_renderer.dir\\src\\Core\\Threading\\Thread.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\Core\\Threading\\Thread.cpp",
+  "file": "C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\Core\\Threading\\Thread.cpp"
+},
+{
+  "directory": "C:/Users/Antypurus/Desktop/HVRTRenderer",
+  "command": "C:\\PROGRA~1\\MIB055~1\\2022\\Preview\\VC\\Tools\\MSVC\\1430~1.305\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\.\\src -MDd -std:c++20 /FoCMakeFiles\\hvrt_renderer.dir\\src\\Core\\Utils\\Log.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\Core\\Utils\\Log.cpp",
+  "file": "C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\Core\\Utils\\Log.cpp"
+},
+{
+  "directory": "C:/Users/Antypurus/Desktop/HVRTRenderer",
+  "command": "C:\\PROGRA~1\\MIB055~1\\2022\\Preview\\VC\\Tools\\MSVC\\1430~1.305\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\.\\src -MDd -std:c++20 /FoCMakeFiles\\hvrt_renderer.dir\\src\\Core\\Window\\Window.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\Core\\Window\\Window.cpp",
+  "file": "C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\Core\\Window\\Window.cpp"
+},
+{
+  "directory": "C:/Users/Antypurus/Desktop/HVRTRenderer",
+  "command": "C:\\PROGRA~1\\MIB055~1\\2022\\Preview\\VC\\Tools\\MSVC\\1430~1.305\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\.\\src -MDd -std:c++20 /FoCMakeFiles\\hvrt_renderer.dir\\src\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\main.cpp",
+  "file": "C:\\Users\\Antypurus\\Desktop\\HVRTRenderer\\src\\main.cpp"
+}
+]
