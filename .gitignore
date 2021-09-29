@@ -49,4 +49,4 @@ build
 *.cmake
 CMakeCache*
 CMakeFiles
-
+CMakeSettings.json
