@@ -13,14 +13,21 @@ namespace hvrt
 	struct GPUDevice
 	{
         ComPtr<ID3D12Device8> device;
+#ifndef NDEBUG
+        ComPtr<ID3D12Debug3> debug_layer;
+#endif
         D3D_FEATURE_LEVEL feature_level;
 
-        //we determine the best gpu to use
-        GPUDevice();
-
         //specify the index of the gpu to be used
-        GPUDevice(uint8 gpu_index);
+        GPUDevice(uint8 gpu_index = 0);
         GPUDevice(IDXGIAdapter4* adapter);
+
+        ID3D12Device8* operator->();
+
+    private:
+        inline void CreateD3D12Device(uint8 gpu_index);
+        inline void CreateD3D12DeviceFromAdapater(IDXGIAdapter4* adapter);
+        inline void EnableDebugLayer();
 	};
 
 }
