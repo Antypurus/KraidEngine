@@ -1,24 +1,28 @@
 #pragma once
 
-#include <dxgi1_6.h>
-#include <wrl.h>
+#include <Core/Rendering/D3D12/D3D12.h>
 #include <vector>
 
-namespace hvrt
+namespace Kraid
 {
 
-    using namespace Microsoft::WRL;
-
-    struct DXGIFactory
+    namespace D3D12
     {
-        ComPtr<IDXGIFactory7> factory;
 
-        DXGIFactory();
-        ~DXGIFactory() = default;
+        using namespace Microsoft::WRL;
 
-        IDXGIFactory7* operator->();
-        std::vector<ComPtr<IDXGIAdapter4>> GetGPUList() const;
-        void LogGPUList() const;
-    };
+        struct DXGIFactory
+        {
+            ComPtr<IDXGIFactory7> factory;
+
+            DXGIFactory();
+            ~DXGIFactory() = default;
+
+            IDXGIFactory7* operator->();
+            std::vector<ComPtr<IDXGIAdapter4>> GetGPUList() const;
+            void LogGPUList() const;
+        };
+
+    }
 
 }

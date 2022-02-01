@@ -4,15 +4,14 @@
 
 #include "../types.h"
 #include "../Windows.h"
-
-#define LOGGING 1
+#include "../BuildDefs.h"
 
 #ifndef NDEBUG
     #define LOGGING_CONSOLE
 #endif
 
 #if LOGGING
-namespace hvrt
+namespace Kraid
 {
 
     struct LogConsole
@@ -43,13 +42,20 @@ namespace hvrt
 }
 #endif
 
-#define __FILENAME__ (wcsrchr(__FILEW__, '\\') ? wcsrchr(__FILEW__, '\\') + 1 : __FILEW__)
+#if defined(__clang__)
+    #define WidenHelper(x)  L##x
+    #define Widen(x)        WidenHelper(x)
+    #define __FILENAME__ Widen(__FILE_NAME__)
+#else
+    #define __FILENAME_INTERNAL__ (wcsrchr(__FILEW__, '\\') ? wcsrchr(__FILEW__, '\\') + 1 : __FILEW__)
+    #define __FILENAME__ (wcsrchr(__FILENAME_INTERNAL__, '/') ? wcsrchr(__FILENAME_INTERNAL__, '/') + 1 : __FILENAME_INTERNAL__)
+#endif
 
 #if LOGGING
-#define LINFO(Message, ...) hvrt::LogConsole::LogInfo(__FILENAME__, __LINE__, Message, __VA_ARGS__);
-#define LWARNING(Message, ...) hvrt::LogConsole::LogWarning(__FILENAME__, __LINE__, Message, __VA_ARGS__);
-#define LERROR(Message, ...) hvrt::LogConsole::LogError(__FILENAME__, __LINE__, Message, __VA_ARGS__);
-#define LSUCCESS(Message, ...) hvrt::LogConsole::LogSuccess(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LINFO(Message, ...) Kraid::LogConsole::LogInfo(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LWARNING(Message, ...) Kraid::LogConsole::LogWarning(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LERROR(Message, ...) Kraid::LogConsole::LogError(__FILENAME__, __LINE__, Message, __VA_ARGS__);
+#define LSUCCESS(Message, ...) Kraid::LogConsole::LogSuccess(__FILENAME__, __LINE__, Message, __VA_ARGS__);
 #else
 #define LINFO(Message, ...)
 #define LWARNING(Message, ...)

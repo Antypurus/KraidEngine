@@ -2,7 +2,7 @@
 
 #include <Core/Utils/Log.h>
 
-namespace hvrt {
+namespace Kraid {
 
     Thread::Thread()
     {
@@ -13,7 +13,14 @@ namespace hvrt {
         this->thread_handle = CreateThread(NULL, NULL, thread_function, parameters, 0, &this->thread_id);
         if (this->thread_handle == NULL)
         {
-            MessageBoxA(NULL, "Failed to create request thread", "Thread", 0);
+            HRESULT error = GetLastError();
+            wchar_t* error_message = FormatErrorMessage(error);
+            LERROR(L"Failed to create thread: %ls", error_message);
+            free(error_message);
+        }
+        else
+        {
+            LSUCCESS("Thread created");
         }
     }
 
@@ -30,8 +37,7 @@ namespace hvrt {
         lambda_caller_params* args = new lambda_caller_params;
         if (args == nullptr)
         {
-            //TODO(Tiago): we need to create a better logging system
-            MessageBoxA(NULL, "Failed to create request thread", "Thread", 0);
+            LERROR("Failed to allocate memory required to hold lambda caller parameters");
             return;
         }
         args->lambda = thread_function;
@@ -40,8 +46,14 @@ namespace hvrt {
         this->thread_handle = CreateThread(NULL, NULL, lambda_thread_function_caller, args, 0, &this->thread_id);
         if (this->thread_handle == NULL)
         {
-            //TODO(Tiago): we need to create a better logging system
-            MessageBoxA(NULL, "Failed to create request thread", "Thread", 0);
+            HRESULT error = GetLastError();
+            wchar_t* error_message = FormatErrorMessage(error);
+            LERROR(L"Failed to create thread: %ls", error_message);
+            free(error_message);
+        }
+        else
+        {
+            LSUCCESS("Thread created");
         }
     }
 

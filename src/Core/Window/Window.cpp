@@ -6,8 +6,9 @@
 
 //our includes
 #include <Core/Threading/Thread.h>
+#include <Core/Utils/Log.h>
 
-namespace hvrt
+namespace Kraid
 {
 
 	static std::unordered_map<HWND, Window*>* g_handle_map = new std::unordered_map<HWND, Window*>;
@@ -69,14 +70,14 @@ namespace hvrt
 		}
 	}
 
-	Window::Window(HINSTANCE instance, const std::wstring& title, uint16 width, uint16 heigth) :width(width), height(heigth)
+	Window::Window(HINSTANCE instance,const std::wstring& title, uint16 width, uint16 heigth) :width(width), height(heigth)
 	{
 		//NOTE(Tiago): i could use a thread barrier to wait for the window to be created in its thread, but really
 		//there is no need since only one thread updates it and the other thread reads it, and it will be updated
 		//only once, so there is no need to pay the cost of a thread barrier.
 		volatile bool windows_was_created = false;
 
-		std::function<DWORD(void*)> thread_function = [&windows_was_created, this, instance, &title](void* args) -> DWORD
+		std::function<DWORD(void*)> thread_function = [&windows_was_created, this, instance, title](void* args) -> DWORD
 		{
             //compute the window size such that the client rect (the area where things are drawn) has the size
             //we desire for it.
@@ -89,20 +90,21 @@ namespace hvrt
 			if (AdjustWindowRectEx(&client_rect, WS_OVERLAPPEDWINDOW, false, NULL) == 0)
 			{
 				//failed to adjust
-				__debugbreak();
+                LERROR("Failed to adjust window client rectangle");
 				return 1;
 			}
 
 			const wchar_t window_class_name[] = L"Window class";
 
-			WNDCLASS window_class = {};
+			WNDCLASSW window_class = {};
 			window_class.lpszClassName = window_class_name;
 			window_class.hInstance = instance;
 			window_class.lpfnWndProc = Window::WindowProc;
-			RegisterClass(&window_class);
+            window_class.hIcon = (HICON) LoadImage(NULL, L"icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+			RegisterClassW(&window_class);
 
 			this->window_handle = CreateWindowExW(
-				0,
+				NULL,
 				window_class_name,
 				title.c_str(),
 				WS_OVERLAPPEDWINDOW,
@@ -119,9 +121,13 @@ namespace hvrt
 			if (this->window_handle == NULL)
 			{
 				this->open = false;
-				__debugbreak();
+                HRESULT error = GetLastError();
+                wchar_t* error_message = FormatErrorMessage(error);
+                LERROR(L"Failed to create window:%ls", error_message);
+                free(error_message);
 				return 1;
 			}
+            LSUCCESS(L"Window %ls create", title.c_str());
 
             (*g_handle_map)[this->window_handle] = this;
 			ShowWindow(this->window_handle, SW_SHOW);

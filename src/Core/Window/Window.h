@@ -7,7 +7,7 @@
 #include <Core/Windows.h>
 #include <Core/types.h>
 
-namespace hvrt
+namespace Kraid
 {
     struct Window
     {
@@ -19,7 +19,7 @@ namespace hvrt
         std::unordered_multimap<uint32, std::function<LRESULT(HWND, uint32, WPARAM, LPARAM)>> event_callbacks;
 
     public:
-        Window(HINSTANCE instance, const std::wstring& title, uint16 width, uint16 heigth);
+        Window(HINSTANCE instance,const std::wstring& title, uint16 width, uint16 heigth);
         ~Window();
         void RegisterUniversalEventCallback(const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback);
         void RegisterEventCallback(uint32 event,const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback);

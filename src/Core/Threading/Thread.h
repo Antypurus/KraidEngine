@@ -3,7 +3,7 @@
 #include <functional>
 #include <Core/Windows.h>
 
-namespace hvrt
+namespace Kraid
 {
     struct Thread
     {

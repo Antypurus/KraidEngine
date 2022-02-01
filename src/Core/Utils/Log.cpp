@@ -5,7 +5,7 @@
 #include <tuple>
 
 #if LOGGING //only available if logging is enabled
-namespace hvrt
+namespace Kraid
 {
     LogConsole LogConsole::instance = {};
 
@@ -158,18 +158,19 @@ namespace hvrt
     
     #else//these implementations are used when we are not using an explicit console and will log to the debugger console
 
+    //NOTE(Tiago): there are some weird memory bound issues here due to the buffer sizes of wide strings. I still dont know why its happening as the math seems to add up, for now i just doubled the string buffer sizes to work around that, since this is only a debug/logging thing it should not be an issue but it would be nice to find out what is happening
     static std::pair<wchar_t*, char*> CreateOutputBuffer(const wchar_t* source_file, uint32 source_line, const char* message_format, va_list args)
     {
         //wide part buffer
         uint64 wneeded = _snwprintf(nullptr, 0, L"@%ls:%d => ", source_file, source_line) + 1;
-        wchar_t* wide_buffer = (wchar_t*)malloc(wneeded);
+        wchar_t* wide_buffer = (wchar_t*)malloc((wneeded+1)*2);//cant figure out why i need extra memory but i do otherwise i crash
         if (wide_buffer != nullptr)
         {
             swprintf_s(wide_buffer, wneeded, L"@%ls:%d => ", source_file, source_line);
         }
         
         uint64 needed = vsnprintf(nullptr, 0, message_format, args) + 1;
-        char* ascii_buffer = (char*)malloc(needed);
+        char* ascii_buffer = (char*)malloc(needed*2);
         if (ascii_buffer != nullptr)
         {
             vsprintf_s(ascii_buffer, needed, message_format, args);
@@ -183,7 +184,7 @@ namespace hvrt
         uint64 header_needed = _snwprintf(nullptr, 0, L"@%ls:%d => ", source_file, source_line);
         uint64 message_needed = _vsnwprintf(nullptr, 0, message_format, args) + 1;
 
-        wchar_t* buffer = (wchar_t*)malloc(header_needed + message_needed);
+        wchar_t* buffer = (wchar_t*)malloc((header_needed + message_needed)*2);
         if(buffer != nullptr)
         {
             //we have to tell the function that we have enough space for the null terminator in the first part of the copy, this is done by adding one to header_needed

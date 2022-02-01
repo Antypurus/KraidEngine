@@ -31,6 +31,11 @@
 *.out
 *.app
 
+#nvim
+.clangd
+.vim
+.cache
+
 #vs
 .vs
 out
@@ -43,10 +48,15 @@ RelWithDebInfo
 *.dir
 
 #build
-build
+*build*/
+ninja/
+msvc/
 
 #Cmake
 *.cmake
 CMakeCache*
 CMakeFiles
 CMakeSettings.json
+
+#special test files
+*test.txt

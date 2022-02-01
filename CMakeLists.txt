@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(hvrt_renderer LANGUAGES C CXX)
+project(KraidEngine LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS 
@@ -17,10 +17,9 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ./src/)
+target_precompile_headers(${PROJECT_NAME} PRIVATE [[<Core/Rendering/D3D12/D3D12.h>]])
 
-add_compile_options(${PROJECT_NAME} /MP)
 add_compile_options(${PROJECT_NAME} /wd26495)
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-
 
