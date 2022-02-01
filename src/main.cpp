@@ -31,11 +31,11 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     IndexBuffer ib = IndexBuffer(device, {0,1,2}, main_command_list);
     ib.Bind(main_command_list);
-*/
+
     while(window.open)
     {
     }
-
+*/
     {
         //File file(L"./test.txt", nullptr,true);
         //LINFO("%ws",GetAbsoluteFilepath(L"./test.txt"));

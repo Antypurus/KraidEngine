@@ -1,6 +1,7 @@
 #include "Directory.h"
 
 #include <Core/Windows.h>
+#include <Core/Utils/Log.h>
 
 namespace Kraid
 {
@@ -14,6 +15,7 @@ namespace Kraid
             OPEN_EXISTING,
             FILE_FLAG_BACKUP_SEMANTICS,
             NULL);
+        PRINT_WINERROR();
     }
 
 }
