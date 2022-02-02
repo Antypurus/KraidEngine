@@ -39,7 +39,11 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     {
         //File file(L"./test.txt", nullptr,true);
         //LINFO("%ws",GetAbsoluteFilepath(L"./test.txt"));
-        Directory dir(L"./");
+        DirectoryWatcher dir(L"./");
+        while(true)
+        {
+
+        }
     }
     system("pause");
     return 0;

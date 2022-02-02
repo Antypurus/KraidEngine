@@ -50,68 +50,6 @@ namespace Kraid
     
     File::File(const wchar_t* filepath, void(*callback)(void), bool append)
     {
-        wchar_t* directory_path = this->ExtractDirectoryPath(filepath);
-        //open directory
-        HANDLE dir_handle = CreateFile(directory_path,
-            FILE_LIST_DIRECTORY | GENERIC_READ | GENERIC_WRITE ,
-            FILE_SHARE_WRITE | FILE_SHARE_READ | FILE_SHARE_DELETE,
-            NULL,
-            OPEN_EXISTING,
-            FILE_FLAG_BACKUP_SEMANTICS,
-            NULL);
-        
-        if(dir_handle == INVALID_HANDLE_VALUE)
-        {
-            LERROR(FormatErrorMessage(GetLastError()));
-            return;
-        }
-
-        //create wait event
-        HANDLE event_handle = FindFirstChangeNotificationW(directory_path, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
-        if(event_handle == INVALID_HANDLE_VALUE)
-        {
-            LERROR("Failed to create even handle to wait for file write notifications");
-            return;
-        }
-        while(true)
-        {
-            uint32 wait_status = WaitForMultipleObjects(1, &event_handle, TRUE, INFINITE);
-            switch(wait_status)
-            {
-                case(WAIT_OBJECT_0):
-                {
-                    static bool first_loop = true;
-                    DWORD entries_read = 0;
-
-                    FILE_NOTIFY_INFORMATION* change_entries = (FILE_NOTIFY_INFORMATION*)malloc(1024);
-                    bool res = ReadDirectoryChangesW(dir_handle, (void*)change_entries, 1024, TRUE, FILE_NOTIFY_CHANGE_LAST_WRITE, (DWORD*)&entries_read,NULL, NULL);
-                    if(!first_loop)
-                    {
-                        res = ReadDirectoryChangesW(dir_handle, (void*)change_entries, 1024, TRUE, FILE_NOTIFY_CHANGE_LAST_WRITE, (DWORD*)&entries_read,NULL, NULL);
-                    }
-                    first_loop = false;
-                    if(!res)
-                    {
-                        LERROR(FormatErrorMessage(GetLastError()));
-                        continue;
-                    }
-
-                    for(uint32 i = 0; i < (entries_read / sizeof(FILE_NOTIFY_INFORMATION)); ++i)
-                    {
-                        for(uint32 j = 0; j < change_entries[i].FileNameLength; ++j)
-                        {
-                            printf("%c", ((char*)change_entries[i].FileName)[j]);
-                        }
-                        printf("\n");
-                    }
-                    break;
-                }
-                default:
-                {
-                    break;
-                }
-            }
-        }
     }
 
     typedef void (*write_callback)(uint32, uint32, OVERLAPPED*);
