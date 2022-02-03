@@ -2,7 +2,6 @@
 
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
-#include <Core/Threading/Thread.h>
 
 namespace Kraid
 {
@@ -61,7 +60,7 @@ namespace Kraid
             return;
         }
 
-        Thread watch_thread([this](void* args) -> DWORD
+        this->watch_thread = {[this](void* args) -> DWORD
         {
             while(true)
             {
@@ -69,15 +68,39 @@ namespace Kraid
                 if(wait_status == WAIT_OBJECT_0)
                 {
                     auto changed_files = this->watched_dir.GetChangedFiles();
-                    for(auto&& file: changed_files)
+                    for(auto& file: changed_files)
                     {
-                        wprintf(L"%ls\n", (wchar_t*)file.c_str());
+                        auto callbacks = this->file_change_callbacks[file];
+                        for(auto& callback: callbacks)
+                        {
+                            callback();
+                        }
                     }
                 }
             }
             return 0;
-        });
-    
+        }}; 
+    }
+
+    bool DirectoryWatcher::operator==(const DirectoryWatcher &other)
+    {
+        return this->wait_event_handle == other.wait_event_handle;
+    }
+
+    void DirectoryWatcher::RegisterFileChangeCallback(const std::wstring& filename, const std::function<void(void)>& callback)
+    {
+        this->file_change_callbacks[filename];
+        this->file_change_callbacks[filename].push_back(callback);
+    }
+
+    //TODO(Tiago):associative containers in C++ are dogs ass, remember to implement your own hash 
+    DirectoryWatcher& DirectoryWatcher::GetDirectoryWatcher(const std::wstring& directory)
+    {
+        if(!DirectoryWatcher::directory_watcher_instances.contains(directory))
+        {
+            DirectoryWatcher::directory_watcher_instances.emplace(directory, directory.c_str());
+        }
+        return DirectoryWatcher::directory_watcher_instances[directory];
     }
 
 }

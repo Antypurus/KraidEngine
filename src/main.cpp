@@ -39,7 +39,11 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     {
         //File file(L"./test.txt", nullptr,true);
         //LINFO("%ws",GetAbsoluteFilepath(L"./test.txt"));
-        DirectoryWatcher dir(L"./");
+        auto& watcher = DirectoryWatcher::GetDirectoryWatcher(L"./");
+        watcher.RegisterFileChangeCallback(L"test.txt", []()
+        {
+            printf("changed\n");
+        });
         while(true)
         {
 

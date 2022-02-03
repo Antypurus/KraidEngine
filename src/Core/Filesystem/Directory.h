@@ -3,10 +3,11 @@
 #include <unordered_map>
 #include <functional>
 #include <vector>
+#include <Core/Threading/Thread.h>
 
 namespace Kraid
 {
-
+    //TODO(Tiago): improve structure packing of both of these structures, especially directory, it wastes a ton of memory with the bool for the read changes loop
     struct Directory
     {
     public:
@@ -20,15 +21,20 @@ namespace Kraid
 
     struct DirectoryWatcher
     {
+    friend Directory;
     public:
-        friend Directory;
         HANDLE wait_event_handle = nullptr;
         Directory watched_dir;
-        std::unordered_map<std::wstring, std::vector<std::function<void(void)>>> callback;
+        Thread watch_thread;
+        std::unordered_map<std::wstring, std::vector<std::function<void(void)>>> file_change_callbacks;
     private:
+        inline static std::unordered_map<std::wstring, DirectoryWatcher> directory_watcher_instances = {};
     public:
+        DirectoryWatcher() = default;
         DirectoryWatcher(const wchar_t* diretory);
-        static DirectoryWatcher& GetDirectoryWatcher(const wchar_t* directory);
+        bool operator==(const DirectoryWatcher& other);
+        void RegisterFileChangeCallback(const std::wstring& filename, const std::function<void(void)>& callback);
+        static DirectoryWatcher& GetDirectoryWatcher(const std::wstring& directory);
     };
 
 }
