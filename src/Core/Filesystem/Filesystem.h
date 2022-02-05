@@ -1,11 +1,12 @@
 #pragma once
 
 #include <Core/types.h>
+#include <string>
 
 namespace Kraid
 {
 
-    wchar_t* GetAbsoluteFilepath(const wchar_t* filepath);
+    std::wstring GetAbsoluteFilepath(const std::wstring& filepath);
 
     struct File
     {

@@ -1,9 +1,10 @@
 #pragma once
 
+#include <Core/Threading/Thread.h>
+#include <Core/Threading/Lock.h>
 #include <unordered_map>
 #include <functional>
 #include <vector>
-#include <Core/Threading/Thread.h>
 
 namespace Kraid
 {
@@ -16,6 +17,7 @@ namespace Kraid
     public:
         Directory() = default;
         Directory(const wchar_t* path);
+        ~Directory();
         std::vector<std::wstring> GetChangedFiles();
     };
 
@@ -27,8 +29,10 @@ namespace Kraid
         Directory watched_dir;
         Thread watch_thread;
         std::unordered_map<std::wstring, std::vector<std::function<void(void)>>> file_change_callbacks;
+        Mutex file_callback_mutex = {};
     private:
         inline static std::unordered_map<std::wstring, DirectoryWatcher> directory_watcher_instances = {};
+        inline static Mutex watcher_instance_mutex = {};
     public:
         DirectoryWatcher() = default;
         DirectoryWatcher(const wchar_t* diretory);

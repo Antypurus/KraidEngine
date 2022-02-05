@@ -4,24 +4,23 @@
 #include <Core/Utils/Log.h>
 #include <stdio.h>
 #include <string.h>
-#include <string>
 
 namespace Kraid
 {
 
-    wchar_t* GetAbsoluteFilepath(const wchar_t* filepath)
+    std::wstring GetAbsoluteFilepath(const std::wstring& filepath)
     {
         wchar_t* absolute_path = (wchar_t*)malloc(MAX_PATH);
-        DWORD absolute_path_len = GetFullPathNameW(filepath, MAX_PATH, (wchar_t*)absolute_path, nullptr);
+        DWORD absolute_path_len = GetFullPathNameW(filepath.c_str(), MAX_PATH, (wchar_t*)absolute_path, nullptr);
         if(absolute_path_len > MAX_PATH)
         {
             free(absolute_path);
             absolute_path = (wchar_t*)malloc(absolute_path_len + 1);
-            absolute_path_len = GetFullPathNameW(filepath, absolute_path_len + 1, absolute_path, nullptr);
+            absolute_path_len = GetFullPathNameW(filepath.c_str(), absolute_path_len + 1, absolute_path, nullptr);
         }
         absolute_path[absolute_path_len] = 0;
         std::wstring ret = {std::move(absolute_path)};
-        return (wchar_t*)absolute_path;
+        return absolute_path;
     }
 
     File::File(const wchar_t* filepath, bool append)

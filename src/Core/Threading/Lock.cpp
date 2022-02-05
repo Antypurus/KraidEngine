@@ -16,4 +16,20 @@ namespace Kraid
         }
     }
 
+    Mutex::~Mutex()
+    {
+        this->Unlock();
+        CloseHandle(this->mutex_handle);
+    }
+
+    void Mutex::Lock()
+    {
+        WaitForSingleObject(this->mutex_handle, INFINITE);
+    }
+
+    void Mutex::Unlock()
+    {
+        ReleaseMutex(this->mutex_handle);
+    }
+
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Core/types.h>
+#include <windef.h>
+
 namespace Kraid
 {
 
@@ -7,7 +10,8 @@ namespace Kraid
     {
     public:
         HANDLE mutex_handle = nullptr;
-
+        void Lock();
+        void Unlock();
     public:
         Mutex();
         ~Mutex();
