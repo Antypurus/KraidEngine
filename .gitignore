@@ -46,6 +46,7 @@ x86
 Debug
 RelWithDebInfo
 *.dir
+*StructLayoutSettings.json
 
 #build
 *build*/

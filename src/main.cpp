@@ -44,10 +44,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         {
             printf("changed\n");
         });
-        while(true)
-        {
-
-        }
     }
     system("pause");
     return 0;

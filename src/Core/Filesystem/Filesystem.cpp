@@ -3,24 +3,27 @@
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 #include <stdio.h>
-#include <string.h>
+#include <string>
 
 namespace Kraid
 {
 
     std::wstring GetAbsoluteFilepath(const std::wstring& filepath)
     {
-        wchar_t* absolute_path = (wchar_t*)malloc(MAX_PATH);
-        DWORD absolute_path_len = GetFullPathNameW(filepath.c_str(), MAX_PATH, (wchar_t*)absolute_path, nullptr);
+        wchar_t* absolute_path = (wchar_t*)malloc(MAX_PATH * sizeof(wchar_t));
+        if(absolute_path == nullptr) {
+            LERROR("Failed to allocate space for absolute filepath");
+            return {};
+        }
+        DWORD absolute_path_len = GetFullPathNameW(filepath.c_str(), MAX_PATH, (wchar_t*)absolute_path, NULL);
         if(absolute_path_len > MAX_PATH)
         {
             free(absolute_path);
-            absolute_path = (wchar_t*)malloc(absolute_path_len + 1);
-            absolute_path_len = GetFullPathNameW(filepath.c_str(), absolute_path_len + 1, absolute_path, nullptr);
+            absolute_path = (wchar_t*)malloc(absolute_path_len * sizeof(wchar_t));
+            absolute_path_len = GetFullPathNameW(filepath.c_str(), absolute_path_len, absolute_path, nullptr);
         }
         absolute_path[absolute_path_len] = 0;
-        std::wstring ret = {std::move(absolute_path)};
-        return absolute_path;
+        return {std::move(absolute_path)};
     }
 
     File::File(const wchar_t* filepath, bool append)

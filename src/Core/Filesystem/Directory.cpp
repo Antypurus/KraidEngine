@@ -26,6 +26,8 @@ namespace Kraid
     Directory::~Directory()
     {
         CloseHandle(this->directory_handle);
+        this->directory_handle = nullptr;
+        this->changes_obtained_once = false;
     }
 
     std::vector<std::wstring> Directory::GetChangedFiles()
@@ -72,7 +74,7 @@ namespace Kraid
 
         this->watch_thread = {[this](void* args) -> DWORD
         {
-            while(true)
+            while(this->watched_dir.directory_handle != nullptr)
             {
                 uint32 wait_status = WaitForMultipleObjects(1, &this->wait_event_handle, TRUE, INFINITE);
                 if(wait_status == WAIT_OBJECT_0)
