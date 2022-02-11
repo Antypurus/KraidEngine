@@ -19,6 +19,7 @@ namespace Kraid
         bool Append(const uint8* data, uint64 size);
         ~File();
 
+        static [[nodiscard]] std::pair<wchar_t*, wchar_t*> SplitFilepah(const wchar_t* filepath);
         private:
         static [[nodiscard]] wchar_t* ExtractDirectoryPath(const wchar_t* filepath);
     };

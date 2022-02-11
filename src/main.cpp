@@ -39,11 +39,13 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     {
         //File file(L"./test.txt", nullptr,true);
         //LINFO("%ws",GetAbsoluteFilepath(L"./test.txt"));
-        auto& watcher = DirectoryWatcher::GetDirectoryWatcher(L"./");
-        watcher.RegisterFileChangeCallback(L"test.txt", []()
-        {
-            printf("changed\n");
-        });
+//        auto& watcher = DirectoryWatcher::GetDirectoryWatcher(L"./");
+//        watcher.RegisterFileChangeCallback(L"test.txt", []()
+//        {
+//            printf("changed\n");
+//       });
+        auto paths = File::SplitFilepah(L"./core/something");
+        LINFO("%ls - %ls", paths.first, paths.second);
     }
     system("pause");
     return 0;

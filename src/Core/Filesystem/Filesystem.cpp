@@ -166,4 +166,26 @@ namespace Kraid
         return ret;
     }
 
+    std::pair<wchar_t*, wchar_t*> File::SplitFilepah(const wchar_t* filepath)
+    {
+        uint32 path_len = wcslen(filepath);
+        uint32 dir_split_index = 0;
+        for(int32 i = path_len; i >= 0; i--)
+        {
+            if(filepath[i] == L'\\' || filepath[i] == L'/')
+            {
+                dir_split_index = i;
+                break;
+            }
+        }
+        uint64 dirpath_len = dir_split_index + 1;
+        uint64 filename_len = path_len - dir_split_index;
+        wchar_t* dirpath = (wchar_t*)malloc(dirpath_len * sizeof(wchar_t) + 2);
+        wchar_t* filename = (wchar_t*)malloc(filename_len * sizeof(wchar_t));
+        memcpy(dirpath, filepath, dirpath_len * sizeof(wchar_t));
+        memcpy(filename, filepath + dirpath_len, filename_len * sizeof(wchar_t));
+        dirpath[dir_split_index + 1] = L'\0';
+        return std::make_pair(dirpath, filename);
+    }
+
 }
