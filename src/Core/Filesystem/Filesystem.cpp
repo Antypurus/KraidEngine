@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <string>
 
+#include "Directory.h"
+
 namespace Kraid
 {
 
@@ -52,9 +54,32 @@ namespace Kraid
     
     File::File(const wchar_t* filepath, void(*callback)(void), bool append)
     {
+        uint32 open_mode;
+        if(append)
+        {
+            open_mode = OPEN_ALWAYS;
+        }
+        else
+        {
+            open_mode = CREATE_ALWAYS;
+        }
+        this->file_handle = CreateFile2(filepath, 
+            GENERIC_READ|GENERIC_WRITE,
+            FILE_SHARE_READ|FILE_SHARE_WRITE,
+            open_mode,
+            nullptr);
+        if(this->file_handle == INVALID_HANDLE_VALUE)
+        {
+            LERROR(FormatErrorMessage(GetLastError()));
+            return;
+        }
+        LSUCCESS(L"File Opened");
+
+        std::wstring dir_path = {std::move(ExtractDirectoryPath(filepath))};
+        DirectoryWatcher::GetDirectoryWatcher(dir_path).RegisterFileChangeCallback(filepath, callback);
+
     }
 
-    typedef void (*write_callback)(uint32, uint32, OVERLAPPED*);
     bool File::Write(const uint8* data, uint64 size)
     {
         SetFilePointer(this->file_handle, 0, NULL, FILE_BEGIN);
