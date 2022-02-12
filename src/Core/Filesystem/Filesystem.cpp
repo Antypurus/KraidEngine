@@ -52,7 +52,7 @@ namespace Kraid
         LSUCCESS(L"File Opened");
     }
     
-    File::File(const wchar_t* filepath, void(*callback)(void), bool append)
+    File::File(const wchar_t* filepath, const std::function<void(void)>& callback, bool append)
     {
         uint32 open_mode;
         if(append)
@@ -75,9 +75,11 @@ namespace Kraid
         }
         LSUCCESS(L"File Opened");
 
-        std::wstring dir_path = {std::move(ExtractDirectoryPath(filepath))};
-        DirectoryWatcher::GetDirectoryWatcher(dir_path).RegisterFileChangeCallback(filepath, callback);
+        auto paths = File::SplitFilepah(filepath);
+        DirectoryWatcher::GetDirectoryWatcher(paths.first).RegisterFileChangeCallback(paths.second, callback);
 
+        //free(paths.first);
+        //free(paths.second);
     }
 
     bool File::Write(const uint8* data, uint64 size)
