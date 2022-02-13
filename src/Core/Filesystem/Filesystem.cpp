@@ -30,6 +30,12 @@ namespace Kraid
 
     File::File(const wchar_t* filepath, bool append)
     {
+        if(filepath == nullptr)
+        {
+            LERROR(L"Invalid filepath supplied");
+            return;
+        }
+
         uint32 open_mode;
         if(append)
         {
@@ -54,6 +60,12 @@ namespace Kraid
     
     File::File(const wchar_t* filepath, const std::function<void(void)>& callback, bool append)
     {
+        if(filepath == nullptr)
+        {
+            LERROR(L"Invalid filepath supplied");
+            return;
+        }
+
         uint32 open_mode;
         if(append)
         {
@@ -75,11 +87,17 @@ namespace Kraid
         }
         LSUCCESS(L"File Opened");
 
+        if(callback == nullptr)
+        {
+            LERROR(L"Invalid callback supplied. Callback has not been registered");
+            return;
+        }
+
         auto paths = File::SplitFilepah(filepath);
         DirectoryWatcher::GetDirectoryWatcher(paths.first).RegisterFileChangeCallback(paths.second, callback);
 
-        //free(paths.first);
-        //free(paths.second);
+        free(paths.first);
+        free(paths.second);
     }
 
     bool File::Write(const uint8* data, uint64 size)

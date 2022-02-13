@@ -87,7 +87,14 @@ namespace Kraid
                         auto callbacks = this->file_change_callbacks[file];
                         for(auto& callback: callbacks)
                         {
-                            callback();
+                            if(callback)
+                            {
+                                callback();
+                            }
+                            else
+                            {
+                                LWARNING(L"Attempt to invoke null callback for file change");
+                            }
                         }
                         this->file_callback_mutex.Unlock();
                     }
@@ -104,6 +111,12 @@ namespace Kraid
 
     void DirectoryWatcher::RegisterFileChangeCallback(const std::wstring& filename, const std::function<void(void)>& callback)
     {
+        if(callback == nullptr)
+        {
+            LWARNING(L"Attempt to register NULL callback, aborted");
+            return;
+        }
+
         this->file_callback_mutex.Lock();
         this->file_change_callbacks[filename].push_back(callback);
         this->file_callback_mutex.Unlock();

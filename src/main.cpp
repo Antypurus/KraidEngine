@@ -37,9 +37,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 */
     {
-        File file(L"./test.txt", [](){
-                    LINFO(L"Changed");
-                },true);
+        File file(L"./test.txt", nullptr, true);
     }
     system("pause");
     return 0;
