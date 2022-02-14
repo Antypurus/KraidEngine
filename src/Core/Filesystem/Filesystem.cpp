@@ -157,6 +157,12 @@ namespace Kraid
         return true;
     }
 
+    Buffer File::Read()
+    {
+        ReadFile(this->file_handle);
+        return {};
+    }
+
     File::~File()
     {
         if(this->file_handle == INVALID_HANDLE_VALUE || this->file_handle == nullptr) return;
