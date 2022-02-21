@@ -2,6 +2,7 @@
 
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
+#include <fileapi.h>
 #include <stdio.h>
 #include <string>
 
@@ -159,8 +160,32 @@ namespace Kraid
 
     Buffer File::Read()
     {
-        ReadFile(this->file_handle);
-        return {};
+        uint32 file_size = this->GetSize();
+        uint32 dummy_var = 0;
+        uint8* buffer = (uint8*)malloc(file_size + 1);
+        //TODO(Tiago):seems this function can only read 32-bits of size at a time, which means that if we need to read more than that we have to do multiple reads i guess.
+        bool result = ReadFile(this->file_handle, buffer, file_size, (DWORD*)&dummy_var, NULL);
+        if(result == false)
+        {
+            PRINT_WINERROR();
+            free(buffer);
+            return {};
+        }
+        buffer[file_size] = 0;
+        return {buffer, file_size};
+    }
+
+    uint32 File::GetSize() const 
+    {
+        uint32 file_size_high_word = 0;//NOTE(Tiago):contaisn the high 32-bits of data from a 64-bit filesize
+        uint32 result = GetFileSize(this->file_handle, (DWORD*)&file_size_high_word);
+        if(result == INVALID_FILE_SIZE)
+        {
+            PRINT_WINERROR();
+            return 0;
+        }
+        //TODO(Tiago):result contains the low 32-bits of data from the 64-bit file size, which means we need to reconstruct the 64-bit value
+        return result;
     }
 
     File::~File()
