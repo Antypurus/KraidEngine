@@ -4,31 +4,12 @@
 #include <string>
 #include <functional>
 
+#include <Core/DataStructures/Buffer.h>
+
 namespace Kraid
 {
 
     std::wstring GetAbsoluteFilepath(const std::wstring& filepath);
-
-    struct Buffer
-    {
-        uint8* data;
-        uint64 size;
-
-        Buffer() = default;
-        Buffer(uint8* data, uint64 size):data(data),size(size) {};
-        Buffer(const Buffer& other)
-        {
-            this->data = (uint8*)malloc(other.size);
-            memcpy(this->data, other.data, other.size);
-            this->size = other.size;
-        }
-        ~Buffer()
-        {
-            free(data);
-            data = nullptr;
-            size = 0;
-        }
-    };
 
     struct File
     {

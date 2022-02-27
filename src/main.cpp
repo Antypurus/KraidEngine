@@ -37,7 +37,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 */
     {
-        File file(L"./test.txt", nullptr, true);
+        File file(L"./test.txt", true);
         auto res = file.Read();
         printf("%s\n", res.data);
     }

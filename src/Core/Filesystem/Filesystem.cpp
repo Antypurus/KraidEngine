@@ -162,7 +162,12 @@ namespace Kraid
     {
         uint32 file_size = this->GetSize();
         uint32 dummy_var = 0;
-        uint8* buffer = (uint8*)malloc(file_size + 1);
+        uint8* buffer = nullptr;
+        while(buffer == nullptr)
+        {
+            buffer = (uint8*)malloc(file_size + 1);
+        }
+        
         //TODO(Tiago):seems this function can only read 32-bits of size at a time, which means that if we need to read more than that we have to do multiple reads i guess.
         bool result = ReadFile(this->file_handle, buffer, file_size, (DWORD*)&dummy_var, NULL);
         if(result == false)
