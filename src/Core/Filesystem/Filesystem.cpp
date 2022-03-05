@@ -170,7 +170,8 @@ namespace Kraid
         {
             buffer = (uint8*)malloc(file_size + 1);
         }
-        
+
+        //NOTE(Tiago): the following loop reads teh file in chunks whose size can fit in a 32-bit value, allowing us to read a file whose value cannot fit in a 32-bit value
         uint64 total_amount_left_to_read = file_size;
         while(total_amount_left_to_read > UINT32_MAX)
         {
