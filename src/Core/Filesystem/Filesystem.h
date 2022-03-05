@@ -21,7 +21,7 @@ namespace Kraid
         bool Write(const uint8* data, uint64 size);
         bool Append(const uint8* data, uint64 size);
         Buffer Read();
-        uint32 GetSize() const;
+        uint64 GetSize() const;
 
         ~File();
 

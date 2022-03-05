@@ -3,6 +3,7 @@
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 #include <fileapi.h>
+#include <intsafe.h>
 #include <stdio.h>
 #include <string>
 
@@ -160,7 +161,9 @@ namespace Kraid
 
     Buffer File::Read()
     {
-        uint32 file_size = this->GetSize();
+        SetFilePointer(this->file_handle, 0, NULL, FILE_BEGIN);
+
+        uint64 file_size = this->GetSize();
         uint32 dummy_var = 0;
         uint8* buffer = nullptr;
         while(buffer == nullptr)
@@ -168,29 +171,41 @@ namespace Kraid
             buffer = (uint8*)malloc(file_size + 1);
         }
         
-        //TODO(Tiago):seems this function can only read 32-bits of size at a time, which means that if we need to read more than that we have to do multiple reads i guess.
-        bool result = ReadFile(this->file_handle, buffer, file_size, (DWORD*)&dummy_var, NULL);
+        uint64 total_amount_left_to_read = file_size;
+        while(total_amount_left_to_read > UINT32_MAX)
+        {
+            uint32 amount_to_read = UINT32_MAX;
+            bool result = ReadFile(this->file_handle, buffer + (file_size - total_amount_left_to_read), amount_to_read, (DWORD*)&dummy_var, NULL);
+            if(result == false)
+            {
+                PRINT_WINERROR();
+                free(buffer);
+                return {};
+            }
+            total_amount_left_to_read -= UINT32_MAX;
+        }
+        bool result = ReadFile(this->file_handle, buffer + (file_size - total_amount_left_to_read), (uint32)total_amount_left_to_read, (DWORD*)&dummy_var, NULL);
         if(result == false)
         {
             PRINT_WINERROR();
             free(buffer);
             return {};
         }
+         
         buffer[file_size] = 0;
         return {buffer, file_size};
     }
 
-    uint32 File::GetSize() const 
+    uint64 File::GetSize() const 
     {
         uint32 file_size_high_word = 0;//NOTE(Tiago):contaisn the high 32-bits of data from a 64-bit filesize
-        uint32 result = GetFileSize(this->file_handle, (DWORD*)&file_size_high_word);
-        if(result == INVALID_FILE_SIZE)
+        uint32 file_size_low_word = GetFileSize(this->file_handle, (DWORD*)&file_size_high_word);
+        if(file_size_low_word == INVALID_FILE_SIZE)
         {
             PRINT_WINERROR();
             return 0;
         }
-        //TODO(Tiago):result contains the low 32-bits of data from the 64-bit file size, which means we need to reconstruct the 64-bit value
-        return result;
+        return (((uint64)file_size_high_word << 32 )| file_size_low_word);
     }
 
     File::~File()
