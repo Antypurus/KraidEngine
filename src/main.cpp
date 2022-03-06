@@ -10,6 +10,7 @@
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/VertexBuffer.h>
 #include <Core/Rendering/D3D12/IndexBuffer.h>
+#include <Core/Rendering/D3D12/Shader.h>
 #include <Core/Utils/Log.h>
 #include <Core/SystemInformation.h>
 #include <Core/Filesystem/Filesystem.h>
@@ -36,11 +37,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     {
     }
 */
-    {
-        File file(L"./test.txt", true);
-        auto res = file.Read();
-        printf("%s\n", res.data);
-    }
-    system("pause");
+    auto res = Shader::CreateTargetString(ShaderType::RayTracing, ShaderModel::SM6_6);
     return 0;
 }
