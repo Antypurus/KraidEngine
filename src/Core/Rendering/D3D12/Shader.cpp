@@ -154,6 +154,11 @@ namespace Kraid
             return target;
         }
 
+        void Shader::FXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
+        {
+
+        }
+
     }
 
 }
