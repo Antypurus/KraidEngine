@@ -30,6 +30,11 @@ namespace Kraid
         return {std::move(absolute_path)};
     }
 
+    File::File(const File& other)
+    {
+        this->file_handle = other.file_handle;
+    }
+
     File::File(const wchar_t* filepath, bool append)
     {
         if(filepath == nullptr)
@@ -78,7 +83,7 @@ namespace Kraid
             open_mode = CREATE_ALWAYS;
         }
         this->file_handle = CreateFile2(filepath, 
-            GENERIC_READ|GENERIC_WRITE,
+            FILE_GENERIC_READ|FILE_GENERIC_WRITE,
             FILE_SHARE_READ|FILE_SHARE_WRITE,
             open_mode,
             nullptr);
@@ -87,6 +92,7 @@ namespace Kraid
             LERROR(FormatErrorMessage(GetLastError()));
             return;
         }
+        PRINT_WINERROR();
         LSUCCESS(L"File Opened");
 
         if(callback == nullptr)
@@ -100,6 +106,12 @@ namespace Kraid
 
         free(paths.first);
         free(paths.second);
+    }
+
+    File& File::operator=(const File& other)
+    {
+        this->file_handle = other.file_handle;
+        return *this;
     }
 
     bool File::Write(const uint8* data, uint64 size)

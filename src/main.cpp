@@ -37,6 +37,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     {
     }
 */
-    auto res = Shader::CreateTargetString(ShaderType::RayTracing, ShaderModel::SM6_6);
+
+    Shader shader(L"./shader.hlsl", ShaderType::Pixel, ShaderModel::SM5_0);
+    system("pause");
     return 0;
 }

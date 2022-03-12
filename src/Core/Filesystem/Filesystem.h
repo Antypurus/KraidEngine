@@ -16,8 +16,10 @@ namespace Kraid
         HANDLE file_handle = nullptr;
 
         File() = default;
+        File(const File& other);
         File(const wchar_t* filepath, bool append = false);
         File(const wchar_t* filepath, const std::function<void(void)>& callback, bool append = false);
+        File& operator=(const File& other);
         bool Write(const uint8* data, uint64 size);
         bool Append(const uint8* data, uint64 size);
         Buffer Read();

@@ -34,7 +34,8 @@ namespace Kraid
     {
         #define CHANGED_FILE_ENTRY_COUNT 1024
         uint32 entries_read;
-        FILE_NOTIFY_INFORMATION changed_entries[CHANGED_FILE_ENTRY_COUNT];
+        FILE_NOTIFY_INFORMATION* changed_entries = (FILE_NOTIFY_INFORMATION*)malloc(CHANGED_FILE_ENTRY_COUNT * sizeof(FILE_NOTIFY_INFORMATION));
+        if (changed_entries == nullptr) return {};
         //NOTE(Tiago): there is a weird behavior where a write causes two change notifications to be launched for the same file, this seems to be related to metadata. The issue is that in teh first time that a change is detected, the second notification is not received and as such we have to have a way to handle that special corner case.
         bool result = ReadDirectoryChangesW(this->directory_handle, (void*)changed_entries, CHANGED_FILE_ENTRY_COUNT, FALSE, FILE_NOTIFY_CHANGE_LAST_WRITE, (DWORD*)&entries_read, NULL, NULL);
         if(this->changes_obtained_once)
@@ -49,17 +50,24 @@ namespace Kraid
         }
 
         std::vector<std::wstring> changed_files;
-        for(uint64 i = 0; i < (entries_read / sizeof(FILE_NOTIFY_INFORMATION)); ++i)
+        FILE_NOTIFY_INFORMATION* iterator = changed_entries;
+        do
         {
-            wchar_t* filename = (wchar_t*)malloc(changed_entries[i].FileNameLength + sizeof(wchar_t));
+            if (iterator->FileNameLength <= 0) continue;
+
+            wchar_t* filename = (wchar_t*)malloc(iterator->FileNameLength + sizeof(wchar_t));
             if (filename != nullptr)
             {
-                memset(filename, 0, changed_entries[i].FileNameLength + sizeof(wchar_t));
-                memcpy(filename, changed_entries[i].FileName, changed_entries[i].FileNameLength);
+                memset(filename, 0, iterator->FileNameLength + sizeof(wchar_t));
+                memcpy(filename, iterator->FileName, iterator->FileNameLength);
                 changed_files.emplace_back(filename);
                 free(filename);
             }
-        }
+
+            iterator += iterator->NextEntryOffset;
+        } while (iterator->NextEntryOffset != 0);
+        free(changed_entries);
+
         return changed_files;
     }
 

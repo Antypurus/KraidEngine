@@ -154,9 +154,51 @@ namespace Kraid
             return target;
         }
 
+        Shader::Shader(const wchar_t* filepath, ShaderType type, ShaderModel sm, const char* entrypoint)
+        {
+            this->target = CreateTargetString(type, sm);
+            if(sm == ShaderModel::SM5_0)
+            {
+                FXCCompile(filepath, this->target.c_str(), entrypoint); 
+            }
+            else
+            {
+            }
+        }
+
         void Shader::FXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
         {
+            File* shader_file = new File(filepath, []() {
+                    LINFO("Shader changes detected, recompiling...");
+                    LWARNING("Shader recompilatin functionality not yet implemented, shader bytecode not actually changed");
+                    
+                    //Buffer shader_code = this->shader_file.Read();
+                }, true);
 
+            Buffer shader_code = shader_file->Read();
+            ComPtr<ID3DBlob> error_message = nullptr;
+
+            D3DCALL(D3DCompile2(
+                    shader_code.data,
+                    shader_code.size,
+                    nullptr,
+                    nullptr,
+                    D3D_COMPILE_STANDARD_FILE_INCLUDE,
+                    entrypoint,
+                    target,
+                    D3DCOMPILE_OPTIMIZATION_LEVEL0,
+                    0,
+                    0,
+                    nullptr,
+                    0,
+                    this->shader_bytecode.GetAddressOf(),
+                    error_message.GetAddressOf()
+                ), "Failed to compile shader");
+
+            if(error_message->GetBufferSize() != 0)
+            {
+                LERROR((char*)error_message->GetBufferPointer());
+            }
         }
 
     }

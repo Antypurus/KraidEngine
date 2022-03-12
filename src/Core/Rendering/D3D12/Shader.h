@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/types.h>
+#include <Core/Filesystem/Filesystem.h>
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <string>
 
@@ -38,6 +39,7 @@ namespace Kraid
         struct Shader
         {
             ComPtr<ID3DBlob> shader_bytecode = nullptr;
+            std::string target = "";
 
             Shader(const wchar_t* filepath, ShaderType type, ShaderModel sm, const char* entrypoint = "main");
 
