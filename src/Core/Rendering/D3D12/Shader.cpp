@@ -168,14 +168,14 @@ namespace Kraid
 
         void Shader::FXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
         {
-            File* shader_file = new File(filepath, []() {
+            this->shader_file = File(filepath, []() {
                     LINFO("Shader changes detected, recompiling...");
                     LWARNING("Shader recompilatin functionality not yet implemented, shader bytecode not actually changed");
                     
                     //Buffer shader_code = this->shader_file.Read();
                 }, true);
 
-            Buffer shader_code = shader_file->Read();
+            Buffer shader_code = shader_file.Read();
             ComPtr<ID3DBlob> error_message = nullptr;
 
             D3DCALL(D3DCompile2(
@@ -195,7 +195,7 @@ namespace Kraid
                     error_message.GetAddressOf()
                 ), "Failed to compile shader");
 
-            if(error_message->GetBufferSize() != 0)
+            if (error_message != nullptr)
             {
                 LERROR((char*)error_message->GetBufferPointer());
             }

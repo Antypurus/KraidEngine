@@ -13,8 +13,10 @@ namespace Kraid
 
     struct File
     {
+    public:
         HANDLE file_handle = nullptr;
 
+    public:
         File() = default;
         File(const File& other);
         File(const wchar_t* filepath, bool append = false);

@@ -38,6 +38,7 @@ namespace Kraid
 
         struct Shader
         {
+            File shader_file;
             ComPtr<ID3DBlob> shader_bytecode = nullptr;
             std::string target = "";
 

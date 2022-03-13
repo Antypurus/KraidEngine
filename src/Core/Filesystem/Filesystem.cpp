@@ -92,7 +92,6 @@ namespace Kraid
             LERROR(FormatErrorMessage(GetLastError()));
             return;
         }
-        PRINT_WINERROR();
         LSUCCESS(L"File Opened");
 
         if(callback == nullptr)
