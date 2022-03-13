@@ -44,11 +44,7 @@ namespace Kraid
     {
         if (data == nullptr) return;
 
-        //free(data);
-        data[0] = 't';
-        data[1] = 'e';
-        data[2] = 's';
-        data[4] = 't';
+        free(data);
         data = nullptr;
         size = 0;
         LINFO("Freed");

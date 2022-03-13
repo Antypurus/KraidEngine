@@ -33,6 +33,7 @@ namespace Kraid
     File::File(const File& other)
     {
         this->file_handle = other.file_handle;
+        this->refcount.Increment();
     }
 
     File::File(const wchar_t* filepath, bool append)
@@ -223,12 +224,17 @@ namespace Kraid
     File::~File()
     {
         if(this->file_handle == INVALID_HANDLE_VALUE || this->file_handle == nullptr) return;
-        if(!CloseHandle(this->file_handle))
+
+        refcount.Decrement();
+        if(refcount.ShouldFree())
         {
-            LERROR(FormatErrorMessage(GetLastError()));
-            return;
+            if(!CloseHandle(this->file_handle))
+            {
+                LERROR(FormatErrorMessage(GetLastError()));
+                return;
+            }
+            LSUCCESS("File handle closed");
         }
-        LSUCCESS("File handle closed");
     }
 
     wchar_t* File::ExtractDirectoryPath(const wchar_t* filepath)

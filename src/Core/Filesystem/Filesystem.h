@@ -5,6 +5,7 @@
 #include <functional>
 
 #include <Core/DataStructures/Buffer.h>
+#include <Core/DataStructures/RefCounter.h>
 
 namespace Kraid
 {
@@ -15,6 +16,7 @@ namespace Kraid
     {
     public:
         HANDLE file_handle = nullptr;
+        ReferenceCounter refcount;
 
     public:
         File() = default;

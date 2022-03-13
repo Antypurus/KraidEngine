@@ -168,11 +168,11 @@ namespace Kraid
 
         void Shader::FXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
         {
-            this->shader_file = File(filepath, []() {
+            this->shader_file = File(filepath, [this]() {
                     LINFO("Shader changes detected, recompiling...");
                     LWARNING("Shader recompilatin functionality not yet implemented, shader bytecode not actually changed");
                     
-                    //Buffer shader_code = this->shader_file.Read();
+                    Buffer shader_code = this->shader_file.Read();
                 }, true);
 
             Buffer shader_code = shader_file.Read();
@@ -193,7 +193,7 @@ namespace Kraid
                     0,
                     this->shader_bytecode.GetAddressOf(),
                     error_message.GetAddressOf()
-                ), "Failed to compile shader");
+                ), "Shader has finished compiling");
 
             if (error_message != nullptr)
             {
