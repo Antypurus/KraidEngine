@@ -1,12 +1,21 @@
 #include "Shader.h"
 
+#include <combaseapi.h>
 #include <d3dcompiler.h>
+#include <dxcapi.h>
 
 namespace Kraid
 {
 
     namespace D3D12
     {
+
+        DXCShaderCompiler::DXCShaderCompiler()
+        {
+            DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&this->utils));
+            DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&this->compiler));
+            this->utils->CreateDefaultIncludeHandler(&this->include_handler);
+        }
 
         std::string Shader::CreateTargetString(ShaderType type, ShaderModel sm)
         {

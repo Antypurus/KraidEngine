@@ -3,7 +3,10 @@
 #include <Core/types.h>
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Rendering/D3D12/D3D12.h>
+
 #include <string>
+#include <dxcapi.h>
+#include <d3d12shader.h>
 
 namespace Kraid
 {
@@ -35,6 +38,15 @@ namespace Kraid
         };
 
         using namespace Microsoft::WRL;
+
+        struct DXCShaderCompiler
+        {
+            ComPtr<IDxcUtils> utils;
+            ComPtr<IDxcCompiler3> compiler;
+            ComPtr<IDxcIncludeHandler> include_handler;
+
+            DXCShaderCompiler();
+        };
 
         struct Shader
         {
