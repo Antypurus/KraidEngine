@@ -216,6 +216,8 @@ namespace Kraid
             return;
         }
 
+
+        //TODO(Tiago): I need to once again figure out ASCII -> UNICODE conversion routines that I can use for these cases, or figure out what the incompatibilities between the two compilers are in these regards
         void Shader::DXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
         {
             this->shader_file = File(filepath, [this]() {
@@ -229,10 +231,10 @@ namespace Kraid
             arguments.push_back((wchar_t*)filepath);
             //entrypoint
             arguments.push_back((wchar_t*)L"-E");
-            arguments.push_back((wchar_t*)entrypoint);
+            arguments.push_back((wchar_t*)L"main");
             //target
             arguments.push_back((wchar_t*)L"-T");
-            arguments.push_back((wchar_t*)target);
+            arguments.push_back((wchar_t*)L"ps_6_0");
 
             Buffer shader_code = shader_file.Read();
             DxcBuffer source;
@@ -248,11 +250,11 @@ namespace Kraid
                     DXCShaderCompiler::GetShaderCompiler().include_handler.Get(),
                     IID_PPV_ARGS(&results));
 
-            ComPtr<IDxcBlob> errors = nullptr;
+            ComPtr<IDxcBlobUtf8> errors = nullptr;
             results->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&errors), nullptr);
-            if(errors != nullptr && errors->GetBufferSize() != 0)
+            if(errors != nullptr && errors->GetStringLength() != 0)
             {
-                LERROR("%ls", errors->GetBufferPointer());
+                LERROR("%s", errors->GetStringPointer());
             }
 
             return;
