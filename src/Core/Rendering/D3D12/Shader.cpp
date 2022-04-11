@@ -3,6 +3,9 @@
 #include <combaseapi.h>
 #include <d3dcompiler.h>
 #include <dxcapi.h>
+#include <vector>
+
+#include <Core/Windows.h>
 
 namespace Kraid
 {
@@ -10,10 +13,11 @@ namespace Kraid
     namespace D3D12
     {
 
+        DXCShaderCompiler DXCShaderCompiler::m_instance = {};
         DXCShaderCompiler::DXCShaderCompiler()
         {
-            DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&this->utils));
-            DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&this->compiler));
+            D3DCALL(DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&this->utils)), "DXC Utils Created");
+            D3DCALL(DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&this->compiler)), "DXC Compiler Created");
             this->utils->CreateDefaultIncludeHandler(&this->include_handler);
         }
 
@@ -172,6 +176,7 @@ namespace Kraid
             }
             else
             {
+                DXCCompile(filepath, this->target.c_str(), entrypoint);
             }
         }
 
@@ -208,6 +213,49 @@ namespace Kraid
             {
                 LERROR((char*)error_message->GetBufferPointer());
             }
+            return;
+        }
+
+        void Shader::DXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
+        {
+            this->shader_file = File(filepath, [this]() {
+                    LINFO("Shader changed detected, recompiling...");
+                    LWARNING("Shader recompilation functionality not yet implemented, shader bytecode not actually changed");
+
+                    Buffer shader_code = this->shader_file.Read();
+                }, true);
+
+            std::vector<wchar_t*> arguments;
+            arguments.push_back((wchar_t*)filepath);
+            //entrypoint
+            arguments.push_back((wchar_t*)L"-E");
+            arguments.push_back((wchar_t*)entrypoint);
+            //target
+            arguments.push_back((wchar_t*)L"-T");
+            arguments.push_back((wchar_t*)target);
+
+            Buffer shader_code = shader_file.Read();
+            DxcBuffer source;
+            source.Ptr = shader_code.data;
+            source.Size = shader_code.size;
+            source.Encoding = DXC_CP_ACP;
+
+            ComPtr<IDxcResult> results;
+            DXCShaderCompiler::GetShaderCompiler().compiler->Compile(
+                    &source,
+                    (const wchar_t**)arguments.data(),
+                    arguments.size(),
+                    DXCShaderCompiler::GetShaderCompiler().include_handler.Get(),
+                    IID_PPV_ARGS(&results));
+
+            ComPtr<IDxcBlob> errors = nullptr;
+            results->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&errors), nullptr);
+            if(errors != nullptr && errors->GetBufferSize() != 0)
+            {
+                LERROR("%ls", errors->GetBufferPointer());
+            }
+
+            return;
         }
 
     }

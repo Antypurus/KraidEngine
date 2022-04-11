@@ -41,10 +41,16 @@ namespace Kraid
 
         struct DXCShaderCompiler
         {
+        public:
             ComPtr<IDxcUtils> utils;
             ComPtr<IDxcCompiler3> compiler;
             ComPtr<IDxcIncludeHandler> include_handler;
+        private:
+            static DXCShaderCompiler m_instance;
 
+        public:
+            static DXCShaderCompiler& GetShaderCompiler() { return m_instance; };
+        private:
             DXCShaderCompiler();
         };
 

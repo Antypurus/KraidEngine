@@ -38,7 +38,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 */
 
-    Shader shader(L"./shader.hlsl", ShaderType::Pixel, ShaderModel::SM5_0);
+    Shader shader(L"./shader.hlsl", ShaderType::Pixel, ShaderModel::SM6_0);
     system("pause");
     return 0;
 }
