@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <Core/Windows.h>
+#include <Core/Utils/StringHelpers.h>
 
 namespace Kraid
 {
@@ -230,11 +231,13 @@ namespace Kraid
             std::vector<wchar_t*> arguments;
             arguments.push_back((wchar_t*)filepath);
             //entrypoint
+            wchar_t* entrypoint_w = to_unicode(entrypoint);
             arguments.push_back((wchar_t*)L"-E");
-            arguments.push_back((wchar_t*)L"main");
+            arguments.push_back((wchar_t*)entrypoint_w);
             //target
+            wchar_t* target_w = to_unicode(target);
             arguments.push_back((wchar_t*)L"-T");
-            arguments.push_back((wchar_t*)L"ps_6_0");
+            arguments.push_back((wchar_t*)target_w);
 
             Buffer shader_code = shader_file.Read();
             DxcBuffer source;
@@ -257,6 +260,8 @@ namespace Kraid
                 LERROR("%s", errors->GetStringPointer());
             }
 
+            free(entrypoint_w);
+            free(target_w);
             return;
         }
 
