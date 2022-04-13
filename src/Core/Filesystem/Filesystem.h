@@ -32,8 +32,8 @@ namespace Kraid
         ~File();
 
         private:
-        static inline [[nodiscard]] std::pair<wchar_t*, wchar_t*> SplitFilepah(const wchar_t* filepath);
-        static inline [[nodiscard]] wchar_t* ExtractDirectoryPath(const wchar_t* filepath);
+        [[nodiscard]] static inline std::pair<wchar_t*, wchar_t*> SplitFilepah(const wchar_t* filepath);
+        [[nodiscard]] static inline wchar_t* ExtractDirectoryPath(const wchar_t* filepath);
     };
 
 }

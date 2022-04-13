@@ -81,7 +81,7 @@ namespace Kraid
             return;
         }
 
-        this->watch_thread = {[this](void* args) -> DWORD
+        this->watch_thread = Thread([this](void* args) -> DWORD
         {
             while(this->watched_dir.directory_handle != nullptr)
             {
@@ -109,7 +109,7 @@ namespace Kraid
                 }
             }
             return 0;
-        }}; 
+        }); 
     }
 
     bool DirectoryWatcher::operator==(const DirectoryWatcher &other)
