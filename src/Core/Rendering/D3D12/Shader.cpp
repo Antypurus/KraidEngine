@@ -168,22 +168,22 @@ namespace Kraid
             return target;
         }
 
-        Shader::Shader(const wchar_t* filepath, ShaderType type, ShaderModel sm, const char* entrypoint)
+        Shader::Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint)
         {
             this->target = CreateTargetString(type, sm);
             if(sm == ShaderModel::SM5_0)
             {
-                FXCCompile(filepath, this->target.c_str(), entrypoint); 
+                FXCCompile(filepath, this->target, entrypoint); 
             }
             else
             {
-                DXCCompile(filepath, this->target.c_str(), entrypoint);
+                DXCCompile(filepath, this->target, entrypoint);
             }
         }
 
-        void Shader::FXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
+        void Shader::FXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint)
         {
-            this->shader_file = File(filepath, [this]() {
+            this->shader_file = File(filepath.Get(), [this]() {
                     LINFO("Shader changes detected, recompiling...");
                     LWARNING("Shader recompilatin functionality not yet implemented, shader bytecode not actually changed");
                     
@@ -199,8 +199,8 @@ namespace Kraid
                     nullptr,
                     nullptr,
                     D3D_COMPILE_STANDARD_FILE_INCLUDE,
-                    entrypoint,
-                    target,
+                    entrypoint.Get(),
+                    target.Get(),
                     D3DCOMPILE_OPTIMIZATION_LEVEL0,
                     0,
                     0,
@@ -217,11 +217,10 @@ namespace Kraid
             return;
         }
 
-
         //TODO(Tiago): I need to once again figure out ASCII -> UNICODE conversion routines that I can use for these cases, or figure out what the incompatibilities between the two compilers are in these regards
-        void Shader::DXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint)
+        void Shader::DXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint)
         {
-            this->shader_file = File(filepath, [this]() {
+            this->shader_file = File(filepath.Get(), [this]() {
                     LINFO("Shader changed detected, recompiling...");
                     LWARNING("Shader recompilation functionality not yet implemented, shader bytecode not actually changed");
 
@@ -229,13 +228,13 @@ namespace Kraid
                 }, true);
 
             std::vector<wchar_t*> arguments;
-            arguments.push_back((wchar_t*)filepath);
+            arguments.push_back((wchar_t*)filepath.Get());
             //entrypoint
-            wchar_t* entrypoint_w = to_unicode(entrypoint);
+            wchar_t* entrypoint_w = to_unicode(entrypoint.Get());
             arguments.push_back((wchar_t*)L"-E");
             arguments.push_back((wchar_t*)entrypoint_w);
             //target
-            wchar_t* target_w = to_unicode(target);
+            wchar_t* target_w = to_unicode(target.Get());
             arguments.push_back((wchar_t*)L"-T");
             arguments.push_back((wchar_t*)target_w);
 

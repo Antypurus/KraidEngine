@@ -3,6 +3,7 @@
 #include <Core/types.h>
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Rendering/D3D12/D3D12.h>
+#include <Core/DataStructures/StringView.h>
 
 #include <string>
 #include <dxcapi.h>
@@ -60,11 +61,11 @@ namespace Kraid
             ComPtr<ID3DBlob> shader_bytecode = nullptr;
             std::string target = "";
 
-            Shader(const wchar_t* filepath, ShaderType type, ShaderModel sm, const char* entrypoint = "main");
+            Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint = "main");
 
         private:
-            void FXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint);
-            void DXCCompile(const wchar_t* filepath, const char* target, const char* entrypoint);
+            void FXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint);
+            void DXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint);
             static std::string CreateTargetString(ShaderType type, ShaderModel sm);
             
         };
