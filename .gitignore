@@ -46,6 +46,7 @@ x86
 Debug
 RelWithDebInfo
 *.dir
+*StructLayoutSettings.json
 
 #build
 *build*/
@@ -60,3 +61,4 @@ CMakeSettings.json
 
 #special test files
 *test.txt
+*shader.hlsl

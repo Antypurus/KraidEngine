@@ -14,6 +14,8 @@ add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     "d3d12.lib"
     "dxgi.lib"
+    "D3DCompiler.lib"
+    "dxcompiler.lib"
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ./src/)

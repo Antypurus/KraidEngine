@@ -18,13 +18,22 @@ inline wchar_t* FormatErrorMessage(HRESULT res)
 #define CAT(x,y) CAT_(x,y)
 
 #if LOGGING
+
+#include <stdlib.h>
+#define PRINT_WINERROR()\
+{\
+	wchar_t* CAT(error_message,__LINE__) = FormatErrorMessage(GetLastError());\
+	LERROR(CAT(error_message,__LINE__));\
+	LocalFree(CAT(error_message,__LINE__));\
+}
+
 #define D3DCALL(function,success_message, ...)\
 	HRESULT CAT(result_code,__LINE__) = function;\
 	if(CAT(result_code,__LINE__) < 0)\
 	{\
 		wchar_t* CAT(error_message,__LINE__) = FormatErrorMessage(CAT(result_code,__LINE__));\
 		LERROR(CAT(error_message,__LINE__));\
-		free(CAT(error_message,__LINE__));\
+		LocalFree(CAT(error_message,__LINE__));\
 	}\
 	else\
 	{\
@@ -32,4 +41,5 @@ inline wchar_t* FormatErrorMessage(HRESULT res)
 	}
 #else
 #define D3DCALL(x, success_message, ...) x;
+#define PRINT_WINERROR()
 #endif

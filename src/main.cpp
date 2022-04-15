@@ -10,6 +10,7 @@
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/VertexBuffer.h>
 #include <Core/Rendering/D3D12/IndexBuffer.h>
+#include <Core/Rendering/D3D12/Shader.h>
 #include <Core/Utils/Log.h>
 #include <Core/SystemInformation.h>
 #include <Core/Filesystem/Filesystem.h>
@@ -31,16 +32,13 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     IndexBuffer ib = IndexBuffer(device, {0,1,2}, main_command_list);
     ib.Bind(main_command_list);
-*/
+
     while(window.open)
     {
     }
+*/
 
-    {
-        //File file(L"./test.txt", nullptr,true);
-        //LINFO("%ws",GetAbsoluteFilepath(L"./test.txt"));
-        Directory dir(L"./");
-    }
+    Shader shader(L"./shader.hlsl", ShaderType::Pixel, ShaderModel::SM6_0, "main");
     system("pause");
     return 0;
 }
