@@ -68,9 +68,9 @@ namespace Kraid
 
         private:
             void Recompile();
-            void Compile(const WideStringView& filepath, const StringView& entrypoint);
-            void FXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint);
-            void DXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint);
+            void Compile(const Buffer& shader_source);
+            void FXCCompile(const Buffer& shader_source);
+            void DXCCompile(const Buffer& shader_source);
             static std::string CreateTargetString(ShaderType type, ShaderModel sm);
             
         };

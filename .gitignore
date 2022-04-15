@@ -58,6 +58,7 @@ msvc/
 CMakeCache*
 CMakeFiles
 CMakeSettings.json
+compile_commands.json
 
 #special test files
 *test.txt

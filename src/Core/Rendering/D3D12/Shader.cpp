@@ -173,47 +173,54 @@ namespace Kraid
             this->shader_model = sm;
             this->entrypoint = entrypoint.Get();
             this->target = CreateTargetString(type, sm);
-
-            this->Compile(filepath, entrypoint);
-        }
-
-        void Shader::Compile(const WideStringView& filepath, const StringView& entrypoint)
-        {
-            if(this->shader_model == ShaderModel::SM5_0)
+            if(name.empty())
             {
-                FXCCompile(filepath, this->target, entrypoint); 
+                this->shader_name = filepath.Get();
             }
             else
             {
-                DXCCompile(filepath, this->target, entrypoint);
+                this->shader_name = name;
+            }
+
+            this->shader_file = File(filepath.Get(), [this]()
+                {
+                    LINFO("Shader source code change detected, recompiling shader...");
+                    this->Recompile();
+                }, true);
+            Buffer shader_source = this->shader_file.Read();
+            this->Compile(shader_source);
+        }
+
+        void Shader::Compile(const Buffer& shader_source)
+        {
+            if(this->shader_model == ShaderModel::SM5_0)
+            {
+                FXCCompile(shader_source); 
+            }
+            else
+            {
+                DXCCompile(shader_source);
             }
         }
 
         void Shader::Recompile()
         {
             Buffer shader_code = this->shader_file.Read();
+            this->Compile(shader_code);
         }
 
-        void Shader::FXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint)
+        void Shader::FXCCompile(const Buffer& shader_source)
         {
-            this->shader_file = File(filepath.Get(), [this]() {
-                    LINFO("Shader changes detected, recompiling...");
-                    LWARNING("Shader recompilatin functionality not yet implemented, shader bytecode not actually changed");
-                    
-                    Buffer shader_code = this->shader_file.Read();
-                }, true);
-
-            Buffer shader_code = shader_file.Read();
             ComPtr<ID3DBlob> error_message = nullptr;
 
             D3DCALL(D3DCompile2(
-                    shader_code.data,
-                    shader_code.size,
+                    shader_source.data,
+                    shader_source.size,
                     nullptr,
                     nullptr,
                     D3D_COMPILE_STANDARD_FILE_INCLUDE,
-                    entrypoint.Get(),
-                    target.Get(),
+                    this->entrypoint.data(),
+                    this->target.data(),
                     D3DCOMPILE_OPTIMIZATION_LEVEL0,
                     0,
                     0,
@@ -230,31 +237,23 @@ namespace Kraid
             return;
         }
 
-        //TODO(Tiago): I need to once again figure out ASCII -> UNICODE conversion routines that I can use for these cases, or figure out what the incompatibilities between the two compilers are in these regards
-        void Shader::DXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint)
+        void Shader::DXCCompile(const Buffer& shader_source)
         {
-            this->shader_file = File(filepath.Get(), [this]() {
-                    LINFO("Shader changed detected, recompiling...");
-                    LWARNING("Shader recompilation functionality not yet implemented, shader bytecode not actually changed");
-
-                    Buffer shader_code = this->shader_file.Read();
-                }, true);
-
             std::vector<wchar_t*> arguments;
-            arguments.push_back((wchar_t*)filepath.Get());
+            arguments.push_back((wchar_t*)this->shader_name.data());
             //entrypoint
-            wchar_t* entrypoint_w = to_unicode(entrypoint.Get());
+            wchar_t* entrypoint_w = to_unicode(this->entrypoint.data());
             arguments.push_back((wchar_t*)L"-E");
             arguments.push_back((wchar_t*)entrypoint_w);
             //target
-            wchar_t* target_w = to_unicode(target.Get());
+            wchar_t* target_w = to_unicode(this->target.data());
             arguments.push_back((wchar_t*)L"-T");
             arguments.push_back((wchar_t*)target_w);
 
             Buffer shader_code = shader_file.Read();
             DxcBuffer source;
-            source.Ptr = shader_code.data;
-            source.Size = shader_code.size;
+            source.Ptr = shader_source.data;
+            source.Size = shader_source.size;
             source.Encoding = DXC_CP_ACP;
 
             ComPtr<IDxcResult> results;
