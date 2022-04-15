@@ -57,13 +57,18 @@ namespace Kraid
 
         struct Shader
         {
-            File shader_file;
             ComPtr<ID3DBlob> shader_bytecode = nullptr;
-            std::string target = "";
+            File shader_file;//NOTE(Tiago):needs to be stored for hot-recompilation
+            std::wstring shader_name = L"";
+            std::string target = "";//NOTE(Tiago):needs to be stored for hot-recompilation
+            std::string entrypoint = ""; //NOTE(Tiago):needs to be stored for hot-recompilation
+            ShaderModel shader_model; //TODO(Tiago):needs to be stored for hot-recompilation
 
-            Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint = "main");
+            Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint = "main", const std::wstring& name = L"");
 
         private:
+            void Recompile();
+            void Compile(const WideStringView& filepath, const StringView& entrypoint);
             void FXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint);
             void DXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint);
             static std::string CreateTargetString(ShaderType type, ShaderModel sm);

@@ -168,10 +168,18 @@ namespace Kraid
             return target;
         }
 
-        Shader::Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint)
+        Shader::Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint, const std::wstring& name)
         {
+            this->shader_model = sm;
+            this->entrypoint = entrypoint.Get();
             this->target = CreateTargetString(type, sm);
-            if(sm == ShaderModel::SM5_0)
+
+            this->Compile(filepath, entrypoint);
+        }
+
+        void Shader::Compile(const WideStringView& filepath, const StringView& entrypoint)
+        {
+            if(this->shader_model == ShaderModel::SM5_0)
             {
                 FXCCompile(filepath, this->target, entrypoint); 
             }
@@ -179,6 +187,11 @@ namespace Kraid
             {
                 DXCCompile(filepath, this->target, entrypoint);
             }
+        }
+
+        void Shader::Recompile()
+        {
+            Buffer shader_code = this->shader_file.Read();
         }
 
         void Shader::FXCCompile(const WideStringView& filepath, const StringView& target, const StringView& entrypoint)
