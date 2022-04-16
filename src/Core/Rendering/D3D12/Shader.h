@@ -40,7 +40,7 @@ namespace Kraid
 
         using namespace Microsoft::WRL;
 
-        struct DXCShaderCompiler
+        class DXCShaderCompiler
         {
         public:
             ComPtr<IDxcUtils> utils;
@@ -55,16 +55,24 @@ namespace Kraid
             DXCShaderCompiler();
         };
 
-        struct Shader
+        class Shader
         {
+        public:
             ComPtr<ID3DBlob> shader_bytecode = nullptr;
-            File shader_file;//NOTE(Tiago):needs to be stored for hot-recompilation
+            File shader_file;               //NOTE(Tiago):needs to be stored for hot-recompilation
             std::wstring shader_name = L"";
-            std::string target = "";//NOTE(Tiago):needs to be stored for hot-recompilation
-            std::string entrypoint = ""; //NOTE(Tiago):needs to be stored for hot-recompilation
-            ShaderModel shader_model; //TODO(Tiago):needs to be stored for hot-recompilation
+            std::string target = "";        //NOTE(Tiago):needs to be stored for hot-recompilation
+            std::string entrypoint = "";    //NOTE(Tiago):needs to be stored for hot-recompilation
+            ShaderModel shader_model;       //TODO(Tiago):needs to be stored for hot-recompilation
 
-            Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint = "main", const std::wstring& name = L"");
+            Shader(
+                    const WideStringView& filepath,
+                    ShaderType type,
+                    ShaderModel sm,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L""
+                );
 
         private:
             void Recompile();
@@ -73,6 +81,83 @@ namespace Kraid
             void DXCCompile(const Buffer& shader_source);
             static std::string CreateTargetString(ShaderType type, ShaderModel sm);
             
+        };
+
+        class PixelShader: public Shader
+        {
+            PixelShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::Pixel, sm, defines, entrypoint, name){};
+        };
+
+        class VertexShader: public Shader
+        {
+            VertexShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::Vertex, sm, defines, entrypoint, name){};
+        };
+
+        class GeometryShader: public Shader
+        {
+            GeometryShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::Geometry, sm, defines, entrypoint, name){};
+        };
+
+        class ComputeShader: public Shader
+        {
+            ComputeShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::Compute, sm, defines, entrypoint, name){};
+        };
+
+        class DomainShader: public Shader
+        {
+            DomainShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::Domain, sm, defines, entrypoint, name){};
+        };
+
+        class HullShader: public Shader
+        {
+            HullShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::Hull, sm, defines, entrypoint, name){};
+        };
+
+        class RayTracingShader: public Shader
+        {
+            RayTracingShader(
+                    const WideStringView& filepath,
+                    const std::vector<StringView>& defines = {},
+                    const StringView& entrypoint = "main",
+                    const std::wstring& name = L"",
+                    ShaderModel sm = SM6_0
+                ):Shader(filepath, ShaderType::RayTracing, sm, defines, entrypoint, name){};
         };
 
     }

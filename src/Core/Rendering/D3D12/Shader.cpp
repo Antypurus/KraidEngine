@@ -168,7 +168,7 @@ namespace Kraid
             return target;
         }
 
-        Shader::Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm, const StringView& entrypoint, const std::wstring& name)
+        Shader::Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm,const std::vector<StringView>& defines, const StringView& entrypoint, const std::wstring& name)
         {
             this->shader_model = sm;
             this->entrypoint = entrypoint.Get();
