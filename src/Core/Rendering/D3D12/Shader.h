@@ -64,12 +64,13 @@ namespace Kraid
             std::string target = "";        //NOTE(Tiago):needs to be stored for hot-recompilation
             std::string entrypoint = "";    //NOTE(Tiago):needs to be stored for hot-recompilation
             ShaderModel shader_model;       //TODO(Tiago):needs to be stored for hot-recompilation
+            std::vector<std::wstring> shader_defines; //NOTE(Tiago):needs to be stored for hot-recompilation
 
             Shader(
                     const WideStringView& filepath,
                     ShaderType type,
                     ShaderModel sm,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L""
                 );
@@ -87,7 +88,7 @@ namespace Kraid
         {
             PixelShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
@@ -98,7 +99,7 @@ namespace Kraid
         {
             VertexShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
@@ -109,7 +110,7 @@ namespace Kraid
         {
             GeometryShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
@@ -120,7 +121,7 @@ namespace Kraid
         {
             ComputeShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
@@ -131,7 +132,7 @@ namespace Kraid
         {
             DomainShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
@@ -142,7 +143,7 @@ namespace Kraid
         {
             HullShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
@@ -153,7 +154,7 @@ namespace Kraid
         {
             RayTracingShader(
                     const WideStringView& filepath,
-                    const std::vector<StringView>& defines = {},
+                    const std::vector<std::wstring>& defines = {},
                     const StringView& entrypoint = "main",
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0

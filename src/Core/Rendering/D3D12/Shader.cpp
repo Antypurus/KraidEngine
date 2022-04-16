@@ -168,10 +168,17 @@ namespace Kraid
             return target;
         }
 
-        Shader::Shader(const WideStringView& filepath, ShaderType type, ShaderModel sm,const std::vector<StringView>& defines, const StringView& entrypoint, const std::wstring& name)
+        Shader::Shader(
+                const WideStringView& filepath,
+                ShaderType type,
+                ShaderModel sm,
+                const std::vector<std::wstring>& defines,
+                const StringView& entrypoint,
+                const std::wstring& name)
         {
             this->shader_model = sm;
             this->entrypoint = entrypoint.Get();
+            this->shader_defines = defines;
             this->target = CreateTargetString(type, sm);
             if(name.empty())
             {
@@ -249,6 +256,12 @@ namespace Kraid
             wchar_t* target_w = to_unicode(this->target.data());
             arguments.push_back((wchar_t*)L"-T");
             arguments.push_back((wchar_t*)target_w);
+            //defines
+            for(auto& define:this->shader_defines)
+            {
+                arguments.push_back((wchar_t*)L"-D");
+                arguments.push_back((wchar_t*)define.data());
+            }
 
             Buffer shader_code = shader_file.Read();
             DxcBuffer source;
