@@ -168,11 +168,34 @@ namespace Kraid
             return target;
         }
 
+        ShaderMacro::ShaderMacro(const std::string& name, const std::string& value):name(name), value(value)
+        {
+        }
+
+        ShaderMacro::ShaderMacro(const std::string&& name, const std::string&& value):name(std::move(name)), value(std::move(value))
+        {
+        }
+
+        std::wstring ShaderMacro::DXCMacroFormat() const
+        {
+            std::wstring ret = L"";
+            
+            wchar_t* wname = to_unicode(this->name.data(), this->name.length());
+            wchar_t* wvalue = to_unicode(this->value.data(), this->value.length());
+
+            ret = std::wstring(wname) + L"=" + std::wstring(wvalue);
+
+            free(wname);
+            free(wvalue);
+
+            return ret;
+        }
+
         Shader::Shader(
                 const WideStringView& filepath,
                 ShaderType type,
                 ShaderModel sm,
-                const std::vector<std::wstring>& defines,
+                const std::vector<ShaderMacro>& defines,
                 const StringView& entrypoint,
                 const std::wstring& name)
         {
@@ -260,7 +283,8 @@ namespace Kraid
             for(auto& define:this->shader_defines)
             {
                 arguments.push_back((wchar_t*)L"-D");
-                arguments.push_back((wchar_t*)define.data());
+                //NOTE(Tiago):this really should not work due to variable lifetime, refactor it to not rely as much on strings maybe, idk
+                arguments.push_back((wchar_t*)define.DXCMacroFormat().data());
             }
 
             Buffer shader_code = shader_file.Read();
