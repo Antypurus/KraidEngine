@@ -269,7 +269,9 @@ namespace Kraid
 
         void Shader::DXCCompile(const Buffer& shader_source)
         {
+            std::vector<std::wstring> define_strings = std::vector<std::wstring>(this->shader_defines.size());
             std::vector<wchar_t*> arguments;
+
             arguments.push_back((wchar_t*)this->shader_name.data());
             //entrypoint
             wchar_t* entrypoint_w = to_unicode(this->entrypoint.data());
@@ -282,9 +284,9 @@ namespace Kraid
             //defines
             for(auto& define:this->shader_defines)
             {
+                define_strings.push_back(std::move(define.DXCMacroFormat()));
                 arguments.push_back((wchar_t*)L"-D");
-                //NOTE(Tiago):this really should not work due to variable lifetime, refactor it to not rely as much on strings maybe, idk
-                arguments.push_back((wchar_t*)define.DXCMacroFormat().data());
+                arguments.push_back((wchar_t*)define_strings[define_strings.size() - 1].data());
             }
 
             Buffer shader_code = shader_file.Read();
