@@ -243,11 +243,24 @@ namespace Kraid
         {
             ComPtr<ID3DBlob> error_message = nullptr;
 
+            std::vector<D3D_SHADER_MACRO> macros = std::vector<D3D_SHADER_MACRO>(this->shader_defines.size());
+            for(auto& define: this->shader_defines)
+            {
+                D3D_SHADER_MACRO macro = {};
+                macro.Name = define.name.data();
+                macro.Definition = define.value.data();
+                macros.push_back(macro);
+            }
+            D3D_SHADER_MACRO end_macro = {};
+            end_macro.Name = nullptr;
+            end_macro.Definition = nullptr;
+            macros.push_back(end_macro);
+
             D3DCALL(D3DCompile2(
                     shader_source.data,
                     shader_source.size,
                     nullptr,
-                    nullptr,
+                    macros.data(),
                     D3D_COMPILE_STANDARD_FILE_INCLUDE,
                     this->entrypoint.data(),
                     this->target.data(),
