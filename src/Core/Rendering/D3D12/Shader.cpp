@@ -1,7 +1,6 @@
 #include "Shader.h"
 
 #include <combaseapi.h>
-#include <d3dcompiler.h>
 #include <dxcapi.h>
 #include <vector>
 
@@ -13,6 +12,13 @@ namespace Kraid
 
     namespace D3D12
     {
+
+        const std::unordered_map<ShaderCompileFlags, const wchar_t*> DXCCompilerFlags =
+        {
+            {ShaderCompileFlags::Debug, L"-Zi"},
+            {ShaderCompileFlags::SkipValidation, L"-Vd"},
+            {ShaderCompileFlags::SkipOptimization, L"-Od"}
+        };
 
         DXCShaderCompiler DXCShaderCompiler::m_instance = {};
         DXCShaderCompiler::DXCShaderCompiler()

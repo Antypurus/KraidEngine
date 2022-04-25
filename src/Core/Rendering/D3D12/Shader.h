@@ -8,6 +8,8 @@
 #include <string>
 #include <dxcapi.h>
 #include <d3d12shader.h>
+#include <d3dcompiler.h>
+#include <unordered_map>
 
 namespace Kraid
 {
@@ -36,6 +38,30 @@ namespace Kraid
             SM6_4,
             SM6_5,
             SM6_6
+        };
+
+        enum class ShaderCompileFlags
+        {
+            Debug                           = D3DCOMPILE_DEBUG,
+            SkipValidation                  = D3DCOMPILE_SKIP_VALIDATION,
+            SkipOptimization                = D3DCOMPILE_SKIP_OPTIMIZATION,
+            PackMatrixRowMajor              = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR,
+            PackMatrixColumnMajor           = D3DCOMPILE_PACK_MATRIX_COLUMN_MAJOR,
+            PartialPrecision                = D3DCOMPILE_PARTIAL_PRECISION,
+            AvoidFlowControl                = D3DCOMPILE_AVOID_FLOW_CONTROL,
+            EnableStrictness                = D3DCOMPILE_ENABLE_STRICTNESS,
+            IEEEStrictness                  = D3DCOMPILE_IEEE_STRICTNESS,
+            EnableBackwardsCompatibility    = D3DCOMPILE_ENABLE_BACKWARDS_COMPATIBILITY,
+            O0                              = D3DCOMPILE_OPTIMIZATION_LEVEL0,
+            O1                              = D3DCOMPILE_OPTIMIZATION_LEVEL1,
+            O2                              = D3DCOMPILE_OPTIMIZATION_LEVEL2,
+            O3                              = D3DCOMPILE_OPTIMIZATION_LEVEL3,
+            WarningsAreErrors               = D3DCOMPILE_WARNINGS_ARE_ERRORS,
+            ResourcesMayAlias               = D3DCOMPILE_RESOURCES_MAY_ALIAS,
+            EnableUnboundedDescriptorTables = D3DCOMPILE_ENABLE_UNBOUNDED_DESCRIPTOR_TABLES,
+            AllResourcesBound               = D3DCOMPILE_ALL_RESOURCES_BOUND,
+            DebugNameForSource              = D3DCOMPILE_DEBUG_NAME_FOR_SOURCE,
+            DebugNameForBinary              = D3DCOMPILE_DEBUG_NAME_FOR_BINARY
         };
 
         using namespace Microsoft::WRL;
