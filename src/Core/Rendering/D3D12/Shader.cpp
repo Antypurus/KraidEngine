@@ -279,6 +279,13 @@ namespace Kraid
             end_macro.Definition = nullptr;
             macros.push_back(end_macro);
 
+            //compilation flags
+            uint32 compilation_flags = 0;
+            for(auto flag: this->compilation_flags)
+            {
+                compilation_flags |= (uint32)flag;
+            }
+
             D3DCALL(D3DCompile2(
                     shader_source.data,
                     shader_source.size,
@@ -287,7 +294,7 @@ namespace Kraid
                     D3D_COMPILE_STANDARD_FILE_INCLUDE,
                     this->entrypoint.data(),
                     this->target.data(),
-                    D3DCOMPILE_OPTIMIZATION_LEVEL0,
+                    compilation_flags,
                     0,
                     0,
                     nullptr,
@@ -323,6 +330,11 @@ namespace Kraid
                 define_strings.push_back(std::move(define.DXCMacroFormat()));
                 arguments.push_back((wchar_t*)L"-D");
                 arguments.push_back((wchar_t*)define_strings[define_strings.size() - 1].data());
+            }
+            //compile defines
+            for(auto& flag:this->compilation_flags)
+            {
+                arguments.push_back((wchar_t*)DXCCompilerFlags.at(flag));
             }
 
             Buffer shader_code = shader_file.Read();

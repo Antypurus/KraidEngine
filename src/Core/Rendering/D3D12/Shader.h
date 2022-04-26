@@ -103,6 +103,7 @@ namespace Kraid
             std::string entrypoint = "";    //NOTE(Tiago):needs to be stored for hot-recompilation
             ShaderModel shader_model;       //TODO(Tiago):needs to be stored for hot-recompilation
             std::vector<ShaderMacro> shader_defines; //NOTE(Tiago):needs to be stored for hot-recompilation
+            std::vector<ShaderCompileFlags> compilation_flags; //NOTE(Tiago):needs to be stored for hot-recompilation
 
             Shader(
                     const WideStringView& filepath,
