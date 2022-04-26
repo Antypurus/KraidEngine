@@ -17,7 +17,24 @@ namespace Kraid
         {
             {ShaderCompileFlags::Debug, L"-Zi"},
             {ShaderCompileFlags::SkipValidation, L"-Vd"},
-            {ShaderCompileFlags::SkipOptimization, L"-Od"}
+            {ShaderCompileFlags::SkipOptimization, L"-Od"},
+            {ShaderCompileFlags::PackMatrixRowMajor, L"-TODO"},
+            {ShaderCompileFlags::PackMatrixColumnMajor, L"-TODO"},
+            {ShaderCompileFlags::PartialPrecision, L"-TODO"},
+            {ShaderCompileFlags::AvoidFlowControl, L"-TODO"},
+            {ShaderCompileFlags::EnableStrictness, L"-TODO"},
+            {ShaderCompileFlags::IEEEStrictness, L"-TODO"},
+            {ShaderCompileFlags::EnableBackwardsCompatibility, L"-TODO"},
+            {ShaderCompileFlags::O0, L"-TODO"},
+            {ShaderCompileFlags::O1, L"-TODO"},
+            {ShaderCompileFlags::O2, L"-TODO"},
+            {ShaderCompileFlags::O3, L"-TODO"},
+            {ShaderCompileFlags::WarningsAreErrors, L"-TODO"},
+            {ShaderCompileFlags::ResourcesMayAlias, L"-TODO"}, 
+            {ShaderCompileFlags::EnableUnboundedDescriptorTables, L"-TODO"},
+            {ShaderCompileFlags::AllResourcesBound, L"-TODO"},
+            {ShaderCompileFlags::DebugNameForBinary, L"-TODO"},
+            {ShaderCompileFlags::DebugNameForBinary, L"-TODO"}
         };
 
         DXCShaderCompiler DXCShaderCompiler::m_instance = {};
