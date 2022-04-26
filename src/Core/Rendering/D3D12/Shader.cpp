@@ -15,26 +15,26 @@ namespace Kraid
 
         const std::unordered_map<ShaderCompileFlags, const wchar_t*> DXCCompilerFlags =
         {
-            {ShaderCompileFlags::Debug, L"-Zi"},
+            {ShaderCompileFlags::Debug, L"-Zi -Qembed_debug"},
             {ShaderCompileFlags::SkipValidation, L"-Vd"},
             {ShaderCompileFlags::SkipOptimization, L"-Od"},
-            {ShaderCompileFlags::PackMatrixRowMajor, L"-TODO"},
-            {ShaderCompileFlags::PackMatrixColumnMajor, L"-TODO"},
-            {ShaderCompileFlags::PartialPrecision, L"-TODO"},
-            {ShaderCompileFlags::AvoidFlowControl, L"-TODO"},
-            {ShaderCompileFlags::EnableStrictness, L"-TODO"},
-            {ShaderCompileFlags::IEEEStrictness, L"-TODO"},
-            {ShaderCompileFlags::EnableBackwardsCompatibility, L"-TODO"},
-            {ShaderCompileFlags::O0, L"-TODO"},
-            {ShaderCompileFlags::O1, L"-TODO"},
-            {ShaderCompileFlags::O2, L"-TODO"},
-            {ShaderCompileFlags::O3, L"-TODO"},
-            {ShaderCompileFlags::WarningsAreErrors, L"-TODO"},
-            {ShaderCompileFlags::ResourcesMayAlias, L"-TODO"}, 
-            {ShaderCompileFlags::EnableUnboundedDescriptorTables, L"-TODO"},
-            {ShaderCompileFlags::AllResourcesBound, L"-TODO"},
-            {ShaderCompileFlags::DebugNameForBinary, L"-TODO"},
-            {ShaderCompileFlags::DebugNameForBinary, L"-TODO"}
+            {ShaderCompileFlags::PackMatrixRowMajor, L"-Zpr"},
+            {ShaderCompileFlags::PackMatrixColumnMajor, L"-Zpc"},
+            {ShaderCompileFlags::PartialPrecision, L"-enable-16bit-types"},
+            {ShaderCompileFlags::AvoidFlowControl, L"-Gfa"},
+            {ShaderCompileFlags::EnableStrictness, L"-Ges"},
+            {ShaderCompileFlags::IEEEStrictness, L"-Gis"},
+            {ShaderCompileFlags::EnableBackwardsCompatibility, L"-GeC"},
+            {ShaderCompileFlags::O0, L"-O0"},
+            {ShaderCompileFlags::O1, L"-O1"},
+            {ShaderCompileFlags::O2, L"-O2"},
+            {ShaderCompileFlags::O3, L"-O3"},
+            {ShaderCompileFlags::WarningsAreErrors, L"-WX"},
+            {ShaderCompileFlags::ResourcesMayAlias, L"-res_may_alias"}, 
+            {ShaderCompileFlags::EnableUnboundedDescriptorTables, L""},
+            {ShaderCompileFlags::AllResourcesBound, L"-all_resources_bound"},
+            {ShaderCompileFlags::DebugNameForSource, L"-Zss"},
+            {ShaderCompileFlags::DebugNameForBinary, L"-Zsb"}
         };
 
         DXCShaderCompiler DXCShaderCompiler::m_instance = {};
