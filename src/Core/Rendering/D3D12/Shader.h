@@ -105,12 +105,14 @@ namespace Kraid
             std::vector<ShaderMacro> shader_defines; //NOTE(Tiago):needs to be stored for hot-recompilation
             std::vector<ShaderCompileFlags> compilation_flags; //NOTE(Tiago):needs to be stored for hot-recompilation
 
+            //NOTE(Tiago):be carefull with reordering the parameters that have a default value, they are currently ordered in a way that makes it easier to set the parameters that I expect to be used the most. If you reorder these you will also need to reorder all the parameters in the subclass constructors.
             Shader(
                     const WideStringView& filepath,
                     ShaderType type,
                     ShaderModel sm,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L""
                 );
 
@@ -127,77 +129,84 @@ namespace Kraid
         {
             PixelShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::Pixel, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::Pixel, sm,entrypoint, flags, defines, name){};
         };
 
         class VertexShader: public Shader
         {
             VertexShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::Vertex, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::Vertex, sm, entrypoint, flags, defines, name){};
         };
 
         class GeometryShader: public Shader
         {
             GeometryShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::Geometry, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::Geometry, sm, entrypoint, flags, defines, name){};
         };
 
         class ComputeShader: public Shader
         {
             ComputeShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::Compute, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::Compute, sm, entrypoint, flags, defines, name){};
         };
 
         class DomainShader: public Shader
         {
             DomainShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::Domain, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::Domain, sm, entrypoint, flags, defines, name){};
         };
 
         class HullShader: public Shader
         {
             HullShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::Hull, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::Hull, sm, entrypoint, flags, defines, name){};
         };
 
         class RayTracingShader: public Shader
         {
             RayTracingShader(
                     const WideStringView& filepath,
-                    const std::vector<ShaderMacro>& defines = {},
                     const StringView& entrypoint = "main",
+                    const std::vector<ShaderCompileFlags>& flags = {},
+                    const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
                     ShaderModel sm = SM6_0
-                ):Shader(filepath, ShaderType::RayTracing, sm, defines, entrypoint, name){};
+                ):Shader(filepath, ShaderType::RayTracing, sm, entrypoint, flags, defines, name){};
         };
 
     }

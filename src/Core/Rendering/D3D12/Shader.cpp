@@ -218,14 +218,26 @@ namespace Kraid
                 const WideStringView& filepath,
                 ShaderType type,
                 ShaderModel sm,
-                const std::vector<ShaderMacro>& defines,
                 const StringView& entrypoint,
+                const std::vector<ShaderCompileFlags>& flags,
+                const std::vector<ShaderMacro>& defines,
                 const std::wstring& name)
         {
             this->shader_model = sm;
             this->entrypoint = entrypoint.Get();
-            this->shader_defines = defines;
             this->target = CreateTargetString(type, sm);
+            this->compilation_flags = flags;
+            this->shader_defines = defines;
+
+        #ifndef NDEBUG
+            this->compilation_flags.push_back(ShaderCompileFlags::Debug);
+            this->compilation_flags.push_back(ShaderCompileFlags::O0);
+            this->shader_defines.push_back({"DEBUG", "1"});
+        #else
+            this->compilation_flags.push_back(ShaderCompileFlags::O3);
+            this->shader_defines.push_back({"DEBUG", "0"});
+        #endif
+
             if(name.empty())
             {
                 this->shader_name = filepath.Get();
