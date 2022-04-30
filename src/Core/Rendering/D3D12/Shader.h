@@ -104,7 +104,9 @@ namespace Kraid
             ShaderModel shader_model;       //TODO(Tiago):needs to be stored for hot-recompilation
             std::vector<ShaderMacro> shader_defines; //NOTE(Tiago):needs to be stored for hot-recompilation
             std::vector<ShaderCompileFlags> compilation_flags; //NOTE(Tiago):needs to be stored for hot-recompilation
+            std::vector<std::function<void(void)>> recompilation_callbacks = {};
 
+        public:
             //NOTE(Tiago):be carefull with reordering the parameters that have a default value, they are currently ordered in a way that makes it easier to set the parameters that I expect to be used the most. If you reorder these you will also need to reorder all the parameters in the subclass constructors.
             Shader(
                     const WideStringView& filepath,
@@ -115,6 +117,7 @@ namespace Kraid
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L""
                 );
+            void RegisterShaderRecompilationNotificationCallback(const std::function<void(void)>& callback);
 
         private:
             void Recompile();

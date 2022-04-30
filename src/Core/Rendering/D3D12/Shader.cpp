@@ -256,6 +256,11 @@ namespace Kraid
             this->Compile(shader_source);
         }
 
+        void Shader::RegisterShaderRecompilationNotificationCallback(const std::function<void(void)>& callback)
+        {
+            this->recompilation_callbacks.push_back(callback);
+        }
+
         void Shader::Compile(const Buffer& shader_source)
         {
             if(this->shader_model == ShaderModel::SM5_0)
@@ -272,6 +277,11 @@ namespace Kraid
         {
             Buffer shader_code = this->shader_file.Read();
             this->Compile(shader_code);
+
+            for(auto& callback: this->recompilation_callbacks)
+            {
+                callback();
+            }
         }
 
         void Shader::FXCCompile(const Buffer& shader_source)
