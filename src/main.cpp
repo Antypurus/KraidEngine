@@ -16,7 +16,7 @@
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Filesystem/Directory.h>
 
-#include <Core/Rendering/D3D12/PSO/Rasterizer.h>
+#include <Core/Rendering/D3D12/PSO/PipelineStateObject.h>
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {

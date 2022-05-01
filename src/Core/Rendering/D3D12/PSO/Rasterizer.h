@@ -5,6 +5,9 @@
 namespace Kraid
 {
 
+namespace D3D12
+{
+
     enum class FillMode
     {
         Solid = D3D12_FILL_MODE_SOLID,
@@ -114,5 +117,7 @@ namespace Kraid
             return ret;
         }
     };
+
+}
 
 }
