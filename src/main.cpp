@@ -16,6 +16,8 @@
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Filesystem/Directory.h>
 
+#include <Core/Rendering/D3D12/PSO/Rasterizer.h>
+
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
     using namespace Kraid;
