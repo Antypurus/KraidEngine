@@ -117,7 +117,18 @@ namespace Kraid
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L""
                 );
+            
             void RegisterShaderRecompilationNotificationCallback(const std::function<void(void)>& callback);
+            
+            inline D3D12_SHADER_BYTECODE GetShaderBytecode() const
+            {
+                if(this->shader_bytecode == nullptr) return {};
+
+                D3D12_SHADER_BYTECODE ret = {};
+                ret.pShaderBytecode = this->shader_bytecode->GetBufferPointer();
+                ret.BytecodeLength = this->shader_bytecode->GetBufferSize();
+                return ret;
+            }
 
         private:
             void Recompile();
