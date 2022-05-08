@@ -39,6 +39,7 @@ namespace D3D12
     public:
         GraphicsPipelineStateObject() = default;
         void Compile(GPUDevice& device);
+        void Bind(GraphicsCommandList& command_list) const;
     };
 
 }

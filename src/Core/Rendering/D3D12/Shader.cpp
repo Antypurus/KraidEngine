@@ -15,7 +15,7 @@ namespace Kraid
 
         const std::unordered_map<ShaderCompileFlags, const wchar_t*> DXCCompilerFlags =
         {
-            {ShaderCompileFlags::Debug, L"-Zi -Qembed_debug"},
+            {ShaderCompileFlags::Debug, L"-Zi"},
             {ShaderCompileFlags::SkipValidation, L"-Vd"},
             {ShaderCompileFlags::SkipOptimization, L"-Od"},
             {ShaderCompileFlags::PackMatrixRowMajor, L"-Zpr"},
@@ -378,7 +378,30 @@ namespace Kraid
             if(errors != nullptr && errors->GetStringLength() != 0)
             {
                 LERROR("%s", errors->GetStringPointer());
+                return;
             }
+
+            results->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&this->shader_bytecode), nullptr);
+            if(this->shader_bytecode == nullptr)
+            {
+                LERROR("Failed to extract shader bytecode");
+                return;
+            }
+
+            ComPtr<IDxcContainerReflection> reflection;
+            DxcCreateInstance(CLSID_DxcContainerReflection, __uuidof(IDxcContainerReflection), (void**)&reflection);
+            reflection->Load((IDxcBlob*)this->shader_bytecode.Get());
+
+            UINT32 shaderIdx;
+            reflection->FindFirstPartKind(DXC_OUT_ROOT_SIGNATURE, &shaderIdx);
+            ComPtr<IDxcBlob> rootSignatureBlob;
+            reflection->GetPartContent(shaderIdx, &rootSignatureBlob); // gets 112 bytes
+            if(rootSignatureBlob == nullptr)
+            {
+                LERROR("Failed to extract root signature");
+                return;
+            }
+
 
             free(entrypoint_w);
             free(target_w);

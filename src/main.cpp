@@ -40,7 +40,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 */
 
-    Shader shader(L"./shader.hlsl", ShaderType::Pixel, ShaderModel::SM5_0, "main" , {});
+    Shader shader(L"./shader.hlsl", ShaderType::Vertex, ShaderModel::SM6_5, "VSMain" , {});
     system("pause");
     return 0;
 }

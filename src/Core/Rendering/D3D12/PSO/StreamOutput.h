@@ -16,6 +16,10 @@ namespace D3D12
         D3D12_STREAM_OUTPUT_DESC so_description = {};
 
         StreamingOutputBuffer() = default;
+        inline D3D12_STREAM_OUTPUT_DESC GetStreamingOutputBufferDescritpion() const
+        {
+            return this->so_description;
+        }
     };
 
 }
