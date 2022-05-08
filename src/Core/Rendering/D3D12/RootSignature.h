@@ -1,9 +1,9 @@
 #pragma once
 
 #include <Core/Rendering/D3D12/D3D12.h>
+#include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/types.h>
 
-#include <d3d12.h>
 #include <vector>
 
 namespace Kraid
@@ -137,7 +137,7 @@ namespace D3D12
         DescriptorTableEntryType type;
 
         DescriptorTableEntry() = default;
-        DescriptorTableEntry(uint8 register_slot, uint8 space_slot,uint64 entry_buffer_size, DescriptorTableEntryType entry_type):
+        DescriptorTableEntry(uint8 register_slot, uint8 space_slot, uint64 entry_buffer_size, DescriptorTableEntryType entry_type):
             register_slot(register_slot),
             space_slot(space_slot),
             entry_buffer_size(entry_buffer_size),
@@ -159,18 +159,51 @@ namespace D3D12
     class CBVDescriptorTableEntry: public DescriptorTableEntry
     {
     public:
-        CBVDescriptorTableEntry(uint8 register_slot = 0, uint8 space_slot = 0, uint8 entry_buffer_size = 1):
+        CBVDescriptorTableEntry(uint8 register_slot = 0, uint8 space_slot = 0, uint64 entry_buffer_size = 1):
             DescriptorTableEntry(register_slot, space_slot, entry_buffer_size, DescriptorTableEntryType::CBV) {};
     };
 
+    class SRVDescriptorTableEntry: public DescriptorTableEntry
+    {
+    public:
+        SRVDescriptorTableEntry(uint8 register_slot = 0, uint8 space_slot = 0, uint64 entry_buffer_size = 1):
+            DescriptorTableEntry(register_slot, space_slot, entry_buffer_size, DescriptorTableEntryType::SRV) {};
+    };
+
+    class UAVDescriptorTableEntry: public DescriptorTableEntry
+    {
+    public:
+        UAVDescriptorTableEntry(uint8 register_slot = 0, uint8 space_slot = 0, uint64 entry_buffer_size = 1):
+            DescriptorTableEntry(register_slot, space_slot, entry_buffer_size, DescriptorTableEntryType::UAV) {};
+    };
+
+    class SamplerDescriptorTableEntry: public DescriptorTableEntry
+    {
+    public:
+        SamplerDescriptorTableEntry(uint8 register_slot = 0, uint8 space_slot = 0, uint64 entry_buffer_size = 1):
+            DescriptorTableEntry(register_slot, space_slot, entry_buffer_size, DescriptorTableEntryType::Sampler) {};
+    };
+
+    //TODO(Tiago):
     class DescriptorTableRootParameter
     {
     public:
+        ShaderVisibility visibility = ShaderVisibility::All;
         std::vector<D3D12_DESCRIPTOR_RANGE> descriptor_table;
 
+        DescriptorTableRootParameter(const std::vector<DescriptorTableEntry>& descriptor_table_entries = {}, ShaderVisibility visibility = ShaderVisibility::All);
+        void AddCBVEntry(uint8 register_slot = 0, uint8 space_slot = 0);
+        void AddSRVEntry(uint8 register_slot = 0, uint8 space_slot = 0);
+        void AddUAVEntry(uint8 register_slot = 0, uint8 space_slot = 0);
+        void AddSamplerEntry(uint8 register_slot = 0, uint8 space_slot = 0);
 
+        D3D12_ROOT_PARAMETER GetRootParameterDescription() const;
+
+    private:
+        void inline AddEntry(DescriptorTableEntryType entry_type, uint8 register_slot = 0, uint8 space_slot = 0);
     };
 
+    //TODO(Tiago):
     class RootSignature
     {
     public:
