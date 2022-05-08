@@ -2,7 +2,9 @@
 
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/types.h>
+
 #include <d3d12.h>
+#include <vector>
 
 namespace Kraid
 {
@@ -116,6 +118,57 @@ namespace D3D12
     public:
         UAVRootDescriptorParameter(uint8 register_slot = 0, uint8 space_slot = 0, ShaderVisibility visibility = ShaderVisibility::All)
         :RootDescriptorParameter(register_slot, space_slot, D3D12_ROOT_PARAMETER_TYPE_UAV, visibility) {};
+    };
+
+    enum class DescriptorTableEntryType
+    {
+        CBV = D3D12_DESCRIPTOR_RANGE_TYPE_CBV,
+        SRV = D3D12_DESCRIPTOR_RANGE_TYPE_SRV,
+        UAV = D3D12_DESCRIPTOR_RANGE_TYPE_UAV,
+        Sampler = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER
+    };
+
+    class DescriptorTableEntry
+    {
+    public:
+        uint8 register_slot = 0;
+        uint8 space_slot = 0;
+        uint64 entry_buffer_size = 1;
+        DescriptorTableEntryType type;
+
+        DescriptorTableEntry() = default;
+        DescriptorTableEntry(uint8 register_slot, uint8 space_slot,uint64 entry_buffer_size, DescriptorTableEntryType entry_type):
+            register_slot(register_slot),
+            space_slot(space_slot),
+            entry_buffer_size(entry_buffer_size),
+            type(entry_type) {};
+
+        inline D3D12_DESCRIPTOR_RANGE GetDescriptorTableEntryDescription() const
+        {
+            D3D12_DESCRIPTOR_RANGE ret = {};
+            ret.NumDescriptors = this->entry_buffer_size;
+            ret.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+            ret.RangeType = (D3D12_DESCRIPTOR_RANGE_TYPE) this->type;
+            ret.BaseShaderRegister = this->register_slot;
+            ret.RegisterSpace = this->space_slot;
+
+            return ret;
+        }
+    };
+
+    class CBVDescriptorTableEntry: public DescriptorTableEntry
+    {
+    public:
+        CBVDescriptorTableEntry(uint8 register_slot = 0, uint8 space_slot = 0, uint8 entry_buffer_size = 1):
+            DescriptorTableEntry(register_slot, space_slot, entry_buffer_size, DescriptorTableEntryType::CBV) {};
+    };
+
+    class DescriptorTableRootParameter
+    {
+    public:
+        std::vector<D3D12_DESCRIPTOR_RANGE> descriptor_table;
+
+
     };
 
     class RootSignature
