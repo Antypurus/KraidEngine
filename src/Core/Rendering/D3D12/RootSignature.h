@@ -50,7 +50,7 @@ namespace D3D12
             visibility(visibility)
         {}
 
-        inline D3D12_ROOT_PARAMETER GetRootParameterDescriptiton() const
+        inline D3D12_ROOT_PARAMETER GetRootParameterDescription() const
         {
             D3D12_ROOT_CONSTANTS constant_root_parameter_desc = {};
             constant_root_parameter_desc.Num32BitValues = this->constant_buffer_size;
@@ -184,7 +184,6 @@ namespace D3D12
             DescriptorTableEntry(register_slot, space_slot, entry_buffer_size, DescriptorTableEntryType::Sampler) {};
     };
 
-    //TODO(Tiago):
     class DescriptorTableRootParameter
     {
     public:
@@ -203,11 +202,23 @@ namespace D3D12
         void inline AddEntry(DescriptorTableEntryType entry_type, uint8 register_slot = 0, uint8 space_slot = 0);
     };
 
-    //TODO(Tiago):
+    //TODO(Tiago):add support for static samplers
     class RootSignature
     {
     public:
         ComPtr<ID3D12RootSignature> root_signature = nullptr;
+        std::vector<ConstantRootParameter> constant_root_parameters;
+        std::vector<RootDescriptorParameter> root_descriptor_parameters;
+        std::vector<DescriptorTableRootParameter> descriptor_table_root_parameters;
+
+        RootSignature() = default;
+        RootSignature(
+                GPUDevice& device,
+                const std::vector<ConstantRootParameter>& constant_root_parameters = {},
+                const std::vector<RootDescriptorParameter>& root_descriptor_parameters = {},
+                const std::vector<DescriptorTableRootParameter>& descriptor_table_root_parameters = {});
+    private:
+        void inline Compile(GPUDevice& device);
     };
 
 }
