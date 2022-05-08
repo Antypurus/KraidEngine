@@ -73,7 +73,12 @@ namespace D3D12
 
         inline D3D12_ROOT_PARAMETER GetRootParameterDescription() const
         {
+            D3D12_ROOT_DESCRIPTOR root_descriptor = {};
+            
+            D3D12_ROOT_PARAMETER ret = {};
 
+
+            return ret;
         }
     };
 
