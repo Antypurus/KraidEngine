@@ -64,22 +64,58 @@ namespace D3D12
         }
     };
 
-    class DescriptorRootParameter
+    class RootDescriptorParameter
     {
     public:
         uint8 register_slot = 0;
         uint8 space_slot = 0;
+        ShaderVisibility visibility = ShaderVisibility::All;
         D3D12_ROOT_PARAMETER_TYPE descriptor_type;
 
+        RootDescriptorParameter() = default;
+    protected:
+        RootDescriptorParameter(uint8 register_slot, uint8 space_slot, D3D12_ROOT_PARAMETER_TYPE descriptor_type, ShaderVisibility visibility)
+            :register_slot(register_slot),
+            space_slot(space_slot),
+            visibility(visibility),
+            descriptor_type(descriptor_type)
+        {};
+
+    public:
         inline D3D12_ROOT_PARAMETER GetRootParameterDescription() const
         {
             D3D12_ROOT_DESCRIPTOR root_descriptor = {};
+            root_descriptor.RegisterSpace = this->space_slot;
+            root_descriptor.ShaderRegister = this->register_slot;
             
             D3D12_ROOT_PARAMETER ret = {};
-
+            ret.ParameterType = this->descriptor_type;
+            ret.Descriptor = root_descriptor;
+            ret.ShaderVisibility = (D3D12_SHADER_VISIBILITY) this->visibility;
 
             return ret;
         }
+    };
+
+    class CBVRootDescriptorPararmeter: public RootDescriptorParameter
+    {
+    public:
+        CBVRootDescriptorPararmeter(uint8 register_slot = 0, uint8 space_slot = 0, ShaderVisibility visibility = ShaderVisibility::All)
+            :RootDescriptorParameter(register_slot, space_slot, D3D12_ROOT_PARAMETER_TYPE_CBV, visibility) {};
+    };
+
+    class SRVRootDescriptorParameter: public RootDescriptorParameter
+    {
+    public:
+        SRVRootDescriptorParameter(uint8 register_slot = 0, uint8 space_slot = 0, ShaderVisibility visibility = ShaderVisibility::All)
+        :RootDescriptorParameter(register_slot, space_slot, D3D12_ROOT_PARAMETER_TYPE_SRV, visibility) {};
+    };
+
+    class UAVRootDescriptorParameter: public RootDescriptorParameter
+    {
+    public:
+        UAVRootDescriptorParameter(uint8 register_slot = 0, uint8 space_slot = 0, ShaderVisibility visibility = ShaderVisibility::All)
+        :RootDescriptorParameter(register_slot, space_slot, D3D12_ROOT_PARAMETER_TYPE_UAV, visibility) {};
     };
 
     class RootSignature
