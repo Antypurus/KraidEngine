@@ -388,20 +388,12 @@ namespace Kraid
                 return;
             }
 
-            ComPtr<IDxcContainerReflection> reflection;
-            DxcCreateInstance(CLSID_DxcContainerReflection, __uuidof(IDxcContainerReflection), (void**)&reflection);
-            reflection->Load((IDxcBlob*)this->shader_bytecode.Get());
-
-            UINT32 shaderIdx;
-            reflection->FindFirstPartKind(DXC_OUT_ROOT_SIGNATURE, &shaderIdx);
-            ComPtr<IDxcBlob> rootSignatureBlob;
-            reflection->GetPartContent(shaderIdx, &rootSignatureBlob); // gets 112 bytes
-            if(rootSignatureBlob == nullptr)
+            ComPtr<IDxcBlob> root_signature = nullptr;
+            results->GetOutput(DXC_OUT_ROOT_SIGNATURE, IID_PPV_ARGS(&root_signature), nullptr);
+            if(root_signature == nullptr)
             {
                 LERROR("Failed to extract root signature");
-                return;
             }
-
 
             free(entrypoint_w);
             free(target_w);
