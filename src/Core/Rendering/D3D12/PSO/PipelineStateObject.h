@@ -7,6 +7,7 @@
 
 #include <Core/Rendering/D3D12/VertexBuffer.h>
 #include <Core/Rendering/D3D12/GPUDevice.h>
+#include <Core/Rendering/D3D12/RootSignature.h>
 
 namespace Kraid
 {
@@ -33,6 +34,9 @@ namespace D3D12
         DomainShader* domain_shader = nullptr;
         HullShader* hull_shader = nullptr;
         GeometryShader* geometry_shader = nullptr;
+
+        //root signature
+        RootSignature root_signature;
 
         //PSO Object
         ComPtr<ID3D12PipelineState> pso = nullptr;
