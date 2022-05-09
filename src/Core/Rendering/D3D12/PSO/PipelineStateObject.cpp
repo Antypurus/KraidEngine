@@ -4,6 +4,7 @@
 #include <Core/Windows.h>
 
 #include <dxgiformat.h>
+#include <stdlib.h>
 
 namespace Kraid
 {
@@ -18,6 +19,33 @@ namespace D3D12
         Cut0xFFFF = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFF,
         Cut0xFFFFFFFF = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_0xFFFFFFFF
     };
+    
+    GraphicsPipelineStateObject::GraphicsPipelineStateObject(
+                VertexShader& vertex_shader,
+                PixelShader& pixel_shader,
+                const RootSignature& root_signature,
+                PrimitiveTopology topology_type,
+                D3D12_INPUT_LAYOUT_DESC vertex_layout,
+                Rasterizer rasterizer,
+                DepthStentilStage depth_stencil_stage,
+                Blend blending,
+                StreamingOutputBuffer so_buffer):
+        vertex_shader(&vertex_shader),
+        pixel_shader(&pixel_shader),
+        root_signature(root_signature),
+        topology_type(topology_type),
+        vertex_layout(vertex_layout),
+        rasterizer(rasterizer),
+        depth_stencil_stage(depth_stencil_stage),
+        blending(blending),
+        streaming_output_buffer(so_buffer)
+    {
+    }
+
+    GraphicsPipelineStateObject::~GraphicsPipelineStateObject()
+    {
+        free((void*)this->vertex_layout.pInputElementDescs);
+    }
 
     void GraphicsPipelineStateObject::Compile(GPUDevice& device)
     {
@@ -42,8 +70,7 @@ namespace D3D12
         pso_desc.NumRenderTargets = 1;//TODO(Tiago):hardcoded right now
         //setting rtv formats
         {
-            pso_desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-            pso_desc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+            pso_desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
         }
         //TODO(Tiago):we need some way to specify this when a triangle strip is being used
         pso_desc.DSVFormat = DXGI_FORMAT_D32_FLOAT_S8X24_UINT;
@@ -56,9 +83,10 @@ namespace D3D12
         D3DCALL(device->CreateGraphicsPipelineState(&pso_desc, IID_PPV_ARGS(&this->pso)), "Pipeline State Object Compiled");
     }
 
-    void GraphicsPipelineStateObject::Bind(GraphicsCommandList& comamnd_list) const
+    void GraphicsPipelineStateObject::Bind(GraphicsCommandList& command_list) const
     {
-        comamnd_list->SetPipelineState(this->pso.Get());
+        command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
+        command_list->SetPipelineState(this->pso.Get());
     }
 
 }

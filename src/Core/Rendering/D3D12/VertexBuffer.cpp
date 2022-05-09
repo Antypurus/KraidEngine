@@ -1,11 +1,14 @@
 #include "VertexBuffer.h"
 
+#include <d3d12.h>
+#include <stdlib.h>
+
 namespace Kraid
 {
     namespace D3D12
     {
 
-        inline D3D12_INPUT_LAYOUT_DESC BasicVertex::GenerateVertexDescription() const
+        D3D12_INPUT_LAYOUT_DESC BasicVertex::GenerateVertexDescription()
         {
             D3D12_INPUT_ELEMENT_DESC position_desc = {};
             position_desc.InputSlot = 0;
@@ -18,9 +21,8 @@ namespace Kraid
             position_desc.InstanceDataStepRate = 0;
 
             D3D12_INPUT_LAYOUT_DESC ret = {};
-            ret.pInputElementDescs = {
-                &position_desc
-            };
+            ret.pInputElementDescs = (D3D12_INPUT_ELEMENT_DESC*)malloc(sizeof(D3D12_INPUT_ELEMENT_DESC));
+            memcpy((void*)&ret.pInputElementDescs[0], (void*)&position_desc, sizeof(D3D12_INPUT_ELEMENT_DESC));
             ret.NumElements = 1;
             return ret;
         }

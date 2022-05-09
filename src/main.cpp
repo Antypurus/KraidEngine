@@ -1,3 +1,4 @@
+#include "Core/Rendering/D3D12/RootSignature.h"
 #include <windows.h>
 #include <iostream>
 
@@ -22,8 +23,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 {
     using namespace Kraid;
     using namespace Kraid::D3D12;
-
-/*    
+    
     Window window(hInst, L"Kraid Engine", 1280, 720);
 
     GPUDevice device;
@@ -35,12 +35,16 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     IndexBuffer ib = IndexBuffer(device, {0,1,2}, main_command_list);
     ib.Bind(main_command_list);
 
+    VertexShader shader(L"./shader.hlsl", "VSMain");
+    PixelShader ps(L"./shader.hlsl", "PSMain");
+
+    RootSignature rs(device);
+    GraphicsPipelineStateObject pso(shader, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
+    pso.Compile(device);
+    
     while(window.open)
     {
     }
-*/
 
-    Shader shader(L"./shader.hlsl", ShaderType::Vertex, ShaderModel::SM6_5, "VSMain" , {});
-    system("pause");
     return 0;
 }

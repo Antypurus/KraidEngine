@@ -141,6 +141,7 @@ namespace Kraid
 
         class PixelShader: public Shader
         {
+        public:
             PixelShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",
@@ -153,6 +154,7 @@ namespace Kraid
 
         class VertexShader: public Shader
         {
+        public:
             VertexShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",
@@ -165,6 +167,7 @@ namespace Kraid
 
         class GeometryShader: public Shader
         {
+        public:
             GeometryShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",
@@ -177,6 +180,7 @@ namespace Kraid
 
         class ComputeShader: public Shader
         {
+        public:
             ComputeShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",
@@ -189,6 +193,7 @@ namespace Kraid
 
         class DomainShader: public Shader
         {
+        public:
             DomainShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",
@@ -201,6 +206,7 @@ namespace Kraid
 
         class HullShader: public Shader
         {
+        public:
             HullShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",
@@ -213,6 +219,7 @@ namespace Kraid
 
         class RayTracingShader: public Shader
         {
+        public:
             RayTracingShader(
                     const WideStringView& filepath,
                     const StringView& entrypoint = "main",

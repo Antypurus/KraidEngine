@@ -21,12 +21,11 @@ namespace Kraid
 
         enum class PrimitiveTopology
         {
-            Undefined               = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED,
-            PointList               = D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
-            LineList                = D3D_PRIMITIVE_TOPOLOGY_LINELIST,
-            LineStrip               = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP,
-            TriangleList            = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST,
-            TriangleStrip           = D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP,
+            Undefined   = D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED,
+            Point       = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT,
+            Line        = D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE,
+            Triangle    = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE,
+            Patch       = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH,
         };
 
         //NOTE(Tiago): I really really dont want to have to use virtual fuctions, as such, I would rather have to create a struct for each type of vertex
@@ -37,7 +36,7 @@ namespace Kraid
             XMFLOAT3A position;
 
             BasicVertex() = default;
-            inline D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription() const;
+            static D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription();
         };
 
         template<typename T>
@@ -45,14 +44,14 @@ namespace Kraid
         {
             BufferResource vertex_buffer;
             UploadBufferResource upload_buffer;
-            PrimitiveTopology topology_type = PrimitiveTopology::TriangleList;
+            PrimitiveTopology topology_type = PrimitiveTopology::Triangle;
 
             VertexBuffer() = default;
 
             VertexBuffer(GPUDevice& device,
                         GraphicsCommandList& command_list,
                         const std::vector<T>& vertices,
-                        PrimitiveTopology topology_type = PrimitiveTopology::TriangleList)
+                        PrimitiveTopology topology_type = PrimitiveTopology::Triangle)
             {
                 this->topology_type = topology_type;
 

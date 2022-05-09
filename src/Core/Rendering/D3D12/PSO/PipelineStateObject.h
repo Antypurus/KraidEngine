@@ -42,6 +42,17 @@ namespace D3D12
         ComPtr<ID3D12PipelineState> pso = nullptr;
     public:
         GraphicsPipelineStateObject() = default;
+        GraphicsPipelineStateObject(
+                VertexShader& vertex_shader,
+                PixelShader& pixel_shader,
+                const RootSignature& root_signature,
+                PrimitiveTopology topology_type,
+                D3D12_INPUT_LAYOUT_DESC vertex_layout,
+                Rasterizer rasterizer = {},
+                DepthStentilStage depth_stencil_stage = {},
+                Blend blending = {},
+                StreamingOutputBuffer so_buffer = {});
+        ~GraphicsPipelineStateObject();
         void Compile(GPUDevice& device);
         void Bind(GraphicsCommandList& command_list) const;
     };

@@ -106,7 +106,7 @@ namespace D3D12
 
         ComPtr<ID3DBlob> serialized_root_signature = nullptr;
         ComPtr<ID3DBlob> errors = nullptr;
-        D3DCALL(D3D12SerializeRootSignature(&root_signature_desc, D3D_ROOT_SIGNATURE_VERSION_1_1, &serialized_root_signature, &errors), "Root Signature Serialized");
+        D3DCALL(D3D12SerializeRootSignature(&root_signature_desc, D3D_ROOT_SIGNATURE_VERSION_1_0, &serialized_root_signature, &errors), "Root Signature Serialized");
         if(errors != nullptr)
         {
             LERROR("%s", errors->GetBufferPointer());
