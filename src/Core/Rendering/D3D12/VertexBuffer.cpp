@@ -12,7 +12,7 @@ namespace Kraid
         {
             D3D12_INPUT_ELEMENT_DESC position_desc = {};
             position_desc.InputSlot = 0;
-            position_desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+            position_desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
             position_desc.SemanticName = "POSITION";
             position_desc.SemanticIndex = 0;
             position_desc.InputSlot = 0;

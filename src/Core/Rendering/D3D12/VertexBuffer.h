@@ -33,7 +33,8 @@ namespace Kraid
         //there is only so many sensible permutation of a vertex layout.
         struct BasicVertex
         {
-            XMFLOAT3A position;
+            XMFLOAT3 position;
+            uint32 pad = 0;
 
             BasicVertex() = default;
             BasicVertex(float x, float y, float z): position({x,y,z}) {};
@@ -63,6 +64,8 @@ namespace Kraid
 
                 this->upload_buffer.SetBufferData(vertices);
                 this->upload_buffer.CopyTo(vertex_buffer, command_list);
+
+                this->vertex_buffer.TransitionStateTo(ResourceState::GenericRead, command_list);
 
                 //NOTE(Tiago): the upload buffer needs to be kept alive until the copy is executed, a fence can be used for this
             }

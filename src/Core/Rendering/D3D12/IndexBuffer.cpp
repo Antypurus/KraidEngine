@@ -19,6 +19,8 @@ namespace Kraid
             this->upload_buffer.SetBufferData(indices);
             this->upload_buffer.CopyTo(this->index_buffer, command_list);
 
+            this->index_buffer.TransitionStateTo(ResourceState::GenericRead, command_list);
+
             //NOTE(Tiago):the upload buffer needs to be kept alive until the upload is complete
         }
 

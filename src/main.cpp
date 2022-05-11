@@ -35,8 +35,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    VertexBuffer vb = VertexBuffer<BasicVertex>(device, main_command_list, {{0,0,0},{0.5,-0.5,0},{1,0,0}});
-
+    std::vector<BasicVertex> vertices = { {0,0,0},{0.5,-0.5,0},{1.0,0,0} };
+    VertexBuffer vb = VertexBuffer<BasicVertex>(device, main_command_list, vertices);
     IndexBuffer ib = IndexBuffer(device, {2,1,0}, main_command_list);
     ib.Bind(main_command_list);
 
@@ -46,7 +46,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     RootSignature rs(device);
     GraphicsPipelineStateObject pso(shader, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
     pso.Compile(device);
-   
 
     main_command_list->Close();
     ID3D12CommandList* list[] = {main_command_list.command_list.Get()};
