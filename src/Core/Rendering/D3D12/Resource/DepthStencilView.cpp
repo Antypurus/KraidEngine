@@ -47,7 +47,7 @@ namespace Kraid
             clear_rect.left = 0;
             clear_rect.right = this->width;
 
-            command_list->ClearDepthStencilView(this->descriptor_handle, D3D12_CLEAR_FLAG_DEPTH  | D3D12_CLEAR_FLAG_STENCIL, 0, 1, 1, &clear_rect);
+            command_list->ClearDepthStencilView(this->descriptor_handle, D3D12_CLEAR_FLAG_DEPTH  | D3D12_CLEAR_FLAG_STENCIL, 1, 0, 1, &clear_rect);
         }
 
     }

@@ -35,7 +35,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    std::vector<BasicVertex> vertices = { {0,0,0},{0.5,-0.5,0},{1.0,0,0} };
+    std::vector<BasicVertex> vertices = { {0,0,0.5},{0.5,-0.5,0.5},{1.0,0,0.5} };
     VertexBuffer vb = VertexBuffer<BasicVertex>(device, main_command_list, vertices);
     IndexBuffer ib = IndexBuffer(device, {2,1,0}, main_command_list);
     ib.Bind(main_command_list);
