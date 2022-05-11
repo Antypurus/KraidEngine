@@ -40,12 +40,11 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     IndexBuffer ib = IndexBuffer(device, {2,1,0}, main_command_list);
     ib.Bind(main_command_list);
 
-    VertexShader shader(L"./shader.hlsl", "VSMain");
+    VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
 
     RootSignature rs(device);
-    GraphicsPipelineStateObject pso(shader, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
-    pso.Compile(device);
+    GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
 
     main_command_list->Close();
     ID3D12CommandList* list[] = {main_command_list.command_list.Get()};

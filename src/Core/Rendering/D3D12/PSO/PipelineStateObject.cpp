@@ -21,6 +21,7 @@ namespace D3D12
     };
     
     GraphicsPipelineStateObject::GraphicsPipelineStateObject(
+                GPUDevice& device,
                 VertexShader& vertex_shader,
                 PixelShader& pixel_shader,
                 const RootSignature& root_signature,
@@ -30,6 +31,7 @@ namespace D3D12
                 DepthStentilStage depth_stencil_stage,
                 Blend blending,
                 StreamingOutputBuffer so_buffer):
+        device(&device),
         vertex_shader(&vertex_shader),
         pixel_shader(&pixel_shader),
         root_signature(root_signature),
@@ -40,6 +42,20 @@ namespace D3D12
         blending(blending),
         streaming_output_buffer(so_buffer)
     {
+        vertex_shader.RegisterShaderRecompilationNotificationCallback([this](){
+                    if(this->device != nullptr)
+                    {
+                        this->Compile(*this->device);
+                    }
+                });
+        pixel_shader.RegisterShaderRecompilationNotificationCallback([this](){
+                    if(this->device != nullptr)
+                    {
+                        this->Compile(*this->device);
+                    }
+                });
+
+        this->Compile(device);
     }
 
     GraphicsPipelineStateObject::~GraphicsPipelineStateObject()
@@ -49,6 +65,8 @@ namespace D3D12
 
     void GraphicsPipelineStateObject::Compile(GPUDevice& device)
     {
+        this->is_compiling = true;
+
         D3D12_SHADER_BYTECODE null_bytecode = {};
 
         D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {};
@@ -81,10 +99,13 @@ namespace D3D12
         pso_desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
         D3DCALL(device->CreateGraphicsPipelineState(&pso_desc, IID_PPV_ARGS(&this->pso)), "Pipeline State Object Compiled");
+
+        this->is_compiling = false;
     }
 
     void GraphicsPipelineStateObject::Bind(GraphicsCommandList& command_list) const
     {
+        while(this->is_compiling) {};
         command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
         command_list->SetPipelineState(this->pso.Get());
     }

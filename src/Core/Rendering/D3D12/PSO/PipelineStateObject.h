@@ -40,9 +40,14 @@ namespace D3D12
 
         //PSO Object
         ComPtr<ID3D12PipelineState> pso = nullptr;
+
+        //data stored for hot recompilation
+        GPUDevice* device = nullptr;
+        volatile bool is_compiling = false;
     public:
         GraphicsPipelineStateObject() = default;
         GraphicsPipelineStateObject(
+                GPUDevice& device,
                 VertexShader& vertex_shader,
                 PixelShader& pixel_shader,
                 const RootSignature& root_signature,
