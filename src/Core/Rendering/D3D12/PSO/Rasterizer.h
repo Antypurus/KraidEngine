@@ -89,11 +89,11 @@ namespace D3D12
     {
     public:
         DepthStencilComparisonFunction comparison_function = DepthStencilComparisonFunction::Less;
-        bool is_depth_testing_enabled = true;
+        bool is_depth_testing_enabled = false;
         bool is_sentil_testing_enabled = false;
 
     public:
-        DepthStentilStage(bool enable_detph_testing = true, DepthStencilComparisonFunction depth_testing_comparison_function = DepthStencilComparisonFunction::Less, bool enable_stencil_testing = true)
+        DepthStentilStage(bool enable_detph_testing = false, DepthStencilComparisonFunction depth_testing_comparison_function = DepthStencilComparisonFunction::Less, bool enable_stencil_testing = true)
             :comparison_function(depth_testing_comparison_function), is_sentil_testing_enabled(enable_stencil_testing), is_depth_testing_enabled(enable_detph_testing) {};
 
         D3D12_DEPTH_STENCIL_DESC CreateDepthStentilStageDescription() const

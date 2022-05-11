@@ -61,7 +61,7 @@ namespace D3D12
 
         pso_desc.StreamOutput = this->streaming_output_buffer.GetStreamingOutputBufferDescritpion();
         pso_desc.BlendState = this->blending.GetBlendingDescription();
-        pso_desc.SampleMask = 0;//TODO(Tiago):needs to be done
+        pso_desc.SampleMask = UINT_MAX;//TODOT(Tiago): what is this
         pso_desc.RasterizerState = this->rasterizer.CreateRasterizerDescritpion();
         pso_desc.DepthStencilState = this->depth_stencil_stage.CreateDepthStentilStageDescription();
         pso_desc.InputLayout = this->vertex_layout;
