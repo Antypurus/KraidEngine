@@ -63,7 +63,7 @@ namespace D3D12
         Rasterizer(
                 FillMode fill_mode = FillMode::Solid,
                 bool enable_conservative_rasterization = false,
-                CullingMode culling_mode = CullingMode::Backface,
+                CullingMode culling_mode = CullingMode::None,
                 WindingOrder winding_order = WindingOrder::CounterClockwise)
             :fill_mode(fill_mode), culling_mode(culling_mode), winding_order(winding_order), is_conservative_rasterization_enabled(enable_conservative_rasterization){}
 

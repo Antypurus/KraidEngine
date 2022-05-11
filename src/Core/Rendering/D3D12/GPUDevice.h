@@ -6,6 +6,7 @@
 
 #include "CommandQueue.h"
 #include "Core/Rendering/D3D12/CommandList.h"
+#include "DXGIFactory.h"
 
 namespace Kraid
 {
@@ -28,6 +29,7 @@ namespace Kraid
         struct GPUDevice
         {
             ComPtr<ID3D12Device8> device = nullptr;
+            DXGIFactory factory;
 
             //device command allocators
             ComPtr<ID3D12CommandAllocator> direct_command_allocator = nullptr;

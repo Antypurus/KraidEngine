@@ -6,7 +6,6 @@
 #include <Core/Utils/Log.h>
 
 #include "CommandQueue.h"
-#include "DXGIFactory.h"
 #include "CommandList.h"
 
 namespace Kraid
@@ -57,11 +56,10 @@ namespace Kraid
 
         inline void GPUDevice::CreateD3D12Device(uint8 gpu_index)
         {
-            DXGIFactory factory;
 #ifndef NDEBUG
-            factory.LogGPUList();
+            this->factory.LogGPUList();
 #endif
-            std::vector<ComPtr<IDXGIAdapter4>> gpu_list = factory.GetGPUList();
+            std::vector<ComPtr<IDXGIAdapter4>> gpu_list = this->factory.GetGPUList();
             this->CreateD3D12DeviceFromAdapater(gpu_list[gpu_index].Get());
         }
 

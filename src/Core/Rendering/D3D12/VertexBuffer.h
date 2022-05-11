@@ -36,6 +36,7 @@ namespace Kraid
             XMFLOAT3A position;
 
             BasicVertex() = default;
+            BasicVertex(float x, float y, float z): position({x,y,z}) {};
             static D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription();
         };
 
