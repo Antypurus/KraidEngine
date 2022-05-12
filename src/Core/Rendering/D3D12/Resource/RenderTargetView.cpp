@@ -72,6 +72,13 @@ namespace Kraid
             device->CreateRenderTargetView(resource.resource.Get(), &rtv_desc, this->descriptor_handle);
         }
 
+        RenderTargetView::RenderTargetView(D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle, uint32 width, uint32 height)
+        {
+            this->descriptor_handle = descriptor_handle;
+            this->width = width;
+            this->height = height;
+        }
+
         void RenderTargetView::Clear(CommandList& command_list)
         {
             D3D12_RECT resource_clear_rect = {};

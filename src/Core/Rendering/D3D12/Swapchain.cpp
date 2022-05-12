@@ -32,8 +32,8 @@ namespace Kraid
         void Swapchain::CreateSwapchain(GPUDevice &device, Kraid::Window& window)
         {
             DXGI_SWAP_CHAIN_DESC1 swapchain_description = {};
-            swapchain_description.Height = window.height;
-            swapchain_description.Width = window.width;
+            swapchain_description.Height = this->height;
+            swapchain_description.Width = this->width;
             swapchain_description.Format = DXGI_FORMAT_R8G8B8A8_UNORM;//TODO(Tiago): what if we want to use an HDR format
             swapchain_description.BufferCount = this->render_target_count;//TODO(Tiago): what if we want to have triple buffering
             swapchain_description.SampleDesc.Count = 1;
@@ -62,8 +62,8 @@ namespace Kraid
             {
                D3DCALL(this->swapchain->GetBuffer(i, IID_PPV_ARGS(&this->render_target_buffers[i])), "Obtained Render Target Buffer %d", i);
                device->CreateRenderTargetView(this->render_target_buffers[i].Get(), nullptr, this->rtv_heap[i]);
+               this->render_target_views.emplace_back(this->rtv_heap[i], this->width, this->height);
             }
-
         }
 
         void Swapchain::CreateDepthStencilView(GPUDevice& device, Window& window, GraphicsCommandList& command_list)
@@ -82,8 +82,7 @@ namespace Kraid
         //TODO(Tiago):needs cleanup
         void Swapchain::Clear(GraphicsCommandList& command_list)
         {
-            float clear_color[4] = {0,0,0,0};
-            command_list->ClearRenderTargetView(this->rtv_heap[this->current_backbuffer], clear_color, 0, nullptr);
+            this->render_target_views[this->current_backbuffer].Clear(command_list);
             this->depth_stencil_view.Clear(command_list);
         }
 
