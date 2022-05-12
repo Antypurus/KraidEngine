@@ -71,7 +71,7 @@ namespace Kraid
             this->depth_stencil_buffer = Texture2DResource(device,
                     window.width, window.height,
                     DXGI_FORMAT_D32_FLOAT_S8X24_UINT,
-                    0.0f,1.0f,
+                    1.0f,0.0f,
                     ResourceState::Common,
                     ResourceLayout::Unknown,
                     ResourceFlags::AllowDepthStencil);

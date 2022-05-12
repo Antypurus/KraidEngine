@@ -1,7 +1,7 @@
-#include "Core/Rendering/D3D12/RootSignature.h"
 #include <d3dcommon.h>
 #include <windows.h>
 #include <iostream>
+
 
 #include <Core/Core.h>
 #include <Core/Rendering/D3D12/GPUDevice.h>
@@ -18,7 +18,7 @@
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Filesystem/Directory.h>
 #include <Core/Rendering/D3D12/PSO/PipelineStateObject.h>
-
+#include "Core/Rendering/D3D12/RootSignature.h"
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 
