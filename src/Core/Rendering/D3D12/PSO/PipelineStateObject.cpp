@@ -65,7 +65,7 @@ namespace D3D12
 
     void GraphicsPipelineStateObject::Compile(GPUDevice& device)
     {
-        this->is_compiling = true;
+        this->compilation_mutex.Lock();
 
         D3D12_SHADER_BYTECODE null_bytecode = {};
 
@@ -100,14 +100,15 @@ namespace D3D12
 
         D3DCALL(device->CreateGraphicsPipelineState(&pso_desc, IID_PPV_ARGS(&this->pso)), "Pipeline State Object Compiled");
 
-        this->is_compiling = false;
+        this->compilation_mutex.Unlock();
     }
 
-    void GraphicsPipelineStateObject::Bind(GraphicsCommandList& command_list) const
+    void GraphicsPipelineStateObject::Bind(GraphicsCommandList& command_list)
     {
-        while(this->is_compiling) {};
+        this->compilation_mutex.Lock();
         command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
         command_list->SetPipelineState(this->pso.Get());
+        this->compilation_mutex.Unlock();
     }
 
 }

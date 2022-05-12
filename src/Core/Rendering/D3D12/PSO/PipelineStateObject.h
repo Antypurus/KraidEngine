@@ -8,6 +8,7 @@
 #include <Core/Rendering/D3D12/VertexBuffer.h>
 #include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/Rendering/D3D12/RootSignature.h>
+#include <Core/Threading/Lock.h>
 
 namespace Kraid
 {
@@ -43,7 +44,7 @@ namespace D3D12
 
         //data stored for hot recompilation
         GPUDevice* device = nullptr;
-        volatile bool is_compiling = false;
+        Mutex compilation_mutex;
     public:
         GraphicsPipelineStateObject() = default;
         GraphicsPipelineStateObject(
@@ -59,7 +60,7 @@ namespace D3D12
                 StreamingOutputBuffer so_buffer = {});
         ~GraphicsPipelineStateObject();
         void Compile(GPUDevice& device);
-        void Bind(GraphicsCommandList& command_list) const;
+        void Bind(GraphicsCommandList& command_list);
     };
 
 }
