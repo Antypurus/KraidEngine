@@ -40,11 +40,12 @@ namespace D3D12
         RootSignature root_signature;
 
         //PSO Object
-        ComPtr<ID3D12PipelineState> pso = nullptr;
+        ComPtr<ID3D12PipelineState> pso[2] = {nullptr, nullptr};
 
         //data stored for hot recompilation
-        GPUDevice* device = nullptr;
         Mutex compilation_mutex;
+        uint8 pso_index = 0;
+        bool swap_pso_index = false;
     public:
         GraphicsPipelineStateObject() = default;
         GraphicsPipelineStateObject(

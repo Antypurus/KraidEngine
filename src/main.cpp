@@ -55,7 +55,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     while(main_fence->GetCompletedValue() < new_value) {}
 
     device.direct_command_allocator->Reset();
-    main_command_list->Reset(device.direct_command_allocator.Get(), pso.pso.Get());
+    main_command_list->Reset(device.direct_command_allocator.Get(), pso.pso[pso.pso_index].Get());
 
     while(window.open)
     {
@@ -84,7 +84,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         while(main_fence->GetCompletedValue() < new_value) {}
    
         device.direct_command_allocator->Reset();
-        main_command_list->Reset(device.direct_command_allocator.Get(), pso.pso.Get());
+        pso.compilation_mutex.Lock();
+        main_command_list->Reset(device.direct_command_allocator.Get(), pso.pso[pso.pso_index].Get());
+        pso.compilation_mutex.Unlock();
     }
 
     return 0;

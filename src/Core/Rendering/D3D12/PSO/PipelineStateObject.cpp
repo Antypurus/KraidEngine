@@ -31,7 +31,6 @@ namespace D3D12
                 DepthStentilStage depth_stencil_stage,
                 Blend blending,
                 StreamingOutputBuffer so_buffer):
-        device(&device),
         vertex_shader(&vertex_shader),
         pixel_shader(&pixel_shader),
         root_signature(root_signature),
@@ -42,17 +41,11 @@ namespace D3D12
         blending(blending),
         streaming_output_buffer(so_buffer)
     {
-        vertex_shader.RegisterShaderRecompilationNotificationCallback([this](){
-                    if(this->device != nullptr)
-                    {
-                        this->Compile(*this->device);
-                    }
+        vertex_shader.RegisterShaderRecompilationNotificationCallback([this, &device](){
+                    this->Compile(device);
                 });
-        pixel_shader.RegisterShaderRecompilationNotificationCallback([this](){
-                    if(this->device != nullptr)
-                    {
-                        this->Compile(*this->device);
-                    }
+        pixel_shader.RegisterShaderRecompilationNotificationCallback([this, &device](){
+                    this->Compile(device);
                 });
 
         this->Compile(device);
@@ -65,7 +58,6 @@ namespace D3D12
 
     void GraphicsPipelineStateObject::Compile(GPUDevice& device)
     {
-        this->compilation_mutex.Lock();
 
         D3D12_SHADER_BYTECODE null_bytecode = {};
 
@@ -98,16 +90,28 @@ namespace D3D12
         pso_desc.CachedPSO = {};
         pso_desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 
-        D3DCALL(device->CreateGraphicsPipelineState(&pso_desc, IID_PPV_ARGS(&this->pso)), "Pipeline State Object Compiled");
+        uint8 pso_index = (this->pso_index + 1)%2;
+        D3DCALL(device->CreateGraphicsPipelineState(&pso_desc, IID_PPV_ARGS(&this->pso[pso_index])), "Pipeline State Object Compiled");
 
+        this->compilation_mutex.Lock();
+        this->swap_pso_index = true;
         this->compilation_mutex.Unlock();
     }
 
     void GraphicsPipelineStateObject::Bind(GraphicsCommandList& command_list)
     {
+        if(this->pso[this->pso_index] != nullptr)
+        {
+            command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
+            command_list->SetPipelineState(this->pso[this->pso_index].Get());
+        }
+        
         this->compilation_mutex.Lock();
-        command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
-        command_list->SetPipelineState(this->pso.Get());
+        if(this->swap_pso_index)
+        {
+            this->pso_index = (this->pso_index + 1)%2;
+            this->swap_pso_index = false;
+        }
         this->compilation_mutex.Unlock();
     }
 
