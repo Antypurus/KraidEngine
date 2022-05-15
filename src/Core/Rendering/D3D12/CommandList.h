@@ -23,6 +23,7 @@ namespace Kraid
             ID3D12GraphicsCommandList6* operator->();
             void Close();
             void Reset();
+            void Execute();
         };
 
         struct GraphicsCommandList :public CommandList

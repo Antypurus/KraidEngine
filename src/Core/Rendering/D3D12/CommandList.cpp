@@ -27,6 +27,12 @@ namespace Kraid
             this->command_list->Reset(this->command_allocator.Get(), nullptr);
         }
 
+        void CommandList::Execute()
+        {
+            ID3D12CommandList* lists[1] = { this->command_list.Get() };
+            this->command_queue->ExecuteCommandLists(1, lists);
+        }
+
         GraphicsCommandList::GraphicsCommandList(GPUDevice& device)
         {
           D3DCALL(device->CreateCommandList(0,

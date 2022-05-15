@@ -47,8 +47,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
 
     main_command_list.Close();
-    ID3D12CommandList* list[] = {main_command_list.command_list.Get()};
-    device.direct_command_queue->ExecuteCommandLists(1, list);
+    main_command_list.Execute();
 
     uint64 new_value = main_fence->GetCompletedValue() + 1;
     device.direct_command_queue->Signal(main_fence.fence.Get(), new_value);
@@ -71,10 +70,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         swapchain.EndFrame(main_command_list);
 
-        //TODO(Tiago):needs cleanup
         main_command_list.Close();
-        device.direct_command_queue->ExecuteCommandLists(1, list);
-
+        main_command_list.Execute();
         swapchain.Present();
      
         //TODO(Tiago): neeeds cleaup
