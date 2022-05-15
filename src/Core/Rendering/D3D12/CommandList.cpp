@@ -102,6 +102,12 @@ namespace Kraid
             this->command_allocator->Reset();
             this->command_list->Reset(this->command_allocator.Get());
         }
+        
+        void VideoDecodeCommandList::Execute()
+        {
+            ID3D12CommandList* lists[1] = { this->command_list.Get() };
+            this->command_queue->ExecuteCommandLists(1, lists);
+        }
 
         VideoProcessCommandList::VideoProcessCommandList(GPUDevice& device)
         {
@@ -130,6 +136,12 @@ namespace Kraid
         {
             this->command_allocator->Reset();
             this->command_list->Reset(this->command_allocator.Get());
+        }
+        
+        void VideoProcessCommandList::Execute()
+        {
+            ID3D12CommandList* lists[1] = { this->command_list.Get() };
+            this->command_queue->ExecuteCommandLists(1, lists);
         }
 
     }

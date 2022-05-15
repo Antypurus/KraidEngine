@@ -56,6 +56,7 @@ namespace Kraid
             ID3D12VideoDecodeCommandList2* operator->();
             void Close();
             void Reset();
+            void Execute();
         };
 
         struct VideoProcessCommandList
@@ -70,6 +71,7 @@ namespace Kraid
             ID3D12VideoProcessCommandList2* operator->();
             void Close();
             void Reset();
+            void Execute();
         };
 
     }
