@@ -46,7 +46,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     RootSignature rs(device);
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
 
-    main_command_list->Close();
+    main_command_list.Close();
     ID3D12CommandList* list[] = {main_command_list.command_list.Get()};
     device.direct_command_queue->ExecuteCommandLists(1, list);
 
@@ -54,8 +54,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     device.direct_command_queue->Signal(main_fence.fence.Get(), new_value);
     while(main_fence->GetCompletedValue() < new_value) {}
 
-    device.direct_command_allocator->Reset();
-    main_command_list->Reset(device.direct_command_allocator.Get(), nullptr);
+    main_command_list.Reset();
 
     while(window.open)
     {
@@ -73,7 +72,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         swapchain.EndFrame(main_command_list);
 
         //TODO(Tiago):needs cleanup
-        main_command_list->Close();
+        main_command_list.Close();
         device.direct_command_queue->ExecuteCommandLists(1, list);
 
         swapchain.Present();
@@ -83,8 +82,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         device.direct_command_queue->Signal(main_fence.fence.Get(), new_value);
         while(main_fence->GetCompletedValue() < new_value) {}
    
-        device.direct_command_allocator->Reset();
-        main_command_list->Reset(device.direct_command_allocator.Get(), nullptr);
+        main_command_list.Reset();
     }
 
     return 0;
