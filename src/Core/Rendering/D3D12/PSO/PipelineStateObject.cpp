@@ -100,12 +100,6 @@ namespace D3D12
 
     void GraphicsPipelineStateObject::Bind(GraphicsCommandList& command_list)
     {
-        if(this->pso[this->pso_index] != nullptr)
-        {
-            command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
-            command_list->SetPipelineState(this->pso[this->pso_index].Get());
-        }
-        
         this->compilation_mutex.Lock();
         if(this->swap_pso_index)
         {
@@ -113,6 +107,12 @@ namespace D3D12
             this->swap_pso_index = false;
         }
         this->compilation_mutex.Unlock();
+
+        if(this->pso[this->pso_index] != nullptr)
+        {
+            command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
+            command_list->SetPipelineState(this->pso[this->pso_index].Get());
+        }
     }
 
 }
