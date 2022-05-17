@@ -79,7 +79,6 @@ namespace Kraid
             this->depth_stencil_buffer.TransitionStateTo(ResourceState::DepthWrite, command_list);
         }
         
-        //TODO(Tiago):needs cleanup
         void Swapchain::Clear(GraphicsCommandList& command_list)
         {
             this->render_target_views[this->current_backbuffer].Clear(command_list);
@@ -92,10 +91,7 @@ namespace Kraid
             barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
             barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
             barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-
-            uint64 index = this->current_backbuffer;
-            barrier.Transition.pResource = this->render_target_buffers[index].Get();
-
+            barrier.Transition.pResource = this->render_target_buffers[this->current_backbuffer].Get();
             command_list->ResourceBarrier(1, &barrier);
 
             this->Clear(command_list);
@@ -110,17 +106,13 @@ namespace Kraid
             this->current_backbuffer = this->current_backbuffer==1?0:1;
         }
 
-        //TODO(Tiago):needs cleanup
         void Swapchain::EndFrame(GraphicsCommandList& command_list)
         {
             D3D12_RESOURCE_BARRIER barrier = {};
             barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
             barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
             barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-
-            uint64 index = this->current_backbuffer;
-            barrier.Transition.pResource = this->render_target_buffers[index].Get();
-
+            barrier.Transition.pResource = this->render_target_buffers[this->current_backbuffer].Get();
             command_list->ResourceBarrier(1, &barrier);
         }
 
