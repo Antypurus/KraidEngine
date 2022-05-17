@@ -19,6 +19,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     "dxcompiler.lib"
 )
 
+target_include_directories(${PROJECT_NAME} PRIVATE ./ThirdParty/)
 target_include_directories(${PROJECT_NAME} PRIVATE ./src/)
 target_precompile_headers(${PROJECT_NAME} PRIVATE [[<Core/Rendering/D3D12/D3D12.h>]])
 
