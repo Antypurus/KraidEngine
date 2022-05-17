@@ -13,6 +13,8 @@
 #include <Core/Rendering/D3D12/CommandList.h>
 #include <Core/Utils/Log.h>
 
+#include <cmath>
+
 namespace Kraid
 {
 
@@ -109,11 +111,12 @@ namespace Kraid
         {
             //TODO(Tiago):cant we copy to an upload buffer at all? or can that only be done to a readback buffer? I honestly dont remember from last time
             //TODO(Tiago):add some generic way to do these types of asserts
-            if(this->width > destination_resource.width)
-            {
-                LERROR("destination resource cannot hold data inside of source buffer, aborting copy");
-                return;
-            }
+            //NOTE(Tiago):resources arent setting width to the size of the buffer in the case of textures, so this check is disabled for now
+            //if(this->width > destination_resource.width)
+            //{
+            //    LERROR("destination resource cannot hold data inside of source buffer, aborting copy");
+            //    return;
+            //}
 
             ResourceState initial_destination_resource_state = destination_resource.state;
             if(initial_destination_resource_state != ResourceState::CopyDestination)
@@ -166,6 +169,33 @@ namespace Kraid
                 LERROR("Failed to map upload buffer into CPU addressing range, setting data must be aborted");
                 __debugbreak(); //TODO(Tiago): find a better way to handle this situation
             }
+        }
+
+        void UploadBufferResource::SetTextureData(const uint8*data, uint64 width, uint64 height, uint8 bytes_per_pixel)
+        {
+            D3D12_RANGE buffer_addressing_range = {};
+            buffer_addressing_range.Begin = 0;
+            buffer_addressing_range.End = this->width;//NOTE(Tiago): is there any reason why we should not address the entire buffer upfront?
+
+            uint8* buffer_data_addressing = nullptr;
+            D3DCALL(this->resource->Map(0, &buffer_addressing_range, (void**)&buffer_data_addressing), "Mapped upload buffer into CPU addressing range");
+            if(buffer_data_addressing != nullptr)
+            {
+                uint64 row_pitch = std::lround(std::ceil(width * bytes_per_pixel / (double)256)) * 256;//TODO(Tiago):needs to clean up this calculation and redo the math in my head
+
+                for (size_t row = 0; row < height; ++row)
+                {
+                    memcpy(buffer_data_addressing + row * row_pitch, data + row * width * bytes_per_pixel, width * bytes_per_pixel);
+                }
+                this->resource->Unmap(0, &buffer_addressing_range);
+                LSUCCESS("Upload Buffer Data Set");
+            }
+            else
+            {
+                LERROR("Failed to map upload buffer into CPU addressing range, setting data must be aborted");
+                __debugbreak(); //TODO(Tiago): find a better way to handle this situation
+            }
+
         }
 
         Texture1DResource::Texture1DResource(
@@ -239,7 +269,7 @@ namespace Kraid
             resource_desc.Width = this->width;
             resource_desc.Height = this->height;
             resource_desc.DepthOrArraySize = 1;
-            resource_desc.MipLevels = 0;//TODO(Tiago):0 marks driver auto computation of mip count, 1 it does not, this should be a parameter
+            resource_desc.MipLevels = 1;//TODO(Tiago):0 marks driver auto computation of mip count, 1 it does not, this should be a parameter
             //TODO(Tiago): can we have MSAA texture 1D?
             resource_desc.SampleDesc.Count = 1;
             resource_desc.SampleDesc.Quality = 0;

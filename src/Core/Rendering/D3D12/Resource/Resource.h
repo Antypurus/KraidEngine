@@ -173,6 +173,7 @@ namespace Kraid
             
             //TODO(Tiago): at some point we might want to allow for the addressing range to be specified
             void SetBufferData(const uint8* data, uint64 size);
+            void SetTextureData(const uint8*data, uint64 width, uint64 height, uint8 bytes_per_pixel);
             template<typename T> inline void SetBufferData(const std::vector<T>& data)
             {
                 this->SetBufferData((uint8*)data.data(), data.size() * sizeof(T));

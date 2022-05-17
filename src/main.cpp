@@ -19,25 +19,13 @@
 #include "Core/Rendering/D3D12/RootSignature.h"
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
-
-#define STB_IMAGE_IMPLEMENTATION
-//NOTE(Tiago):have to be here because of clang. stb_image does not properly detect clang on windows
-#define STBI_NO_SIMD
-#define STBI__X64_TARGET
-//NOTE(Tiago):end of note
-#include <stb/stb_image.h>
+#include <Core/Rendering/D3D12/Texture.h>
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
     using namespace Kraid;
     using namespace Kraid::D3D12;
 
-    int32 width;
-    int32 height;
-    int32 channel_count;//NOTE(Tiago):number of 8-bit channels
-    uint8* img_data = stbi_load("./icon.png", &width, &height, &channel_count, 0);
-    stbi_image_free(img_data);
-    
     Window window(hInst, L"Kraid Engine", 1280, 720);
 
     GPUDevice device;
@@ -50,6 +38,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     VertexBuffer vb = VertexBuffer<BasicVertex>(device, main_command_list, vertices);
     IndexBuffer ib = IndexBuffer(device, {2,1,0}, main_command_list);
     ib.Bind(main_command_list);
+    Texture tex("icon.png", device, main_command_list);
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");

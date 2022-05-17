@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string.h>
+#include <string>
 #include <Core/types.h>
 #include "ArrayView.h"
 
