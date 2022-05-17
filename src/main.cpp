@@ -49,9 +49,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     main_command_list.Close();
     main_command_list.Execute();
 
-    uint64 new_value = main_fence->GetCompletedValue() + 1;
-    device.direct_command_queue->Signal(main_fence.fence.Get(), new_value);
-    while(main_fence->GetCompletedValue() < new_value) {}
+    main_fence.Increment(device.direct_command_queue);
+    main_fence.WaitForCompletion();
 
     main_command_list.Reset();
 
@@ -73,11 +72,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         main_command_list.Execute();
         swapchain.Present();
      
-        //TODO(Tiago): neeeds cleaup
-        new_value = main_fence->GetCompletedValue() + 1;
-        device.direct_command_queue->Signal(main_fence.fence.Get(), new_value);
-        while(main_fence->GetCompletedValue() < new_value) {}
-   
+        main_fence.Increment(device.direct_command_queue);
+        main_fence.WaitForCompletion();
+         
         main_command_list.Reset();
     }
 
