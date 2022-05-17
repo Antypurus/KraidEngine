@@ -19,6 +19,7 @@ namespace Kraid
         {
             UploadBufferResource upload_buffer;
             BufferResource index_buffer;
+            uint64 index_count = 0;
 
             IndexBuffer() = default;
             IndexBuffer(GPUDevice& device, const std::vector<uint32>& indices, GraphicsCommandList& command_list);

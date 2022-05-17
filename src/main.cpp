@@ -65,8 +65,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         pso.Bind(main_command_list);
 
         //TODO(Tiago):needs cleanup
-        main_command_list->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        main_command_list->DrawIndexedInstanced(3, 1, 0, 0, 0);
+        main_command_list->DrawIndexedInstanced(ib.index_count, 1, 0, 0, 0);
 
         swapchain.EndFrame(main_command_list);
 

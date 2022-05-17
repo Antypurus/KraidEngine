@@ -9,7 +9,8 @@ namespace Kraid
     namespace D3D12
     {
 
-        IndexBuffer::IndexBuffer(GPUDevice& device, const std::vector<uint32>& indices, GraphicsCommandList& command_list)
+        IndexBuffer::IndexBuffer(GPUDevice& device, const std::vector<uint32>& indices, GraphicsCommandList& command_list):
+            index_count(indices.size())
         {
             this->upload_buffer = UploadBufferResource(device, indices.size() * sizeof(uint32));
             this->upload_buffer->SetName(L"Index Upload Buffer");

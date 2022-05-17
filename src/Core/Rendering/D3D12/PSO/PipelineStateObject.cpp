@@ -112,6 +112,36 @@ namespace D3D12
         {
             command_list->SetGraphicsRootSignature(this->root_signature.root_signature.Get());
             command_list->SetPipelineState(this->pso[this->pso_index].Get());
+            D3D12_PRIMITIVE_TOPOLOGY topology;
+            switch (this->topology_type)
+            {
+                case(PrimitiveTopology::Undefined):
+                {
+                    topology = D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+                    break;
+                }
+                case(PrimitiveTopology::Point):
+                {
+                    topology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+                    break;
+                }
+                case(PrimitiveTopology::Line):
+                {
+                    topology = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+                    break;
+                }
+                case(PrimitiveTopology::Triangle):
+                {
+                    topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+                    break;
+                }
+                case(PrimitiveTopology::Patch):
+                {
+                    topology = D3D_PRIMITIVE_TOPOLOGY_10_CONTROL_POINT_PATCHLIST;
+                    break;
+                }
+            }
+            command_list->IASetPrimitiveTopology(topology);
         }
     }
 
