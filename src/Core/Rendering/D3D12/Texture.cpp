@@ -42,14 +42,29 @@ namespace D3D12
             }
             case(3):
             {
-                //TODO(Tiago):bugs out, need to expand to a 32bpp buffer
                 //NOTE(Tiago):24bpp formats have been removed from DX, so we assume a 32bit format
-                format = DXGI_FORMAT_B8G8R8X8_UNORM;
+                uint8* expanded_texture_data = (uint8*)malloc(this->width * this->height * (this->channel_count + 1));
+                for(uint64 y = 0; y < this->height; y+=1)
+                {
+                    for(uint64 x = 0; x < this->width; x+=1)
+                    {
+                        uint64 offset = y * (this->width * this->channel_count) + x * this->channel_count;
+                        uint64 expanded_offset = y * (this->width * (this->channel_count + 1)) + x * (this->channel_count + 1);
+                        expanded_texture_data[expanded_offset] = texture_data[offset];
+                        expanded_texture_data[expanded_offset + 1] = texture_data[offset + 1];
+                        expanded_texture_data[expanded_offset + 2] = texture_data[offset + 2];
+                        expanded_texture_data[expanded_offset + 3] = 255;
+                    }
+                }
+                stbi_image_free(texture_data);
+                texture_data = expanded_texture_data;
+                this->channel_count += 1;
+                format = DXGI_FORMAT_R8G8B8A8_UNORM;
                 break;
             }
             case(4):
             {
-                format = DXGI_FORMAT_B8G8R8A8_UNORM;
+                format = DXGI_FORMAT_R8G8B8A8_UNORM;
                 break;
             }
         }
@@ -76,6 +91,8 @@ namespace D3D12
         destination.SubresourceIndex = 0;
 
         command_list->CopyTextureRegion(&destination, 0, 0, 0, &source, nullptr);
+
+        stbi_image_free(texture_data);
     }
 
 }

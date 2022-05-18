@@ -38,7 +38,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     VertexBuffer vb = VertexBuffer<BasicVertex>(device, main_command_list, vertices);
     IndexBuffer ib = IndexBuffer(device, {2,1,0}, main_command_list);
     ib.Bind(main_command_list);
-    Texture tex("icon.png", device, main_command_list);
+    Texture tex("icon.jpg", device, main_command_list);
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
