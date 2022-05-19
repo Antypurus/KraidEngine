@@ -23,7 +23,8 @@ namespace Kraid
             DescriptorHeap() = default;
             ID3D12DescriptorHeap* operator->();
 
-            D3D12_CPU_DESCRIPTOR_HANDLE operator[](const uint64 index); 
+            D3D12_CPU_DESCRIPTOR_HANDLE operator[](const uint64 index);
+            D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorByIndex(const uint64 index);
         };
 
         struct RTVDescriptorHeap :public DescriptorHeap

@@ -26,6 +26,16 @@ namespace Kraid
             return {this->descriptor_heap->GetCPUDescriptorHandleForHeapStart().ptr + index * this->descriptor_increment_size};
         }
 
+        D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeap::GetGPUDescriptorByIndex(const uint64 index)
+        {
+            if(index > this->heap_size)
+            {
+                LWARNING("Out of bounds heap access");
+                return {NULL};
+            }
+            return {this->descriptor_heap->GetGPUDescriptorHandleForHeapStart().ptr + index * this->descriptor_increment_size};
+        }
+
         RTVDescriptorHeap::RTVDescriptorHeap(GPUDevice& device, uint32 heap_size)
         {
             this->descriptor_increment_size = device.descriptor_sizes.rtv;

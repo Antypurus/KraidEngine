@@ -3,8 +3,6 @@
 #include <dxgiformat.h>
 #include <cmath>
 
-#include <Core/Utils/Log.h>
-
 #define STB_IMAGE_IMPLEMENTATION
 //NOTE(Tiago):have to be here because of clang. stb_image does not properly detect clang on windows
 #define STBI_NO_SIMD
@@ -12,11 +10,69 @@
 //NOTE(Tiago):end of note
 #include <stb/stb_image.h>
 
+#include <Core/Utils/Log.h>
+#include <Core/Rendering/D3D12/GPUDevice.h>
+
 namespace Kraid
 {
 
 namespace D3D12
 {
+
+    TextureSampler::TextureSampler(
+            GPUDevice& device,
+            SamplerDescriptorHeap& heap, uint64 heap_index,
+            TextureSamplingMode sample_mode,
+            TextureAddressingMode addressing_mode):
+        addressing_mode(addressing_mode),
+        sampling_mode(sample_mode),
+        cpu_descriptor_handle(heap[heap_index]),
+        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
+    {
+        D3D12_SAMPLER_DESC sampler_description = this->CreateSamplerDescription();
+        device->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
+    }
+
+    TextureSampler::TextureSampler(
+            GPUDevice& device,
+            SamplerDescriptorHeap& heap, uint64 heap_index,
+            float border_color[4],
+            TextureSamplingMode sample_mode):
+        addressing_mode(TextureAddressingMode::Border),
+        sampling_mode(sample_mode),
+        cpu_descriptor_handle(heap[heap_index]),
+        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
+    {
+        memcpy(this->border_color, border_color, sizeof(float) * 4);
+
+        D3D12_SAMPLER_DESC sampler_description = this->CreateSamplerDescription();
+        device->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
+    }
+
+    void TextureSampler::Bind(GraphicsCommandList& command_list, uint64 slot)
+    {
+        command_list->SetGraphicsRootDescriptorTable(slot, this->gpu_descriptor_handle);
+    }
+
+    D3D12_SAMPLER_DESC TextureSampler::CreateSamplerDescription() const
+    {
+        D3D12_SAMPLER_DESC ret = {};
+        ret.AddressU = (D3D12_TEXTURE_ADDRESS_MODE)this->addressing_mode;
+        ret.AddressV = (D3D12_TEXTURE_ADDRESS_MODE)this->addressing_mode;
+        ret.AddressW = (D3D12_TEXTURE_ADDRESS_MODE)this->addressing_mode;
+        if(this->addressing_mode == TextureAddressingMode::Border)
+        {
+            memcpy(ret.BorderColor, this->border_color, sizeof(float) * 4);
+        }
+        ret.Filter = (D3D12_FILTER)this->sampling_mode;
+        ret.MaxAnisotropy = 16;
+        ret.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+        ret.MipLODBias = 0;
+        ret.MinLOD = 0;
+        ret.MaxLOD = 0;//TODO(Tiago): have way to set this
+
+        return ret;
+    }
 
     Texture::Texture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list)
     {

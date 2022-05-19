@@ -3,6 +3,7 @@
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/DataStructures/StringView.h>
+#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 
 namespace Kraid
 {
@@ -28,7 +29,27 @@ namespace D3D12
     class TextureSampler
     {
     public:
-        TextureSampler() = default;
+        float border_color[4] = {0,0,0,0};
+        TextureAddressingMode addressing_mode = TextureAddressingMode::Wrap;
+        TextureSamplingMode sampling_mode = TextureSamplingMode::Linear;
+        D3D12_CPU_DESCRIPTOR_HANDLE cpu_descriptor_handle;
+        D3D12_GPU_DESCRIPTOR_HANDLE gpu_descriptor_handle;
+
+        TextureSampler(
+                GPUDevice& device,
+                SamplerDescriptorHeap& heap, uint64 heap_index,
+                TextureSamplingMode sample_mode = TextureSamplingMode::Linear,
+                TextureAddressingMode addressing_mode = TextureAddressingMode::Wrap);
+        TextureSampler(
+                GPUDevice& device,
+                SamplerDescriptorHeap& heap, uint64 heap_index,
+                float border_color[4],
+                TextureSamplingMode sampling_mode = TextureSamplingMode::Linear);
+
+        void Bind(GraphicsCommandList& command_list, uint64 slot = 0);
+
+    private:
+        D3D12_SAMPLER_DESC CreateSamplerDescription() const;
     };
 
     class Texture
