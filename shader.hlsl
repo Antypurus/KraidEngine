@@ -6,6 +6,9 @@ struct VS_OUTPUT
 struct VS_INPUT
 {
 	float3 pos:POSITION;
+    float3 normal:NORMAL;
+    float3 color:COLOR;
+    float2 uv:UV;
 };
 
 VS_OUTPUT VSMain(VS_INPUT input)
@@ -25,6 +28,6 @@ struct PS_OUTPUT
 PS_OUTPUT PSMain(VS_OUTPUT input)
 {
     PS_OUTPUT ret;
-    ret.color = float4(0.0f,1.0f,1.0f,1.0f);
+    ret.color = float4(abs(input.position.xyz),1.0f);
     return ret;
 };

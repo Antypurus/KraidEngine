@@ -38,13 +38,13 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    std::vector<BasicVertex> vertices;
+    std::vector<Vertex> vertices;
     for(uint64 i = 0; i < (vertices_raw.size() / 3); ++i)
     {
-        BasicVertex vert(vertices_raw[i * 3], vertices_raw[i * 3 + 1], vertices_raw[i * 3 + 2]);
+        Vertex vert({vertices_raw[i * 3], vertices_raw[i * 3 + 1], vertices_raw[i * 3 + 2]});
         vertices.push_back(vert);
     }
-    VertexBuffer vb = VertexBuffer<BasicVertex>(device, main_command_list, vertices);
+    VertexBuffer vb = VertexBuffer<Vertex>(device, main_command_list, vertices);
     IndexBuffer ib = IndexBuffer(device, indices_raw, main_command_list);
     ib.Bind(main_command_list);
     Texture tex("icon.jpg", device, main_command_list);
@@ -53,7 +53,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     PixelShader ps(L"./shader.hlsl", "PSMain");
 
     RootSignature rs(device);
-    GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, BasicVertex::GenerateVertexDescription());
+    GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
 
     main_command_list.Close();
     main_command_list.Execute();

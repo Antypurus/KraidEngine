@@ -31,17 +31,23 @@ namespace Kraid
         //NOTE(Tiago): I really really dont want to have to use virtual fuctions, as such, I would rather have to create a struct for each type of vertex
         //than use some inheritance thing and a virtual function to generate the input layout for d3d12. Its going to be a bit of extra work but reallistically
         //there is only so many sensible permutation of a vertex layout.
-        struct BasicVertex
+        struct Vertex
         {
             XMFLOAT3 position;
-            uint32 pad = 0;
+            XMFLOAT3 normal;
+            XMFLOAT3 color;
+            XMFLOAT2 texture_coordinates;
 
-            BasicVertex() = default;
-            BasicVertex(const BasicVertex& other)
+            Vertex(const Vertex& other)
             {
                 this->position = other.position;
             }
-            BasicVertex(float x, float y, float z): position({x,y,z}) {};
+            Vertex(
+                XMFLOAT3 position = {0,0,0},
+                XMFLOAT3 normal = {0,0,0},
+                XMFLOAT3 color = {0,0,0},
+                XMFLOAT2 texture_coordinates = {0,0}
+            ):position(position), normal(normal), color(color), texture_coordinates(texture_coordinates) {};
             static D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription();
         };
 

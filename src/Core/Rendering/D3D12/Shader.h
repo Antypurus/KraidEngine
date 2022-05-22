@@ -17,7 +17,7 @@ namespace Kraid
     namespace D3D12
     {
 
-        enum ShaderType
+        enum class ShaderType
         {
             Compute,
             RayTracing,
@@ -28,7 +28,7 @@ namespace Kraid
             Hull
         };
 
-        enum ShaderModel
+        enum class ShaderModel
         {
             SM5_0,
             SM6_0,
@@ -148,7 +148,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::Pixel, sm,entrypoint, flags, defines, name){};
         };
 
@@ -161,7 +161,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::Vertex, sm, entrypoint, flags, defines, name){};
         };
 
@@ -174,7 +174,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::Geometry, sm, entrypoint, flags, defines, name){};
         };
 
@@ -187,7 +187,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::Compute, sm, entrypoint, flags, defines, name){};
         };
 
@@ -200,7 +200,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::Domain, sm, entrypoint, flags, defines, name){};
         };
 
@@ -213,7 +213,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::Hull, sm, entrypoint, flags, defines, name){};
         };
 
@@ -226,7 +226,7 @@ namespace Kraid
                     const std::vector<ShaderCompileFlags>& flags = {},
                     const std::vector<ShaderMacro>& defines = {},
                     const std::wstring& name = L"",
-                    ShaderModel sm = SM6_0
+                    ShaderModel sm = ShaderModel::SM6_0
                 ):Shader(filepath, ShaderType::RayTracing, sm, entrypoint, flags, defines, name){};
         };
 
