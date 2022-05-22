@@ -41,6 +41,9 @@ namespace Kraid
             Vertex(const Vertex& other)
             {
                 this->position = other.position;
+                this->normal = other.normal;
+                this->color = other.color;
+                this->texture_coordinates = other.texture_coordinates;
             }
             Vertex(
                 XMFLOAT3 position = {0,0,0},
