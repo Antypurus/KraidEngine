@@ -37,6 +37,10 @@ namespace Kraid
             uint32 pad = 0;
 
             BasicVertex() = default;
+            BasicVertex(const BasicVertex& other)
+            {
+                this->position = other.position;
+            }
             BasicVertex(float x, float y, float z): position({x,y,z}) {};
             static D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription();
         };
