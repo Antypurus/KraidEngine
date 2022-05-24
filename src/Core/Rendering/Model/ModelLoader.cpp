@@ -34,25 +34,19 @@ namespace Kraid
                 {
                     case(1)://Point
                     {
-                        LSUCCESS("POINT:");
                         float x = attribute.vertices[shape.mesh.indices[(index_offset)].vertex_index];
                         float y = attribute.vertices[shape.mesh.indices[(index_offset)].vertex_index + 1];
                         float z = attribute.vertices[shape.mesh.indices[(index_offset)].vertex_index + 2];
-                        LINFO("Position x:%f y:%f z:%f", x, y, z); 
-                        LSUCCESS("END OF POINT");
                         break;
                     }
                     case(2)://Line
                     {
-                        LSUCCESS("LINE:");
                         for(int j = 0; j < 2; j++)
                         {
                             float x = attribute.vertices[shape.mesh.indices[(index_offset) + j].vertex_index];
                             float y = attribute.vertices[shape.mesh.indices[(index_offset) + j].vertex_index + 1];
                             float z = attribute.vertices[shape.mesh.indices[(index_offset) + j].vertex_index + 2];
-                            LINFO("Position x:%f y:%f z:%f", x, y, z); 
                         }
-                        LSUCCESS("END OF LINE");
                         break;
                     }
                     case(3)://Triangle
@@ -68,15 +62,12 @@ namespace Kraid
                     }
                     case(4)://Quad
                     {
-                        LSUCCESS("QUAD:");
                         for(int j = 0; j < 4; j++)
                         {
                             float x = attribute.vertices[shape.mesh.indices[(index_offset) + j].vertex_index];
                             float y = attribute.vertices[shape.mesh.indices[(index_offset) + j].vertex_index + 1];
                             float z = attribute.vertices[shape.mesh.indices[(index_offset) + j].vertex_index + 2];
-                            LINFO("Point x:%f y:%f z:%f", x, y, z); 
                         }
-                        LSUCCESS("END OF QUAD");
                         break;
                     }
                     default://N-Gon

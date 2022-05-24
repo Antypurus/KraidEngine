@@ -35,6 +35,7 @@ namespace D3D12
         D3D12_CPU_DESCRIPTOR_HANDLE cpu_descriptor_handle;
         D3D12_GPU_DESCRIPTOR_HANDLE gpu_descriptor_handle;
 
+        TextureSampler() = default;
         TextureSampler(
                 GPUDevice& device,
                 SamplerDescriptorHeap& heap, uint64 heap_index,
