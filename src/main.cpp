@@ -28,7 +28,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace Kraid;
     using namespace Kraid::D3D12;
 
-    auto[vertices_raw, indices_raw] = ModelLoader::LoadOBJModel("./Resources/Models/bunny/bunny.obj");
 
     Window window(hInst, L"Kraid Engine", 1280, 720);
 
@@ -38,14 +37,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    std::vector<Vertex> vertices;
-    for(uint64 i = 0; i < (vertices_raw.size() / 3); ++i)
-    {
-        Vertex vert({vertices_raw[i * 3], vertices_raw[i * 3 + 1], vertices_raw[i * 3 + 2]});
-        vertices.push_back(vert);
-    }
-    VertexBuffer vb = VertexBuffer<Vertex>(device, main_command_list, vertices);
-    IndexBuffer ib = IndexBuffer(device, indices_raw, main_command_list);
+    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/bunny/bunny.obj");
+    VertexBuffer vb = model.global_vertex_buffer;
+    IndexBuffer ib = model.submeshes[0].index_buffer;
     ib.Bind(main_command_list);
     Texture tex("icon.jpg", device, main_command_list);
 

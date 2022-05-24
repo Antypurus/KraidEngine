@@ -2,7 +2,7 @@
 
 #include <Core/DataStructures/StringView.h>
 #include <Core/types.h>
-#include <tuple>
+#include <Core/Rendering/Model/Model.h>
 
 namespace Kraid
 {
@@ -10,7 +10,11 @@ namespace Kraid
     class ModelLoader
     {
     public:
-        static std::pair<std::vector<float>,std::vector<uint32>> LoadOBJModel(const StringView& filepath);
+        static Model LoadOBJModel(
+            GPUDevice& device,
+            GraphicsCommandList& command_list,
+            const StringView& filepath
+        );
     };
 
 }
