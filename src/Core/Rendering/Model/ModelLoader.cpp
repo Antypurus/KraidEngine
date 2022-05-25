@@ -3,7 +3,9 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
 
+#include <unordered_map>
 #include <Core/Utils/Log.h>
+#include <Core/Utils/StringHelpers.h>
 
 namespace Kraid
 {
@@ -20,32 +22,12 @@ namespace Kraid
         std::string warnings;
         std::string errors;
 
-        bool result = tinyobj::LoadObj(&attribute, &shapes, &materials, &warnings, &errors, filepath.Get());
+        std::string basedir = GetBasedir(filepath.Get());
+        bool result = tinyobj::LoadObj(&attribute, &shapes, &materials, &warnings, &errors, filepath.Get(), basedir.c_str());
         if(result == false)
         {
             LERROR("Load failed");
-        }
-
-        std::vector<Vertex> vertices;
-        for(uint64 i = 0; i < (attribute.vertices.size()/3); i++)
-        {
-            Vertex vert = {};
-            vert.position = XMFLOAT3(
-                                attribute.vertices[i * 3],
-                                attribute.vertices[i * 3 + 1],
-                                attribute.vertices[i * 3 + 2]);
-            vert.color = XMFLOAT3(
-                                attribute.colors[i * 3],
-                                attribute.colors[i * 3 + 1],
-                                attribute.colors[i * 3 + 2]);
-            //vert.normal = XMFLOAT3(
-            //                    attribute.normals[i * 3],
-            //                    attribute.normals[i * 3 + 1],
-            //                    attribute.normals[i * 3 + 2]);
-            vert.texture_coordinates = XMFLOAT2(
-                                            attribute.texcoords[i * 2],
-                                            attribute.texcoords[i * 2 + 1]);
-            vertices.push_back(vert);
+            return Model();
         }
 
         std::vector<BlinPhongMaterial> mats;
@@ -66,45 +48,60 @@ namespace Kraid
             }
         }
 
+        std::vector<Vertex> vertices;
+        std::unordered_map<UINT, UINT> index_map;
         std::vector<Submesh> meshes;
         for (auto& shape : shapes)
         {
             std::vector<uint32> indices;
-            uint64 index_offset = 0;
-            uint64 mat_index = 0;
-            for (uint64 i = 0; i < shape.mesh.num_face_vertices.size(); ++i)
+            uint32 mat_index = 0xFFFFFFFF;
+            if(shape.mesh.material_ids.size() > 0)
             {
-                switch(shape.mesh.num_face_vertices[i])
+                mat_index = shape.mesh.material_ids[0];
+            }
+            for(uint64 i = 0; i < shape.mesh.indices.size(); ++i)
+            {
+                if(index_map.contains(shape.mesh.indices[i].vertex_index))
                 {
-                    case(1)://Point
-                    {
-                        break;
-                    }
-                    case(2)://Line
-                    {
-                        break;
-                    }
-                    case(3)://Triangle
-                    {
-                        break;
-                    }
-                    case(4)://Quad
-                    {
-                        break;
-                    }
-                    default://N-Gon
-                    {
-                        LERROR("N-gons are not supported currentlyl");
-                        break;
-                    }
+                    //index is already present in the vertex array, just take its index
+                    uint32 index = index_map[shape.mesh.indices[i].vertex_index];
+                    indices.push_back(index);
                 }
-                index_offset += shape.mesh.num_face_vertices[i];
+                else
+                {
+                    //index is not present in the vertex array, create new vertex and add it
+                    uint64 position_index = shape.mesh.indices[i].vertex_index;
+                    uint64 normal_index = shape.mesh.indices[i].normal_index;
+                    uint64 uv_index = shape.mesh.indices[i].texcoord_index;
+
+                    Vertex vert;
+                    vert.position = XMFLOAT3(
+                                attribute.vertices[position_index * 3],
+                                attribute.vertices[position_index * 3 + 1],
+                                attribute.vertices[position_index * 3 + 2]);
+                    vert.color = XMFLOAT3(
+                            attribute.colors[position_index * 3],
+                            attribute.colors[position_index * 3 + 1],
+                            attribute.colors[position_index * 3 + 1]);
+                    vert.normal = XMFLOAT3(
+                            attribute.normals[normal_index * 3],
+                            attribute.normals[normal_index * 3 + 1],
+                            attribute.normals[normal_index * 3 + 2]);
+                    vert.texture_coordinates = XMFLOAT2(
+                            attribute.texcoords[uv_index * 2],
+                            attribute.texcoords[uv_index * 2 + 1]);
+
+                    vertices.push_back(vert);
+                    index_map[shape.mesh.indices[i].vertex_index] = vertices.size() - 1;
+                    indices.push_back(vertices.size() - 1);
+                }
             }
-            for (uint64 j = 0; j < shape.mesh.indices.size(); ++j)
+            BlinPhongMaterial mat;
+            if(mat_index != 0xFFFFFFFF)
             {
-                indices.push_back(shape.mesh.indices[j].vertex_index);
+                mat = mats[mat_index];
             }
-            meshes.emplace_back(device, command_list, indices, BlinPhongMaterial(), Transform());
+            meshes.emplace_back(device, command_list, indices, mat, Transform());
         }
 
         return Model(device, command_list, meshes, vertices);

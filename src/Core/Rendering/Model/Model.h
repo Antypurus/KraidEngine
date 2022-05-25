@@ -39,7 +39,21 @@ namespace Kraid
             const XMFLOAT3& specular_coeficient = {0,0,0},
             const XMFLOAT3& ambient_coeficient = {0,0,0}
         );
+        
+        inline BlinPhongMaterial& operator=(const BlinPhongMaterial& other)
+        {
+            this->has_texture = other.has_texture;
+            if(this->has_texture)
+            {
+                this->texture = other.texture;
+            }
 
+            this->diffuse_coeficient = other.diffuse_coeficient;
+            this->ambient_coeficient = other.ambient_coeficient;
+            this->specular_coeficient = other.specular_coeficient;
+
+            return *this;
+        }
     };
 
     class Submesh

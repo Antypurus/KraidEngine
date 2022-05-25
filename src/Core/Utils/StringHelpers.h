@@ -2,6 +2,7 @@
 
 #include <Core/types.h>
 #include <stdlib.h>
+#include <string>
 
 namespace Kraid
 {
@@ -18,6 +19,12 @@ namespace Kraid
         mbstowcs_s(&len, output, len, input, len - 1);
 
         return output;
+    }
+
+    inline std::string GetBasedir(const std::string& filepath)
+    {
+        size_t pos = filepath.find_last_of("/\\");
+		return (std::string::npos == pos) ? "" : (filepath.substr(0, pos) + "/");
     }
 
 }

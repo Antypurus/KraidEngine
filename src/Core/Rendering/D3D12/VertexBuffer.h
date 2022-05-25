@@ -52,6 +52,11 @@ namespace Kraid
                 XMFLOAT2 texture_coordinates = {0,0}
             ):position(position), normal(normal), color(color), texture_coordinates(texture_coordinates) {};
             static D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription();
+
+            bool operator==(const Vertex& other)
+            {
+                return this->position.x == other.position.x && this->position.y == other.position.y && this->position.z == other.position.z;
+            }
         };
 
         template<typename T>
