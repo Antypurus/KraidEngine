@@ -60,6 +60,12 @@ namespace Kraid
         this->global_transform = global_transform;
     }
 
+    void Submesh::Draw(GraphicsCommandList &command_list)
+    {
+        this->index_buffer.Bind(command_list);
+        command_list->DrawIndexedInstanced(this->index_buffer.index_count, 1, 0, 0, 0);
+    }
+
     Model::Model(
         GPUDevice& device,
         GraphicsCommandList& command_list,
@@ -73,6 +79,15 @@ namespace Kraid
         for(auto& mesh: this->submeshes)
         {
             mesh.SetGlobalTransformReference(&this->global_transform);
+        }
+    }
+
+    void Model::Draw(GraphicsCommandList& command_list)
+    {
+        this->global_vertex_buffer.Bind(command_list);
+        for(auto submesh: this->submeshes)
+        {
+            submesh.Draw(command_list);
         }
     }
 

@@ -38,10 +38,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     Swapchain swapchain(device, window, main_command_list);
 
     Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
-    VertexBuffer vb = model.global_vertex_buffer;
-    IndexBuffer ib = model.submeshes[0].index_buffer;
-    ib.Bind(main_command_list);
-    Texture tex("icon.jpg", device, main_command_list);
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
@@ -61,14 +57,10 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     {
         swapchain.StartFrame(main_command_list);
 
-        vb.Bind(main_command_list);
-        ib.Bind(main_command_list);
-
         pso.Bind(main_command_list);
 
-        //TODO(Tiago):needs cleanup
-        main_command_list->DrawIndexedInstanced(ib.index_count, 1, 0, 0, 0);
-
+        model.Draw(main_command_list);
+        
         swapchain.EndFrame(main_command_list);
 
         main_command_list.Close();
