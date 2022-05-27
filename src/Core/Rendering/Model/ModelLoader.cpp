@@ -40,7 +40,7 @@ namespace Kraid
 
             if(!texture_path.empty())
             {
-                mats.emplace_back(device, command_list, texture_path, diffuse_coeficient, specular_coeficient, ambient_coeficient);
+                mats.emplace_back(device, command_list, basedir + "/" + texture_path, diffuse_coeficient, specular_coeficient, ambient_coeficient);
             }
             else
             {
@@ -101,7 +101,12 @@ namespace Kraid
             {
                 mat = mats[mat_index];
             }
-            meshes.emplace_back(device, command_list, indices, mat, Transform());
+            std::string normal_map_path = materials[mat_index].normal_texname;
+            if(!normal_map_path.empty())
+            {
+                normal_map_path = basedir + "/" + normal_map_path;
+            }
+            meshes.emplace_back(device, command_list, indices, mat, Transform(), normal_map_path);
         }
 
         return Model(device, command_list, meshes, vertices);
