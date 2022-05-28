@@ -1,5 +1,7 @@
 
 SamplerState point_sampler: register(s0);
+SamplerState linear_sampler: register(s1);
+SamplerState anisotropic_sampler: register(s2);
 
 struct VS_OUTPUT
 {

@@ -41,13 +41,19 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     PixelShader ps(L"./shader.hlsl", "PSMain");
 
     TextureSampler point_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Point);
+    TextureSampler linear_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Linear);
+    TextureSampler anisotropic_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Anisotropic);
 
-    DescriptorTableRootParameter descriptor_table;
-    descriptor_table.AddSamplerEntry(0, 0);
     RootSignature rs(device, {}, {},
             {//descriptor table array
-                {//descriptor table 0
-                    descriptor_table
+                {//descriptor table for point sampling
+                    {SamplerDescriptorTableEntry(0)}
+                },
+                {//descriptor table for linear sampler
+                    {SamplerDescriptorTableEntry(1)}
+                },
+                {//descriptor table for anisotropic sampler
+                    {SamplerDescriptorTableEntry(2)}
                 }
             });
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
@@ -63,6 +69,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     ID3D12DescriptorHeap* heaps[1] = {device.sampler_descriptior_heap.descriptor_heap.Get()};
     main_command_list->SetDescriptorHeaps(1, heaps);
     point_sampler.Bind(main_command_list, 0);
+    linear_sampler.Bind(main_command_list, 1);
+    anisotropic_sampler.Bind(main_command_list, 2);
 
     while(window.open)
     {
