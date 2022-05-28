@@ -82,7 +82,8 @@ namespace D3D12
             this->constant_root_parameters.size() +
             this->root_descriptor_parameters.size() +
             this->descriptor_table_root_parameters.size();
-        std::vector<D3D12_ROOT_PARAMETER> root_parameters(root_parameter_count);
+        std::vector<D3D12_ROOT_PARAMETER> root_parameters;
+        root_parameters.reserve(root_parameter_count);
         
         for(auto& root_parameter: this->constant_root_parameters)
         {
@@ -93,7 +94,7 @@ namespace D3D12
             root_parameters.push_back(root_parameter.GetRootParameterDescription());
         }
         for(auto& root_parameter: this->descriptor_table_root_parameters)
-        {
+        { 
             root_parameters.push_back(root_parameter.GetRootParameterDescription());
         }
 

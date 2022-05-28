@@ -388,12 +388,14 @@ namespace Kraid
                 return;
             }
 
+            /*
             ComPtr<IDxcBlob> root_signature = nullptr;
             results->GetOutput(DXC_OUT_ROOT_SIGNATURE, IID_PPV_ARGS(&root_signature), nullptr);
             if(root_signature == nullptr)
             {
                 LERROR("Failed to extract root signature");
             }
+            */
 
             free(entrypoint_w);
             free(target_w);

@@ -32,7 +32,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     GPUDevice device;
     Fence main_fence(device, 0);
-
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
@@ -41,16 +40,29 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
 
-    RootSignature rs(device);
+    TextureSampler point_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Point);
+
+    DescriptorTableRootParameter descriptor_table;
+    descriptor_table.AddSamplerEntry(0, 0);
+    RootSignature rs(device, {}, {},
+            {//descriptor table array
+                {//descriptor table 0
+                    descriptor_table
+                }
+            });
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
 
     main_command_list.Close();
     main_command_list.Execute();
-
+    //TODO(Tiago):this could be cleaned up into a wait for command list completion
     main_fence.Increment(device.direct_command_queue);
     main_fence.WaitForCompletion();
-
     main_command_list.Reset();
+
+    pso.Bind(main_command_list);
+    ID3D12DescriptorHeap* heaps[1] = {device.sampler_descriptior_heap.descriptor_heap.Get()};
+    main_command_list->SetDescriptorHeaps(1, heaps);
+    point_sampler.Bind(main_command_list, 0);
 
     while(window.open)
     {

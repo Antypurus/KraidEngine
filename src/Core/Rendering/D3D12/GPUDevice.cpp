@@ -44,7 +44,7 @@ namespace Kraid
             this->CreateCommandQueues();
 
             this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 999999);
-            this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 999999);
+            this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 2048); //NOTE(Tiago):2048 is the max for sampler heaps
         }
 
         GPUDevice::GPUDevice(IDXGIAdapter4* adapater)

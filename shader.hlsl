@@ -1,3 +1,6 @@
+
+SamplerState point_sampler: register(s0);
+
 struct VS_OUTPUT
 {
 	float4 position:SV_POSITION;
