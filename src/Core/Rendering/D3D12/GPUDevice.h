@@ -5,7 +5,8 @@
 #include <Core/types.h>
 
 #include "CommandQueue.h"
-#include "Core/Rendering/D3D12/CommandList.h"
+#include <Core/Rendering/D3D12/CommandList.h>
+#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 #include "DXGIFactory.h"
 
 namespace Kraid
@@ -47,6 +48,9 @@ namespace Kraid
             CommandQueue copy_command_queue;
             CommandQueue video_decode_command_queue;
             CommandQueue video_process_command_queue;
+
+            SamplerDescriptorHeap sampler_descriptior_heap;
+            CBV_SRV_UAVDescriptorHeap shader_resource_heap;
 
             DescriptorHandleSize descriptor_sizes;
             D3D_FEATURE_LEVEL feature_level;

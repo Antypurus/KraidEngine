@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Core/Rendering/D3D12/D3D12.h>
-
+#include <Core/Threading/Lock.h>
 #include <Core/types.h>
 
 namespace Kraid
@@ -20,11 +20,15 @@ namespace Kraid
             uint32 descriptor_increment_size = 0;
             uint32 heap_size = 0;
 
+            Mutex allocation_mutex;
+            uint32 allocation_index = 0;
+
             DescriptorHeap() = default;
             ID3D12DescriptorHeap* operator->();
 
             D3D12_CPU_DESCRIPTOR_HANDLE operator[](const uint64 index);
             D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorByIndex(const uint64 index);
+            uint32 AllocateIndex();
         };
 
         struct RTVDescriptorHeap :public DescriptorHeap

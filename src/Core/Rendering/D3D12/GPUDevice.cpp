@@ -42,6 +42,9 @@ namespace Kraid
             this->QueryDescriptorSizes();
             this->CreateCommandAllocator();
             this->CreateCommandQueues();
+
+            this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 999999);
+            this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 999999);
         }
 
         GPUDevice::GPUDevice(IDXGIAdapter4* adapater)

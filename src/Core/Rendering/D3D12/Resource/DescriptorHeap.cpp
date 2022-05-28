@@ -2,6 +2,7 @@
 
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
+#include <d3d12.h>
 
 #include "../GPUDevice.h"
 
@@ -34,6 +35,17 @@ namespace Kraid
                 return {NULL};
             }
             return {this->descriptor_heap->GetGPUDescriptorHandleForHeapStart().ptr + index * this->descriptor_increment_size};
+        }
+
+        //TODO(Tiago):this is a very basic stack allocation scheme, we need to create something better in the future, but for now this should work.
+        uint32 DescriptorHeap::AllocateIndex()
+        {
+            this->allocation_mutex.Lock();
+            uint32 allocated_index = this->allocation_index;
+            this->allocation_index++;
+            this->allocation_mutex.Unlock();
+
+            return allocated_index;
         }
 
         RTVDescriptorHeap::RTVDescriptorHeap(GPUDevice& device, uint32 heap_size)
@@ -70,7 +82,7 @@ namespace Kraid
             D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {};
             heap_desc.NumDescriptors = heap_size;
             heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
-            heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+            heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
             D3DCALL(device->CreateDescriptorHeap(&heap_desc, IID_PPV_ARGS(&this->descriptor_heap)), "Sampler Descriptor Heap Created");
         }
@@ -83,7 +95,7 @@ namespace Kraid
             D3D12_DESCRIPTOR_HEAP_DESC heap_desc = {};
             heap_desc.NumDescriptors = heap_size;
             heap_desc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-            heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+            heap_desc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
             D3DCALL(device->CreateDescriptorHeap(&heap_desc, IID_PPV_ARGS(&this->descriptor_heap)), "CBV/SRV/UAV Descriptor Heap Created");
         }

@@ -34,7 +34,9 @@ namespace D3D12
             GPUDevice& device,
             CBV_SRV_UAVDescriptorHeap& heap, uint64 heap_index,
             Texture1DResource& resource,
-            DXGI_FORMAT format)
+            DXGI_FORMAT format):
+        cpu_descriptor_handle(heap[heap_index]),
+        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
     {
         D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
         srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -51,7 +53,9 @@ namespace D3D12
             GPUDevice& device,
             CBV_SRV_UAVDescriptorHeap& heap, uint64 heap_index,
             Texture2DResource& resource,
-            DXGI_FORMAT format)
+            DXGI_FORMAT format):
+        cpu_descriptor_handle(heap[heap_index]),
+        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
     {
         D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
         srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -69,7 +73,9 @@ namespace D3D12
             GPUDevice& device,
             CBV_SRV_UAVDescriptorHeap& heap, uint64 heap_index,
             Texture3DResource& resource,
-            DXGI_FORMAT format)
+            DXGI_FORMAT format):
+        cpu_descriptor_handle(heap[heap_index]),
+        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
     {
         D3D12_SHADER_RESOURCE_VIEW_DESC srv_desc = {};
         srv_desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

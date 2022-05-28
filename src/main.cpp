@@ -28,7 +28,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace Kraid;
     using namespace Kraid::D3D12;
 
-
     Window window(hInst, L"Kraid Engine", 1280, 720);
 
     GPUDevice device;

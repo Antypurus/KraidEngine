@@ -2,6 +2,7 @@
 
 #include <dxgiformat.h>
 #include <cmath>
+#include <unordered_map>
 
 #define STB_IMAGE_IMPLEMENTATION
 //NOTE(Tiago):have to be here because of clang. stb_image does not properly detect clang on windows
@@ -21,28 +22,32 @@ namespace D3D12
 
     TextureSampler::TextureSampler(
             GPUDevice& device,
-            SamplerDescriptorHeap& heap, uint64 heap_index,
+            SamplerDescriptorHeap& heap,
             TextureSamplingMode sample_mode,
             TextureAddressingMode addressing_mode):
         addressing_mode(addressing_mode),
-        sampling_mode(sample_mode),
-        cpu_descriptor_handle(heap[heap_index]),
-        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
+        sampling_mode(sample_mode)
     {
+        uint64 heap_index = heap.AllocateIndex();
+        this->cpu_descriptor_handle = heap[heap_index];
+        this->gpu_descriptor_handle = heap.GetGPUDescriptorByIndex(heap_index);
+
         D3D12_SAMPLER_DESC sampler_description = this->CreateSamplerDescription();
         device->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
     }
 
     TextureSampler::TextureSampler(
             GPUDevice& device,
-            SamplerDescriptorHeap& heap, uint64 heap_index,
+            SamplerDescriptorHeap& heap,
             float border_color[4],
             TextureSamplingMode sample_mode):
         addressing_mode(TextureAddressingMode::Border),
-        sampling_mode(sample_mode),
-        cpu_descriptor_handle(heap[heap_index]),
-        gpu_descriptor_handle(heap.GetGPUDescriptorByIndex(heap_index))
+        sampling_mode(sample_mode)
     {
+        uint64 heap_index = heap.AllocateIndex();
+        this->cpu_descriptor_handle = heap[heap_index];
+        this->gpu_descriptor_handle = heap.GetGPUDescriptorByIndex(heap_index);
+
         memcpy(this->border_color, border_color, sizeof(float) * 4);
 
         D3D12_SAMPLER_DESC sampler_description = this->CreateSamplerDescription();
@@ -83,6 +88,7 @@ namespace D3D12
             return; 
         }
 
+        //TODO(Tiago):all this needs to be cleaned up
         DXGI_FORMAT format;
         switch(this->channel_count)
         {
@@ -149,6 +155,26 @@ namespace D3D12
         command_list->CopyTextureRegion(&destination, 0, 0, 0, &source, nullptr);
 
         stbi_image_free(texture_data);
+
+        this->CreateDefaultSRV(device);
+    }
+
+    void Texture::CreateDefaultSRV(GPUDevice& device)
+    {
+        uint64 heap_index = device.shader_resource_heap.AllocateIndex();
+        this->default_srv = ShaderResourceView(device, device.shader_resource_heap, heap_index, this->texture, this->texture.format);
+    }
+
+    static std::unordered_map<std::string, Texture> loaded_textures;
+    Texture& Texture::LoadTexture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list)
+    {
+        if(loaded_textures.contains(filepath.Get()))
+        {
+            return loaded_textures[filepath.Get()];
+        }
+
+        loaded_textures.emplace(filepath.Get(), Texture(filepath, device, command_list));
+        return loaded_textures[filepath.Get()];
     }
 
 }

@@ -27,7 +27,7 @@ namespace Kraid
         this->diffuse_coeficient = diffuse_coeficient;
 
         this->has_texture = true;
-        this->texture = Texture(texture_path, device, command_list);
+        this->texture = Texture::LoadTexture(texture_path, device, command_list);
     }
 
     Submesh::Submesh(
@@ -42,7 +42,7 @@ namespace Kraid
         if(!normal_map_path.empty())
         {
             this->has_normal_map = true;
-            this->normal_map = Texture(normal_map_path, device, command_list);
+            this->normal_map = Texture::LoadTexture(normal_map_path, device, command_list);
         }
         else
         {
@@ -84,10 +84,17 @@ namespace Kraid
 
     void Model::Draw(GraphicsCommandList& command_list)
     {
-        this->global_vertex_buffer.Bind(command_list);
-        for(auto submesh: this->submeshes)
+        if (this->global_vertex_buffer.vertex_buffer.resource != nullptr)//TODO(Tiago): figure out better way to detect unloaded model
         {
-            submesh.Draw(command_list);
+            this->global_vertex_buffer.Bind(command_list);
+            for (auto submesh : this->submeshes)
+            {
+                submesh.Draw(command_list);
+            }
+        }
+        else
+        {
+            LERROR("Attempted to draw not loaded model");
         }
     }
 

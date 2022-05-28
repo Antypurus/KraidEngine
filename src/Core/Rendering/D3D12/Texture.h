@@ -2,6 +2,7 @@
 
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Rendering/D3D12/Resource/Resource.h>
+#include <Core/Rendering/D3D12/Resource/ShaderResourceView.h>
 #include <Core/DataStructures/StringView.h>
 #include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 
@@ -38,12 +39,12 @@ namespace D3D12
         TextureSampler() = default;
         TextureSampler(
                 GPUDevice& device,
-                SamplerDescriptorHeap& heap, uint64 heap_index,
+                SamplerDescriptorHeap& heap,
                 TextureSamplingMode sample_mode = TextureSamplingMode::Linear,
                 TextureAddressingMode addressing_mode = TextureAddressingMode::Wrap);
         TextureSampler(
                 GPUDevice& device,
-                SamplerDescriptorHeap& heap, uint64 heap_index,
+                SamplerDescriptorHeap& heap,
                 float border_color[4],
                 TextureSamplingMode sampling_mode = TextureSamplingMode::Linear);
 
@@ -58,13 +59,18 @@ namespace D3D12
     public:
         Texture2DResource texture;
         UploadBufferResource upload_buffer;
+        ShaderResourceView default_srv;
         uint64 width = 0;
         uint64 height = 0;
         uint8 channel_count = 0;
 
     public:
         Texture() = default;
-        Texture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list); 
+        static Texture& LoadTexture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list);
+    
+    private:
+        void CreateDefaultSRV(GPUDevice& device);
+        Texture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list);
     };
 
 }
