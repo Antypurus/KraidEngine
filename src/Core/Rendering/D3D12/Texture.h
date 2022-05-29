@@ -67,6 +67,7 @@ namespace D3D12
     public:
         Texture() = default;
         static Texture& LoadTexture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list);
+        void BindDefaultSRV(GraphicsCommandList& command_list ,uint32 texture_slot = 0);
     
     private:
         void CreateDefaultSRV(GPUDevice& device);

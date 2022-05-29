@@ -54,6 +54,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
                 },
                 {//descriptor table for anisotropic sampler
                     {SamplerDescriptorTableEntry(2)}
+                },
+                {//descriptor table for shader resource view
+                    {SRVDescriptorTableEntry(0)}
                 }
             });
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
@@ -66,8 +69,11 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     main_command_list.Reset();
 
     pso.Bind(main_command_list);
-    ID3D12DescriptorHeap* heaps[1] = {device.sampler_descriptior_heap.descriptor_heap.Get()};
-    main_command_list->SetDescriptorHeaps(1, heaps);
+    ID3D12DescriptorHeap* heaps[] = {
+        device.sampler_descriptior_heap.descriptor_heap.Get(),
+        device.shader_resource_heap.descriptor_heap.Get()
+    };
+    main_command_list->SetDescriptorHeaps(2, heaps);
     point_sampler.Bind(main_command_list, 0);
     linear_sampler.Bind(main_command_list, 1);
     anisotropic_sampler.Bind(main_command_list, 2);
@@ -78,7 +84,12 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         pso.Bind(main_command_list);
 
-        model.Draw(main_command_list);
+        main_command_list->SetDescriptorHeaps(2, heaps);
+        point_sampler.Bind(main_command_list, 0);
+        linear_sampler.Bind(main_command_list, 1);
+        anisotropic_sampler.Bind(main_command_list, 2);
+        
+        model.Draw(main_command_list, 3);
         
         swapchain.EndFrame(main_command_list);
 

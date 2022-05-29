@@ -159,6 +159,11 @@ namespace D3D12
         this->CreateDefaultSRV(device);
     }
 
+    void Texture::BindDefaultSRV(GraphicsCommandList& command_list, uint32 texture_bind_slot)
+    {
+        this->default_srv.Bind(command_list, texture_bind_slot);
+    }
+
     void Texture::CreateDefaultSRV(GPUDevice& device)
     {
         uint64 heap_index = device.shader_resource_heap.AllocateIndex();

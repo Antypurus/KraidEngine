@@ -60,10 +60,18 @@ namespace Kraid
         this->global_transform = global_transform;
     }
 
-    void Submesh::Draw(GraphicsCommandList &command_list)
+    void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 normal_map_slot)
     {
         this->index_buffer.Bind(command_list);
         command_list->DrawIndexedInstanced(this->index_buffer.index_count, 1, 0, 0, 0);
+        if(this->material.has_texture)
+        {
+            this->material.texture.BindDefaultSRV(command_list, texture_slot);
+        }
+        if(this->has_normal_map)
+        {
+            this->normal_map.BindDefaultSRV(command_list, normal_map_slot);
+        }
     }
 
     Model::Model(
@@ -82,14 +90,14 @@ namespace Kraid
         }
     }
 
-    void Model::Draw(GraphicsCommandList& command_list)
+    void Model::Draw(GraphicsCommandList& command_list, uint32 texture_slot, uint32 normal_map_slot)
     {
         if (this->global_vertex_buffer.vertex_buffer.resource != nullptr)//TODO(Tiago): figure out better way to detect unloaded model
         {
             this->global_vertex_buffer.Bind(command_list);
             for (auto submesh : this->submeshes)
             {
-                submesh.Draw(command_list);
+                submesh.Draw(command_list, texture_slot, normal_map_slot);
             }
         }
         else
