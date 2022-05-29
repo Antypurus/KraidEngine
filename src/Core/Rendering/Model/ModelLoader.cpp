@@ -89,7 +89,7 @@ namespace Kraid
                             attribute.normals[normal_index * 3 + 2]);
                     vert.texture_coordinates = XMFLOAT2(
                             attribute.texcoords[uv_index * 2],
-                            attribute.texcoords[uv_index * 2 + 1]);
+                            1.0f - attribute.texcoords[uv_index * 2 + 1]);
 
                     vertices.push_back(vert);
                     index_map[shape.mesh.indices[i].vertex_index] = vertices.size() - 1;
