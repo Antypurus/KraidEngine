@@ -160,6 +160,7 @@ namespace Kraid
             D3DCALL(this->resource->Map(0, &buffer_addressing_range, (void**)&buffer_data_addressing), "Mapped upload buffer into CPU addressing range");
             if(buffer_data_addressing != nullptr)
             {
+                memset(buffer_data_addressing, 0, this->width);
                 memcpy(buffer_data_addressing, data, size);
                 this->resource->Unmap(0, &buffer_addressing_range);
                 LSUCCESS("Upload Buffer Data Set");

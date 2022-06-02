@@ -4,6 +4,11 @@ SamplerState linear_sampler: register(s1);
 SamplerState anisotropic_sampler: register(s2);
 Texture2D mesh_texture: register(t0);
 
+cbuffer input_params: register(b0)
+{
+    float4 input_color;
+};
+
 struct VS_OUTPUT
 {
 	float4 position:SV_POSITION;
@@ -40,7 +45,8 @@ struct PS_OUTPUT
 PS_OUTPUT PSMain(VS_OUTPUT input)
 {
     PS_OUTPUT ret;
-    float4 color = mesh_texture.Sample(linear_sampler, input.uv);
+    //float4 color = mesh_texture.Sample(linear_sampler, input.uv);
+    float4 color = float4(input_color.xyz * 20, 1.0f);
     ret.color = color;
     return ret;
 };

@@ -1,4 +1,5 @@
 #include "ModelLoader.h"
+#include <limits.h>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
@@ -97,11 +98,12 @@ namespace Kraid
                 }
             }
             BlinPhongMaterial mat;
-            if(mat_index != 0xFFFFFFFF)
+            std::string normal_map_path = "";
+            if(mat_index != UINT_MAX)
             {
                 mat = mats[mat_index];
+                normal_map_path = materials[mat_index].normal_texname;
             }
-            std::string normal_map_path = materials[mat_index].normal_texname;
             if(!normal_map_path.empty())
             {
                 normal_map_path = basedir + "/" + normal_map_path;
