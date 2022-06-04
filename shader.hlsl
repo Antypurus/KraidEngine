@@ -45,8 +45,9 @@ struct PS_OUTPUT
 PS_OUTPUT PSMain(VS_OUTPUT input)
 {
     PS_OUTPUT ret;
-    //float4 color = mesh_texture.Sample(linear_sampler, input.uv);
-    float4 color = float4(input_color.xyz * 20, 1.0f);
+    float4 color = mesh_texture.Sample(linear_sampler, input.uv) * input_color;
+    //float4 color = float4(input_color.xyz * 20, 1.0f);
+    //float4 color = float4(1.0f,0.0f,0.0f,1.0f);
     ret.color = color;
     return ret;
 };

@@ -43,7 +43,7 @@ namespace Kraid
             this->CreateCommandAllocator();
             this->CreateCommandQueues();
 
-            this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 999999);
+            this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 2048);
             this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 2048); //NOTE(Tiago):2048 is the max for sampler heaps
         }
 

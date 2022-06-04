@@ -10,11 +10,13 @@ namespace Kraid
     {
     public:
         HANDLE mutex_handle = nullptr;
-        void Lock();
-        void Unlock();
     public:
         Mutex();
         ~Mutex();
+        void Lock();
+        void Unlock();
+
+        Mutex& operator=(const Mutex& other) = delete;
     };
 
 }

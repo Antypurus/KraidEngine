@@ -41,8 +41,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/bunny/bunny.obj");
-    LSUCCESS("Model Done Loading");
+    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
@@ -95,7 +94,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     linear_sampler.Bind(main_command_list, 1);
     anisotropic_sampler.Bind(main_command_list, 2);
 
-    input.color =  {0,1.0f,0,0 };
+    input.color =  {0,1.0f,1,0 };
     color_param.UpdateData(input, main_command_list);
     while(window.open)
     {

@@ -4,6 +4,7 @@
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/Resource/ConstantBufferView.h>
 #include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
+#include <Core/Utils/Log.h>
 
 namespace Kraid
 {
@@ -15,30 +16,26 @@ namespace D3D12
     class ShaderParameter
     {
     public:
-        //BufferResource parameter_buffer;
-        UploadBufferResource upload_buffer;
+        UploadBufferResource parameter_buffer;
         ConstantBufferView buffer_cbv;
-        T data_copy;
         
         ShaderParameter() = default;
         ShaderParameter(GPUDevice& device, GraphicsCommandList& command_list, T value = T())
         {
-            this->data_copy = value;
             uint64 size_t = sizeof(T) + (256 - (sizeof(T) % 256));
-            this->upload_buffer = UploadBufferResource(device, size_t);
-            //this->parameter_buffer = BufferResource(device, size_t);
+            this->parameter_buffer = UploadBufferResource(device, size_t);
 
-            this->UpdateData(data_copy, command_list);
+            this->UpdateData(value, command_list);
 
             uint64 heap_index = device.shader_resource_heap.AllocateIndex();
-            this->buffer_cbv = ConstantBufferView(device, this->upload_buffer, device.shader_resource_heap, heap_index);
+            this->buffer_cbv = ConstantBufferView(device, this->parameter_buffer, device.shader_resource_heap, heap_index);
         }
 
         inline void UpdateData(T value, GraphicsCommandList& command_list)
         {
-            this->data_copy = value;
-            this->upload_buffer.SetBufferData(&data_copy);
-            //this->upload_buffer.CopyTo(this->parameter_buffer, command_list);
+            std::vector<T> data_buffer;
+            data_buffer.push_back(value);
+            this->parameter_buffer.SetBufferData(data_buffer);
         }
 
         inline void Bind(GraphicsCommandList& command_list, uint64 slot)

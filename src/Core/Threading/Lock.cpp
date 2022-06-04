@@ -18,18 +18,26 @@ namespace Kraid
 
     Mutex::~Mutex()
     {
-        this->Unlock();
-        CloseHandle(this->mutex_handle);
+        //this->Unlock();
+        //CloseHandle(this->mutex_handle);
     }
 
     void Mutex::Lock()
     {
-        WaitForSingleObject(this->mutex_handle, INFINITE);
+        auto result = WaitForSingleObject(this->mutex_handle, INFINITE);
+        while( result != WAIT_OBJECT_0)
+        {
+            result = WaitForSingleObject(this->mutex_handle, INFINITE);
+        }
     }
 
     void Mutex::Unlock()
     {
-        ReleaseMutex(this->mutex_handle);
+        bool result = ReleaseMutex(this->mutex_handle);
+        if(result == false)
+        {
+            PRINT_WINERROR();
+        }
     }
 
 }

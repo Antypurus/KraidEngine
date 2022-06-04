@@ -63,7 +63,6 @@ namespace Kraid
     void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 normal_map_slot)
     {
         this->index_buffer.Bind(command_list);
-        command_list->DrawIndexedInstanced(this->index_buffer.index_count, 1, 0, 0, 0);
         if(this->material.has_texture)
         {
             this->material.texture.BindDefaultSRV(command_list, texture_slot);
@@ -72,6 +71,7 @@ namespace Kraid
         {
             this->normal_map.BindDefaultSRV(command_list, normal_map_slot);
         }
+        command_list->DrawIndexedInstanced(this->index_buffer.index_count, 1, 0, 0, 0);
     }
 
     Model::Model(

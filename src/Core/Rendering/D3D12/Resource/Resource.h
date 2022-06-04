@@ -178,10 +178,10 @@ namespace Kraid
             {
                 this->SetBufferData((uint8*)data.data(), data.size() * sizeof(T));
             }
-            template<typename T> inline void SetBufferData(const T& data)
-            {
-                this->SetBufferData((uint8*)&data, sizeof(T));
-            }
+            //template<typename T> inline void SetBufferData(T data)
+            //{
+            //    this->SetBufferData((uint8*)&data, sizeof(T));
+            //}
         };
 
         struct Texture1DResource :public Resource
