@@ -16,10 +16,38 @@ namespace Kraid
         }
     }
 
+    Mutex::Mutex(Mutex&& other)
+    {
+        if(this == &other) return;
+
+        other.Lock();
+
+        this->mutex_handle = other.mutex_handle;
+        other.mutex_handle = nullptr;
+
+        this->Unlock();
+    }
+
+    Mutex& Mutex::operator=(Mutex&& other)
+    {
+        if(this == &other) return *this;
+
+        other.Lock();
+
+        this->mutex_handle = other.mutex_handle;
+        other.mutex_handle = nullptr;
+
+        this->Unlock();
+
+        return *this;
+    }
+
     Mutex::~Mutex()
     {
-        //this->Unlock();
-        //CloseHandle(this->mutex_handle);
+        if(this->mutex_handle != nullptr)
+        {
+            CloseHandle(this->mutex_handle);
+        }
     }
 
     void Mutex::Lock()
