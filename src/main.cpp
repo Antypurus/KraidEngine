@@ -48,7 +48,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/sponza/sponza.obj");
+    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/bunny/bunny.obj");
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
@@ -58,7 +58,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     TextureSampler anisotropic_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Anisotropic);
 
     cbuffer input;
-    input.model_matrix = XMMatrixScaling(0.01f,0.01f,0.01f);
+    input.model_matrix = XMMatrixScaling(10.01f,10.01f,10.01f);
     input.projection_matrix = XMMatrixPerspectiveFovLH(0.45f, 16.0f/9.0f, 0.0001f, 1000.f);
     input.view_matrix = camera.ViewMatrix();
     input.model_view_project_matrix = input.model_matrix * input.view_matrix * input.projection_matrix;
@@ -82,7 +82,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
                     {CBVDescriptorTableEntry(0)}
                 }
             });
-    GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
+    GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription(), Rasterizer());
 
 
     main_command_list.Close();
