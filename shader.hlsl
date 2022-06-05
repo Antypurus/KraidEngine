@@ -6,7 +6,10 @@ Texture2D mesh_texture: register(t0);
 
 cbuffer input_params: register(b0)
 {
-    float4 input_color;
+    float4x4 projection_matrix;
+    float4x4 view_matrix;
+    float4x4 model_matrix;
+    float4x4 mvp;
 };
 
 struct VS_OUTPUT
@@ -28,8 +31,8 @@ struct VS_INPUT
 VS_OUTPUT VSMain(VS_INPUT input)
 {
 	VS_OUTPUT output;
-    
-	output.position = float4(input.pos,1.0f);
+
+	output.position = mul(mvp, float4(input.pos,1.0f));
     output.normal = input.normal;
     output.color = input.color;
     output.uv = input.uv;
@@ -45,9 +48,7 @@ struct PS_OUTPUT
 PS_OUTPUT PSMain(VS_OUTPUT input)
 {
     PS_OUTPUT ret;
-    float4 color = mesh_texture.Sample(linear_sampler, input.uv) * input_color;
-    //float4 color = float4(input_color.xyz * 20, 1.0f);
-    //float4 color = float4(1.0f,0.0f,0.0f,1.0f);
+    float4 color = mesh_texture.Sample(linear_sampler, input.uv - float2(0.0f, 0.0f));
     ret.color = color;
     return ret;
 };
