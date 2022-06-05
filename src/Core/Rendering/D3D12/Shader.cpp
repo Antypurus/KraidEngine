@@ -358,6 +358,8 @@ namespace Kraid
             {
                 arguments.push_back((wchar_t*)DXCCompilerFlags.at(flag));
             }
+            arguments.push_back((wchar_t*)L"-Fd");
+            arguments.push_back((wchar_t*)L"./debug.pdb");
 
             Buffer shader_code = shader_file.Read();
             DxcBuffer source;
