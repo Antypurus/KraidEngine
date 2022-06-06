@@ -6,9 +6,6 @@ Texture2D mesh_texture: register(t0);
 
 cbuffer input_params: register(b0)
 {
-    float4x4 projection_matrix;
-    float4x4 view_matrix;
-    float4x4 model_matrix;
     float4x4 mvp;
 };
 
@@ -48,7 +45,7 @@ struct PS_OUTPUT
 PS_OUTPUT PSMain(VS_OUTPUT input)
 {
     PS_OUTPUT ret;
-    float4 color = mesh_texture.Sample(linear_sampler, input.uv - float2(0.0f, 0.0f));
+    float4 color = mesh_texture.Sample(anisotropic_sampler, input.uv - float2(0.0f, 0.0f));
     ret.color = color;
     return ret;
 };

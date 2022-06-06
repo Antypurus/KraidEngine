@@ -27,9 +27,6 @@
 
 struct cbuffer
 {
-    DirectX::XMMATRIX projection_matrix;
-    DirectX::XMMATRIX view_matrix;
-    DirectX::XMMATRIX model_matrix;
     DirectX::XMMATRIX model_view_project_matrix;
 };
 
@@ -41,14 +38,14 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace Kraid::D3D12;
 
     Window window(hInst, L"Kraid Engine", 1280, 720);
-    Camera camera(window);
+    Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
 
     GPUDevice device;
     Fence main_fence(device, 0);
     GraphicsCommandList main_command_list(device);
     Swapchain swapchain(device, window, main_command_list);
 
-    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/sponza/sponza.obj");
+    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
@@ -58,10 +55,10 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     TextureSampler anisotropic_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Anisotropic);
 
     cbuffer input;
-    input.model_matrix = XMMatrixScaling(0.01f,0.01f,0.01f);
-    input.projection_matrix = XMMatrixPerspectiveFovLH(0.45f, 16.0f/9.0f, 0.0001f, 1000.f);
-    input.view_matrix = camera.ViewMatrix();
-    input.model_view_project_matrix = input.model_matrix * input.view_matrix * input.projection_matrix;
+    XMMATRIX model_matrix = XMMatrixScaling(1.01f,1.01f,1.01f);
+    XMMATRIX projection_matrix = XMMatrixPerspectiveFovLH(rad(45.0), 1280.0f / 720.0f, 0.1f, 1000.0f);
+    XMMATRIX view_matrix = camera.ViewMatrix();
+    input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
     ShaderParameter<cbuffer> color_param = ShaderParameter<cbuffer>(device, main_command_list, input);
 
     RootSignature rs(device, {}, {},
@@ -106,8 +103,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     while(window.open)
     {
-        input.view_matrix = camera.ViewMatrix();
-        input.model_view_project_matrix = input.model_matrix * input.view_matrix * input.projection_matrix;
+        view_matrix = camera.ViewMatrix();
+        input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
         color_param.UpdateData(input, main_command_list);
 
         swapchain.StartFrame(main_command_list);
