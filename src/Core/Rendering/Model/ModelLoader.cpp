@@ -66,12 +66,12 @@ namespace Kraid
                     uint64 uv_index = shape.mesh.indices[index_offset + j].texcoord_index;
                     uint64 material_id = shape.mesh.material_ids[i];
                     
-                    if(index_map.contains(vertex_index))
-                    {
-                        uint64 index = index_map[vertex_index];
-                        submesh_indices[material_id].push_back(index);
-                    }
-                    else
+                    //if(index_map.contains(vertex_index))
+                    //{
+                    //    uint64 index = index_map[vertex_index];
+                    //    submesh_indices[material_id].push_back(index);
+                    //}
+                    //else
                     {
                         Vertex vert;
                         vert.position = XMFLOAT3(
