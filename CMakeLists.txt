@@ -9,7 +9,12 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
         ./src/**.h
         )
 
-add_executable(${PROJECT_NAME} WIN32 ${SOURCES})
+file(GLOB_RECURSE THIRD_PARTY_SOURCES CONFIGURE_DEPENDS
+        ./ThirdParty/DearImGui/**.cpp
+        ./ThirdParty/DearImGui/**.h
+        )
+
+add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${THIRD_PARTY_SOURCES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

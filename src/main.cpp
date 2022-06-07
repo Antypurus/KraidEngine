@@ -25,12 +25,45 @@
 #include <Core/Rendering/Camera.h>
 #include <Core/Rendering/Model/ModelLoader.h>
 
+#include <DearImGui/imgui.h>
+#include <DearImGui/imgui_impl_dx12.h>
+#include <DearImGui/imgui_impl_win32.h>
+
+#include <chrono>
+
+using namespace std::chrono;
+
+template<typename T>
+class CircularBuffer
+{
+public:
+    T* buffer = nullptr;
+    T* backbuffer = nullptr;
+    uint64 size = 0;
+public:
+    CircularBuffer(uint64 size):size(size)
+    {
+        buffer = (T*)malloc(size * sizeof(T));
+        backbuffer = (T*)malloc(size * sizeof(T));
+        memset(buffer, 0, size * sizeof(T));
+    }
+
+    void push(T value)
+    {
+        memcpy(backbuffer, buffer + 1, (size - 1) * sizeof(T));
+        backbuffer[size - 1] = value;
+        memcpy(buffer, backbuffer, size * sizeof(T));
+    }
+};
+
 struct cbuffer
 {
     DirectX::XMMATRIX model_view_project_matrix;
 };
 
 #define rad(x) (x*DirectX::XM_PI)/180.0f
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
@@ -56,7 +89,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     cbuffer input;
     XMMATRIX model_matrix = XMMatrixScaling(1.01f,1.01f,1.01f);
-    XMMATRIX projection_matrix = XMMatrixPerspectiveFovLH(rad(45.0), 1280.0f / 720.0f, 0.1f, 1000.0f);
+    XMMATRIX projection_matrix = XMMatrixPerspectiveFovLH(rad(90.0), 1280.0f / 720.0f, 0.001f, 1000.0f);
     XMMATRIX view_matrix = camera.ViewMatrix();
     input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
     ShaderParameter<cbuffer> color_param = ShaderParameter<cbuffer>(device, main_command_list, input);
@@ -82,6 +115,21 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
 
 
+    CBV_SRV_UAVDescriptorHeap gui_heap(device, 100);
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui::StyleColorsDark();
+    ImGui_ImplWin32_Init(window.window_handle);
+    ImGui_ImplDX12_Init(device.device.Get(),
+            2, DXGI_FORMAT_R8G8B8A8_UNORM,
+            gui_heap.descriptor_heap.Get(),
+            gui_heap->GetCPUDescriptorHandleForHeapStart(),
+            gui_heap->GetGPUDescriptorHandleForHeapStart());
+    window.RegisterUniversalEventCallback([](HWND WindowHandle, UINT Message, WPARAM WParam, LPARAM LParam) -> LRESULT {
+                return ImGui_ImplWin32_WndProcHandler(WindowHandle, Message, WParam, LParam);
+            });
+
     main_command_list.Close();
     main_command_list.Execute();
     //TODO(Tiago):this could be cleaned up into a wait for command list completion
@@ -101,13 +149,36 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     linear_sampler.Bind(main_command_list, 1);
     anisotropic_sampler.Bind(main_command_list, 2);
 
+    bool open = true;
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+    CircularBuffer<float> frame_times(400);
     while(window.open)
     {
+        end = high_resolution_clock::now();
+        auto elapsed = duration_cast<nanoseconds>(end - start).count();
+        float frame_time = elapsed/1000000.0f;
+        frame_times.push(frame_time);
+        
+        float highest_time = 0;
+        for(uint64 i = 0; i < frame_times.size; ++i)
+        {
+            if(frame_times.buffer[i] > highest_time) highest_time = frame_times.buffer[i];
+        }
+
+        swapchain.StartFrame(main_command_list);
+
+        ImGui_ImplDX12_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Begin("Frame time");
+        ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, "", 0.0f, highest_time, ImVec2(0.0f, 100.0f));
+        ImGui::End();
+
         view_matrix = camera.ViewMatrix();
         input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
         color_param.UpdateData(input, main_command_list);
-
-        swapchain.StartFrame(main_command_list);
 
         pso.Bind(main_command_list);
 
@@ -120,6 +191,11 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         
         model.Draw(main_command_list, 3);
         
+        ID3D12DescriptorHeap* gui_heaps[] = {gui_heap.descriptor_heap.Get()};
+        main_command_list->SetDescriptorHeaps(1, gui_heaps);
+        ImGui::Render();
+        ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), main_command_list.command_list.Get());
+
         swapchain.EndFrame(main_command_list);
 
         main_command_list.Close();
@@ -130,6 +206,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         main_fence.WaitForCompletion();
          
         main_command_list.Reset();
+
+        start = high_resolution_clock::now();
     }
 
     return 0;
