@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Core/Rendering/D3D12/D3D12.h>
-#include <vector>
+#include <Core/stdcpp.h>
 
 namespace Kraid
 {

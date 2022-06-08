@@ -1,6 +1,6 @@
 #pragma once
 
-#include <directxmath.h>
+#include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Window/Window.h>
 
 namespace Kraid

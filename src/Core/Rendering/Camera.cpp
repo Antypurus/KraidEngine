@@ -4,10 +4,8 @@
 #include "Camera.h"
 #include <Core/Window/Window.h>
 #include <Core/Utils/Log.h>
-
-#include <cmath>
 #include <Windowsx.h>
-#include <thread>
+#include <Core/stdcpp.h>
 
 namespace Kraid
 {

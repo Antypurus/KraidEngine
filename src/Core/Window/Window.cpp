@@ -1,9 +1,5 @@
 #include "Window.h"
 
-//3rd party/std lib includes
-#include <stdlib.h>
-#include <unordered_map>
-
 //our includes
 #include <Core/Threading/Thread.h>
 #include <Core/Utils/Log.h>

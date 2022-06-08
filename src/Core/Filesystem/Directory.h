@@ -2,9 +2,7 @@
 
 #include <Core/Threading/Thread.h>
 #include <Core/Threading/Lock.h>
-#include <unordered_map>
-#include <functional>
-#include <vector>
+#include <Core/stdcpp.h>
 
 namespace Kraid
 {

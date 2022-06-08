@@ -34,6 +34,7 @@
  *
  */
 
+/*
 #define BIT(x, b) (x & (0x1 << b)) >> b
 
 #define KB(x) x * 1024
@@ -686,4 +687,4 @@ namespace Kraid
     }
 
 }
-
+*/

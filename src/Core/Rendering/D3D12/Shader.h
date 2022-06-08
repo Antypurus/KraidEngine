@@ -4,12 +4,9 @@
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/DataStructures/StringView.h>
+#include <Core/Rendering/D3D12/D3D12.h>
 
-#include <string>
-#include <dxcapi.h>
-#include <d3d12shader.h>
-#include <d3dcompiler.h>
-#include <unordered_map>
+#include <Core/stdcpp.h>
 
 namespace Kraid
 {

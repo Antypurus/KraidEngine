@@ -1,8 +1,8 @@
 #include "Shader.h"
 
 #include <combaseapi.h>
-#include <dxcapi.h>
-#include <vector>
+#include <Core/Rendering/D3D12/D3D12.h>
+#include <Core/stdcpp.h>
 
 #include <Core/Windows.h>
 #include <Core/Utils/StringHelpers.h>

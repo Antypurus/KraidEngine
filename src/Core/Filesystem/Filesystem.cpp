@@ -3,9 +3,6 @@
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 #include <fileapi.h>
-#include <intsafe.h>
-#include <stdio.h>
-#include <string>
 
 #include "Directory.h"
 

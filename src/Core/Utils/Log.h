@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstdio>
+#include <Core/stdcpp.h>
 
 #include "../types.h"
 #include "../Windows.h"

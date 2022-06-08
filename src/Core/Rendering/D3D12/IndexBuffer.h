@@ -3,9 +3,7 @@
 #include "Core/Rendering/D3D12/CommandList.h"
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Rendering/D3D12/Resource/Resource.h>
-
-#include <d3d12.h>
-#include <vector>
+#include <Core/stdcpp.h>
 
 namespace Kraid
 {

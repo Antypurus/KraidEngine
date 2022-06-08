@@ -3,7 +3,6 @@
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 #include "Filesystem.h"
-#include <iostream>
 
 namespace Kraid
 {

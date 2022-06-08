@@ -1,8 +1,4 @@
 #include "Log.h"
-#include <corecrt_wstdio.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <tuple>
 
 #if LOGGING //only available if logging is enabled
 namespace Kraid

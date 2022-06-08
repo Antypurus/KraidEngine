@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Core/types.h>
-#include <string>
-#include <functional>
+#include <Core/stdcpp.h>
 
 #include <Core/DataStructures/Buffer.h>
 #include <Core/DataStructures/RefCounter.h>

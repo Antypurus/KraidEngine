@@ -4,7 +4,6 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
 
-#include <unordered_map>
 #include <Core/Utils/Log.h>
 #include <Core/Utils/StringHelpers.h>
 

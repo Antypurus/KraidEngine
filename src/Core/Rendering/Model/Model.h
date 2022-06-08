@@ -7,8 +7,7 @@
 #include <Core/Rendering/D3D12/IndexBuffer.h>
 #include <Core/Rendering/D3D12/Texture.h>
 
-#include <vector>
-#include <string>
+#include <Core/stdcpp.h>
 
 //TODO(Tiago): at one point or another we might want to consider making API independent
 namespace Kraid

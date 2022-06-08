@@ -3,8 +3,7 @@
 #include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/types.h>
-
-#include <vector>
+#include <Core/stdcpp.h>
 
 namespace Kraid
 {

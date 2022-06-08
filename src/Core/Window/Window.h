@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
-#include <functional>
-#include <unordered_map>
+#include <Core/stdcpp.h>
 
 #include <Core/Windows.h>
 #include <Core/types.h>
