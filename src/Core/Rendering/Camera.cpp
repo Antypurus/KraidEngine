@@ -1,11 +1,12 @@
-#include <minwindef.h>
 #define _USE_MATH_DEFINES
 
+#include <minwindef.h>
 #include "Camera.h"
 #include <Core/Window/Window.h>
 #include <Core/Utils/Log.h>
 #include <Windowsx.h>
 #include <Core/stdcpp.h>
+#include <thread>
 
 namespace Kraid
 {

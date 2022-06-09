@@ -1,6 +1,7 @@
 #include "DXGIFactory.h"
 
 #include <Core/types.h>
+#include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 
 namespace Kraid

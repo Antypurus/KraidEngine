@@ -102,7 +102,7 @@ namespace Kraid
 
         void Swapchain::Present()
         {
-            this->swapchain->Present(1,0);
+            this->swapchain->Present(0,0);
             this->current_backbuffer = this->current_backbuffer==1?0:1;
         }
 

@@ -1,9 +1,6 @@
 #pragma once
 
-#include <Core/stdcpp.h>
-
 #include "../types.h"
-#include "../Windows.h"
 #include "../BuildDefs.h"
 
 #ifndef NDEBUG
@@ -18,9 +15,9 @@ namespace Kraid
     {
         HANDLE stdin_handle;
         HANDLE stdout_handle;
-        FILE* stdin_stream = nullptr;
-        FILE* stdout_stream = nullptr;
-        FILE* stderr_stream = nullptr;
+        void* stdin_stream = nullptr;
+        void* stdout_stream = nullptr;
+        void* stderr_stream = nullptr;
 
     public:
         static void LogInfo(const wchar_t* source_file, uint32 source_line, const wchar_t* message_format, ...);

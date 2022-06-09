@@ -157,13 +157,12 @@ namespace Kraid
             buffer_addressing_range.End = this->width;//NOTE(Tiago): is there any reason why we should not address the entire buffer upfront?
 
             uint8* buffer_data_addressing = nullptr;
-            D3DCALL(this->resource->Map(0, &buffer_addressing_range, (void**)&buffer_data_addressing), "Mapped upload buffer into CPU addressing range");
+            this->resource->Map(0, &buffer_addressing_range, (void**)&buffer_data_addressing);
             if(buffer_data_addressing != nullptr)
             {
                 memset(buffer_data_addressing, 0, this->width);
                 memcpy(buffer_data_addressing, data, size);
                 this->resource->Unmap(0, &buffer_addressing_range);
-                LSUCCESS("Upload Buffer Data Set");
             }
             else
             {
@@ -179,7 +178,7 @@ namespace Kraid
             buffer_addressing_range.End = this->width;//NOTE(Tiago): is there any reason why we should not address the entire buffer upfront?
 
             uint8* buffer_data_addressing = nullptr;
-            D3DCALL(this->resource->Map(0, &buffer_addressing_range, (void**)&buffer_data_addressing), "Mapped upload buffer into CPU addressing range");
+            this->resource->Map(0, &buffer_addressing_range, (void**)&buffer_data_addressing);
             if(buffer_data_addressing != nullptr)
             {
                 uint64 row_pitch = std::lround(std::ceil(width * bytes_per_pixel / (double)256)) * 256;//TODO(Tiago):needs to clean up this calculation and redo the math in my head
@@ -189,7 +188,6 @@ namespace Kraid
                     memcpy(buffer_data_addressing + row * row_pitch, data + row * width * bytes_per_pixel, width * bytes_per_pixel);
                 }
                 this->resource->Unmap(0, &buffer_addressing_range);
-                LSUCCESS("Upload Buffer Data Set");
             }
             else
             {

@@ -1,8 +1,3 @@
-#include <DirectXMath.h>
-#include <d3dcommon.h>
-#include <windows.h>
-#include <iostream>
-
 #include <Core/Core.h>
 #include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/Rendering/D3D12/Fence.h>
@@ -29,9 +24,9 @@
 #include <DearImGui/imgui_impl_dx12.h>
 #include <DearImGui/imgui_impl_win32.h>
 
-#include <chrono>
+//#include <chrono>
 
-using namespace std::chrono;
+//using namespace std::chrono;
 
 template<typename T>
 class CircularBuffer
@@ -150,31 +145,40 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     anisotropic_sampler.Bind(main_command_list, 2);
 
     bool open = true;
-    auto start = std::chrono::high_resolution_clock::now();
-    auto end = std::chrono::high_resolution_clock::now();
+    //auto start = std::chrono::high_resolution_clock::now();
+    //auto end = std::chrono::high_resolution_clock::now();
     CircularBuffer<float> frame_times(400);
     while(window.open)
     {
-        end = high_resolution_clock::now();
-        auto elapsed = duration_cast<nanoseconds>(end - start).count();
-        float frame_time = elapsed/1000000.0f;
-        frame_times.push(frame_time);
-        
+        /*      
         float highest_time = 0;
+        float lowest_time = 0xFFFFFFFF;
+        float cummulative_frame_time = 0;
         for(uint64 i = 0; i < frame_times.size; ++i)
         {
-            if(frame_times.buffer[i] > highest_time) highest_time = frame_times.buffer[i];
+            float frame_time = frame_times.buffer[i];
+            cummulative_frame_time += frame_time;
+            if(frame_time > highest_time) highest_time = frame_time;
+            if(frame_time < lowest_time) lowest_time = frame_time;
         }
+        float average_frame_time = cummulative_frame_time / ((float)frame_times.size);
+        float average_fps = 1.0f / (average_frame_time/(1000.0f));
+        std::string average_fps_string = "Average FPS: " + std::to_string(average_fps);
+
+        start = high_resolution_clock::now();
+        */
 
         swapchain.StartFrame(main_command_list);
 
+        /*
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
 
         ImGui::Begin("Frame time");
-        ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, "", 0.0f, highest_time, ImVec2(0.0f, 100.0f));
+        ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
         ImGui::End();
+        */
 
         view_matrix = camera.ViewMatrix();
         input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
@@ -191,10 +195,12 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         
         model.Draw(main_command_list, 3);
         
+        /*
         ID3D12DescriptorHeap* gui_heaps[] = {gui_heap.descriptor_heap.Get()};
         main_command_list->SetDescriptorHeaps(1, gui_heaps);
         ImGui::Render();
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), main_command_list.command_list.Get());
+        */
 
         swapchain.EndFrame(main_command_list);
 
@@ -207,7 +213,13 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
          
         main_command_list.Reset();
 
-        start = high_resolution_clock::now();
+        /*
+        end = high_resolution_clock::now();
+        
+        auto elapsed = duration_cast<nanoseconds>(end - start).count();
+        float frame_time = elapsed/1000000.0f;
+        frame_times.push(frame_time);
+        */
     }
 
     return 0;

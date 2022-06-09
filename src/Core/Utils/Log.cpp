@@ -1,5 +1,8 @@
 #include "Log.h"
 
+#include <Core/stdcpp.h>
+#include <Core/Windows.h>
+
 #if LOGGING //only available if logging is enabled
 namespace Kraid
 {
@@ -13,9 +16,9 @@ namespace Kraid
         this->stdin_handle = GetStdHandle(STD_INPUT_HANDLE);
         this->stdout_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
-        freopen_s(&this->stdin_stream, "CONIN$", "r", stdin);//replace stdin with the current console input buffer
-        freopen_s(&this->stdout_stream, "CONOUT$", "w", stdout);//replace stdout with the current console output buffer
-        freopen_s(&this->stderr_stream, "CONOUT$", "w", stderr);//replace stderr with the current console output buffer
+        freopen_s((FILE**)&this->stdin_stream, "CONIN$", "r", stdin);//replace stdin with the current console input buffer
+        freopen_s((FILE**)&this->stdout_stream, "CONOUT$", "w", stdout);//replace stdout with the current console output buffer
+        freopen_s((FILE**)&this->stderr_stream, "CONOUT$", "w", stderr);//replace stderr with the current console output buffer
     }
 
     LogConsole::~LogConsole()
