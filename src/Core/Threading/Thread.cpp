@@ -1,6 +1,7 @@
 #include "Thread.h"
 
 #include <Core/Utils/Log.h>
+#include <Core/Windows.h>
 
 namespace Kraid {
 

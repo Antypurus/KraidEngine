@@ -1,10 +1,13 @@
 #pragma once
 
-#include <Core/stdcpp.h>
-#include <Core/Windows.h>
+#include <functional>
 
 namespace Kraid
 {
+
+    typedef void* HANDLE;
+    typedef unsigned long DWORD;
+
     struct Thread
     {
 

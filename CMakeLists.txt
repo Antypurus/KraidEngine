@@ -26,7 +26,18 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 target_include_directories(${PROJECT_NAME} PRIVATE ./ThirdParty/)
 target_include_directories(${PROJECT_NAME} PRIVATE ./src/)
-target_precompile_headers(${PROJECT_NAME} PRIVATE [[<Core/Rendering/D3D12/D3D12.h>][<Core/stdcpp.h>][<Core/Windows.h>][<tinyobjloader/tiny_obj_loader.h>]])
+target_precompile_headers(${PROJECT_NAME} PRIVATE 
+        <Core/stdcpp.h>
+        <Core/Rendering/D3D12/D3D12.h>
+        <Core/Windows.h>]
+        <tinyobjloader/tiny_obj_loader.h>
+        <unordered_map>
+        <string>
+        <vector>
+        <functional>
+        <thread>
+        <chrono>
+        )
 
 add_compile_options(${PROJECT_NAME} /wd26495)
 
