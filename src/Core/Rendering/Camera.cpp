@@ -6,12 +6,11 @@
 #include <Core/Utils/Log.h>
 #include <Windowsx.h>
 #include <Core/stdcpp.h>
-#include <thread>
 
 namespace Kraid
 {
     
-#define ToRadian(degree) ((degree) * (M_PI / 180.0f))
+#define ToRadian(degree) ((degree) * (XM_PI / 180.0f))
     
 	Camera::Camera(Window& window, const XMFLOAT3& position, const XMFLOAT3& view_direction)
 	{

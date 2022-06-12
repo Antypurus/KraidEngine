@@ -29,7 +29,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ./src/)
 target_precompile_headers(${PROJECT_NAME} PRIVATE 
         <Core/stdcpp.h>
         <Core/Rendering/D3D12/D3D12.h>
-        <Core/Windows.h>]
+        <Core/Windows.h>
         <tinyobjloader/tiny_obj_loader.h>
         <unordered_map>
         <string>
