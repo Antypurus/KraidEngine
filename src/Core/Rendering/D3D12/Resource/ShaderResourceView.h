@@ -1,16 +1,21 @@
 #pragma once
 
 #include <Core/Rendering/D3D12/D3D12.h>
-#include <Core/Rendering/D3D12/GPUDevice.h>
-#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
-#include <Core/Rendering/D3D12/Resource/Resource.h>
-#include <Core/Rendering/D3D12/CommandList.h>
+#include <Core/types.h>
 
 namespace Kraid
 {
 
 namespace D3D12
 {
+
+    struct GPUDevice;
+    struct CBV_SRV_UAVDescriptorHeap;
+    struct BufferResource;
+    struct Texture1DResource;
+    struct Texture2DResource;
+    struct Texture3DResource;
+    struct GraphicsCommandList;
 
     class ShaderResourceView
     {

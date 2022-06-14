@@ -1,8 +1,5 @@
 #include "VertexBuffer.h"
 
-#include <d3d12.h>
-#include <stdlib.h>
-
 namespace Kraid
 {
     namespace D3D12

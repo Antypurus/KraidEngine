@@ -1,18 +1,19 @@
 #pragma once
 
 #include <Core/Rendering/D3D12/D3D12.h>
-#include <Core/Window/Window.h>
 
 namespace Kraid
 {
     
+    struct Window;
+
     using namespace DirectX;
     
-#define W_KEY 0x57
-#define A_KEY 0x41
-#define S_KEY 0x53
-#define D_KEY 0x44
-#define CAM_MAX_PITCH 90.0f
+    #define W_KEY 0x57
+    #define A_KEY 0x41
+    #define S_KEY 0x53
+    #define D_KEY 0x44
+    #define CAM_MAX_PITCH 90.0f
     
     struct Camera
     {

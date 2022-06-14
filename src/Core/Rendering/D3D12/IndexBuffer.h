@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Core/Rendering/D3D12/CommandList.h"
 #include <Core/Rendering/D3D12/D3D12.h>
-#include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/stdcpp.h>
+#include <Core/Rendering/D3D12/Resource/Resource.h>
 
 namespace Kraid
 {
@@ -12,6 +11,7 @@ namespace Kraid
     {
 
         struct GPUDevice;
+        struct GraphicsCommandList;
 
         struct IndexBuffer
         {

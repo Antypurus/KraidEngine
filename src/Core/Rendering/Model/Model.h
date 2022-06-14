@@ -1,11 +1,9 @@
 #pragma once
 
-#include <Core/Rendering/D3D12/GPUDevice.h>
-#include <Core/Rendering/D3D12/CommandList.h>
-#include <Core/Rendering/Transform.h>
 #include <Core/Rendering/D3D12/VertexBuffer.h>
 #include <Core/Rendering/D3D12/IndexBuffer.h>
 #include <Core/Rendering/D3D12/Texture.h>
+#include <Core/Rendering/Transform.h>
 
 #include <Core/stdcpp.h>
 
@@ -14,6 +12,12 @@ namespace Kraid
 {
 
     using namespace D3D12;
+
+    namespace D3D12
+    {
+        struct GPUDevice;
+        struct GraphicsCommandList;
+    };
 
     class BlinPhongMaterial
     {

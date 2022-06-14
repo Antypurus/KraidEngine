@@ -3,9 +3,7 @@
 #include <Core/Window/Window.h>
 #include <Core/Utils/Log.h>
 
-#include "Core/Rendering/D3D12/Resource/Resource.h"
 #include <Core/Rendering/D3D12/CommandList.h>
-#include <d3d12.h>
 #include "GPUDevice.h"
 #include "DXGIFactory.h"
 

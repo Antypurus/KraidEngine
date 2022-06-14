@@ -13,6 +13,7 @@
 
 #include <Core/Utils/Log.h>
 #include <Core/Rendering/D3D12/GPUDevice.h>
+#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 
 namespace Kraid
 {

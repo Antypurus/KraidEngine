@@ -1,13 +1,20 @@
 #pragma once
 
-#include <Core/Rendering/D3D12/Resource/Resource.h>
-#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
+#include <Core/types.h>
 
 namespace Kraid
 {
 
     namespace D3D12
     {
+
+        struct GPUDevice;
+        struct BufferResource;
+        struct Texture1DResource;
+        struct Texture2DResource;
+        struct Texture3DResource;
+        struct CBV_SRV_UAVDescriptorHeap;
+        struct GraphicsCommandList;
 
         struct ConstantBufferView
         {

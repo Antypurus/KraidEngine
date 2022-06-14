@@ -32,8 +32,17 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
         <Core/Windows.h>
 
         <tinyobjloader/tiny_obj_loader.h>
+        <DearImGui/imgui.h>
 
+        <windows.h>
         <d3d12.h>
+        <wrl.h>
+        <d3d12video.h>
+        <dxgi1_6.h>
+        <dxcapi.h>
+        <d3d12shader.h>
+        <d3dcompiler.h>
+        <DirectXMath.h>
 
         <unordered_map>
         <string>

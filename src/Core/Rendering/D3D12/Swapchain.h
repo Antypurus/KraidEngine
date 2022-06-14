@@ -1,11 +1,11 @@
 #pragma once
 
 #include <Core/Rendering/D3D12/D3D12.h>
-#include <Core/stdcpp.h>
 #include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/Resource/DepthStencilView.h>
 #include <Core/Rendering/D3D12/Resource/RenderTargetView.h>
+#include <vector>
 
 namespace Kraid
 {

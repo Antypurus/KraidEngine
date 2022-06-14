@@ -2,6 +2,7 @@
 
 #include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/Rendering/D3D12/CommandList.h>
+#include "Resource.h"
 
 namespace Kraid
 {

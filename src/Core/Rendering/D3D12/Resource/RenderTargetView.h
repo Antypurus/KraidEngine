@@ -1,7 +1,6 @@
 #pragma  once
 
 #include <Core/types.h>
-#include <Core/Rendering/D3D12/Resource/Resource.h>
 
 namespace Kraid
 {
@@ -10,6 +9,11 @@ namespace Kraid
     {
 
         struct CommandList;
+        struct GPUDevice;
+        struct BufferResource;
+        struct Texture1DResource;
+        struct Texture2DResource;
+        struct Texture3DResource;
 
         struct RenderTargetView
         {

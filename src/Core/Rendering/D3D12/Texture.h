@@ -4,13 +4,16 @@
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/Resource/ShaderResourceView.h>
 #include <Core/DataStructures/StringView.h>
-#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 
 namespace Kraid
 {
 
 namespace D3D12
 {
+
+    struct GPUDevice;
+    struct GraphicsCommandList;
+    struct SamplerDescriptorHeap;
 
     enum class TextureAddressingMode
     {

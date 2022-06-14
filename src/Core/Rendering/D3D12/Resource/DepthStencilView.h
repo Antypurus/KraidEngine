@@ -1,9 +1,7 @@
 #pragma once
 
+#include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/types.h>
-#include <Core/Rendering/D3D12/CommandList.h>
-
-#include "Resource.h"
 
 namespace Kraid
 {
@@ -12,6 +10,9 @@ namespace Kraid
     {
 
         struct GPUDevice;
+        struct Texture1DResource;
+        struct Texture2DResource;
+        struct GraphicsCommandList;
 
         struct DepthStencilView
         {

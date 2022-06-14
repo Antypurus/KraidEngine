@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Core/Rendering/D3D12/D3D12.h>
+#include <d3d12.h>
 
 #include <Core/types.h>
-
-#include "CommandQueue.h"
+#include <Core/Rendering/D3D12/CommandQueue.h>
 #include <Core/Rendering/D3D12/CommandList.h>
 #include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
+
 #include "DXGIFactory.h"
 
 namespace Kraid

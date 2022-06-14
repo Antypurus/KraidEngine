@@ -1,6 +1,6 @@
 #include "ConstantBufferView.h"
-#include "Core/Rendering/D3D12/Resource/Resource.h"
 
+#include "Core/Rendering/D3D12/Resource/Resource.h"
 #include <Core/Rendering/D3D12/GPUDevice.h>
 
 namespace Kraid

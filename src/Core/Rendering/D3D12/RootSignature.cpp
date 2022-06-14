@@ -1,5 +1,6 @@
 #include "RootSignature.h"
 
+#include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
 

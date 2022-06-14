@@ -1,11 +1,12 @@
 #include "ModelLoader.h"
-#include <limits.h>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tinyobjloader/tiny_obj_loader.h>
 
 #include <Core/Utils/Log.h>
 #include <Core/Utils/StringHelpers.h>
+#include <Core/Rendering/D3D12/GPUDevice.h>
+#include <Core/Rendering/D3D12/CommandList.h>
 
 namespace Kraid
 {
