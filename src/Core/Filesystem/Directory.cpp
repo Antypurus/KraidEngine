@@ -9,7 +9,7 @@ namespace Kraid
 
     Directory::Directory(const wchar_t* path)
     {
-        this->directory_handle = CreateFile(path,
+        this->directory_handle = CreateFileW(path,
             FILE_LIST_DIRECTORY | GENERIC_READ | GENERIC_WRITE ,
             FILE_SHARE_WRITE | FILE_SHARE_READ | FILE_SHARE_DELETE,
             NULL,
@@ -73,7 +73,7 @@ namespace Kraid
     DirectoryWatcher::DirectoryWatcher(const wchar_t* directory)
     {
         this->watched_dir = {directory};
-        this->wait_event_handle = FindFirstChangeNotification(directory, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+        this->wait_event_handle = FindFirstChangeNotificationW(directory, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
         if(this->wait_event_handle == INVALID_HANDLE_VALUE)
         {
             PRINT_WINERROR();

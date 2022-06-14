@@ -96,7 +96,7 @@ namespace Kraid
 			window_class.lpszClassName = window_class_name;
 			window_class.hInstance = instance;
 			window_class.lpfnWndProc = Window::WindowProc;
-            window_class.hIcon = (HICON) LoadImage(NULL, L"icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+            window_class.hIcon = (HICON) LoadImageW(NULL, L"icon.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
 			RegisterClassW(&window_class);
 
 			this->window_handle = CreateWindowExW(
