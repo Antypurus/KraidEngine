@@ -62,7 +62,7 @@ namespace Kraid
                 EndPaint(hwnd, &ps);
                 return 0;
             }
-            default: return DefWindowProc(hwnd, uMsg, wParam, lParam);
+            default: return DefWindowProcW(hwnd, uMsg, wParam, lParam);
 		}
 	}
 
