@@ -38,6 +38,9 @@ namespace Kraid
             swapchain_description.SampleDesc.Quality = 0;
             swapchain_description.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
             swapchain_description.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+            swapchain_description.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING;
+            swapchain_description.Stereo = false;
+            swapchain_description.Scaling = DXGI_SCALING_STRETCH;
 
             ComPtr<IDXGISwapChain1> intermediate_swapchain = nullptr;
             DXGIFactory factory;
@@ -100,7 +103,9 @@ namespace Kraid
 
         void Swapchain::Present()
         {
-            this->swapchain->Present(0,0);
+            DXGI_PRESENT_PARAMETERS PresentDesc;
+            ZeroMemory(&PresentDesc, sizeof(PresentDesc));
+            this->swapchain->Present1(0, DXGI_PRESENT_ALLOW_TEARING, &PresentDesc);
             this->current_backbuffer = this->current_backbuffer==1?0:1;
         }
 
