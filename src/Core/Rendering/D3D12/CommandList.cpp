@@ -33,6 +33,44 @@ namespace Kraid
             this->command_queue->ExecuteCommandLists(1, lists);
         }
 
+        void CommandList::SetShaderResourceHeap(CBV_SRV_UAVDescriptorHeap& heap)
+        {
+            this->shader_resource_heap = &heap;
+            this->SetDescriptorHeaps();
+        }
+
+        void CommandList::SetSamplerHeap(SamplerDescriptorHeap& heap)
+        {
+            this->sampler_heap = &heap;
+            this->SetDescriptorHeaps();
+        }
+
+        void CommandList::SetDescriptorHeaps()
+        {
+            if(this->sampler_heap == nullptr && this->shader_resource_heap == nullptr)
+            {
+                return;
+            }
+            else if(this->sampler_heap != nullptr && this->shader_resource_heap == nullptr)
+            {
+                ID3D12DescriptorHeap* heaps[] = {this->sampler_heap->descriptor_heap.Get()};
+                this->command_list->SetDescriptorHeaps(1, heaps);
+            }
+            else if (this->sampler_heap == nullptr && this->shader_resource_heap != nullptr)
+            {
+                ID3D12DescriptorHeap* heaps[] = {this->shader_resource_heap->descriptor_heap.Get()};
+                this->command_list->SetDescriptorHeaps(1, heaps);
+            }
+            else
+            {
+                ID3D12DescriptorHeap* heaps[] = {
+                    this->shader_resource_heap->descriptor_heap.Get(),
+                    this->sampler_heap->descriptor_heap.Get()
+                };
+                this->command_list->SetDescriptorHeaps(2, heaps);
+            }
+        }
+
         GraphicsCommandList::GraphicsCommandList(GPUDevice& device)
         {
           D3DCALL(device->CreateCommandList(0,

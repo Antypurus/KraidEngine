@@ -10,6 +10,8 @@ namespace Kraid
     {
 
         struct GPUDevice;
+        struct CBV_SRV_UAVDescriptorHeap;
+        struct SamplerDescriptorHeap;
 
         using namespace Microsoft::WRL;
 
@@ -18,12 +20,19 @@ namespace Kraid
             ComPtr<ID3D12GraphicsCommandList6> command_list = nullptr;
             ComPtr<ID3D12CommandAllocator> command_allocator = nullptr;
             CommandQueue command_queue;
+            CBV_SRV_UAVDescriptorHeap* shader_resource_heap = nullptr;//TODO(Tiago):maybe i need some kind of way to clearly demark references
+            SamplerDescriptorHeap* sampler_heap = nullptr;
 
             CommandList() = default;
             ID3D12GraphicsCommandList6* operator->();
             void Close();
             void Reset();
             void Execute();
+            void SetShaderResourceHeap(CBV_SRV_UAVDescriptorHeap& heap);
+            void SetSamplerHeap(SamplerDescriptorHeap& heap);
+
+        private:
+            void SetDescriptorHeaps();
         };
 
         struct GraphicsCommandList :public CommandList

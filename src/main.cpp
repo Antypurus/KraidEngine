@@ -115,12 +115,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     pso.Bind(main_command_list);
 
-    //TODO(Tiago):needs cleanup
-    ID3D12DescriptorHeap* heaps[] = {
-        device.sampler_descriptior_heap.descriptor_heap.Get(),
-        device.shader_resource_heap.descriptor_heap.Get()
-    };
-    main_command_list->SetDescriptorHeaps(2, heaps);
+    main_command_list.SetSamplerHeap(device.sampler_descriptior_heap);
+    main_command_list.SetShaderResourceHeap(device.shader_resource_heap);
+
     point_sampler.Bind(main_command_list, 0);
     linear_sampler.Bind(main_command_list, 1);
     anisotropic_sampler.Bind(main_command_list, 2);
@@ -164,8 +161,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         pso.Bind(main_command_list);
 
-        //TODO(Tiago):needs cleanup
-        main_command_list->SetDescriptorHeaps(2, heaps);
+        main_command_list.SetShaderResourceHeap(device.shader_resource_heap);
+        main_command_list.SetSamplerHeap(device.sampler_descriptior_heap);
         point_sampler.Bind(main_command_list, 0);
         linear_sampler.Bind(main_command_list, 1);
         anisotropic_sampler.Bind(main_command_list, 2);

@@ -46,8 +46,7 @@ namespace Kraid
 
     void ImGUI::EndFrame(GraphicsCommandList& command_list)
     {
-        ID3D12DescriptorHeap* bind_heaps[] = {this->gui_descriptor_heap.descriptor_heap.Get()};
-        command_list->SetDescriptorHeaps(1, bind_heaps);
+        command_list.SetShaderResourceHeap(this->gui_descriptor_heap);
         ImGui::Render();
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), command_list.command_list.Get());
     }
