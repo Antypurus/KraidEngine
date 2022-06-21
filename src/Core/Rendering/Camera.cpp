@@ -25,12 +25,12 @@ namespace Kraid
 		if (has_changed)
 		{
 			XMVECTOR focus_position = {
-				view_direction.x,
+				-view_direction.x,
 				view_direction.y,
 				view_direction.z,1.0f };
-			XMVECTOR position = { this->position.x, this->position.y, this->position.z,1.0f };
+			XMVECTOR position = { -this->position.x, this->position.y, this->position.z,1.0f };
 			XMVECTOR up_dir = { up_direction.x,up_direction.y,up_direction.z,1.0f };
-			view_matrix = XMMatrixLookToLH(position, focus_position, up_dir);
+			view_matrix = XMMatrixLookToRH(position, focus_position, up_dir);
 			has_changed = false;
 		}
 		return view_matrix;

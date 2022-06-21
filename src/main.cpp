@@ -81,7 +81,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     cbuffer input;
     XMMATRIX model_matrix = XMMatrixScaling(1.01f,1.01f,1.01f);
-    XMMATRIX projection_matrix = XMMatrixPerspectiveFovLH(rad(45.0), 1280.0f / 720.0f, 0.001f, 1000.0f);
+    XMMATRIX projection_matrix = XMMatrixPerspectiveFovRH(rad(45.0), 1280.0f / 720.0f, 0.001f, 1000.0f);
     XMMATRIX view_matrix = camera.ViewMatrix();
     input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
     ShaderParameter<cbuffer> color_param = ShaderParameter<cbuffer>(device, main_command_list, input);
