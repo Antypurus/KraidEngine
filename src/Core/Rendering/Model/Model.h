@@ -25,9 +25,7 @@ namespace Kraid
         XMFLOAT3 diffuse_coeficient = {0,0,0};
         XMFLOAT3 specular_coeficient = {0,0,0};
         XMFLOAT3 ambient_coeficient = {0,0,0};
-
-        Texture texture;
-        bool has_texture = false;
+        Texture* texture = nullptr;//NOTE(Tiago):just a reference
 
         BlinPhongMaterial(
             const XMFLOAT3& diffuse_coeficient  = {0,0,0},
@@ -45,12 +43,7 @@ namespace Kraid
         
         inline BlinPhongMaterial& operator=(const BlinPhongMaterial& other)
         {
-            this->has_texture = other.has_texture;
-            if(this->has_texture)
-            {
-                this->texture = other.texture;
-            }
-
+            this->texture = other.texture;
             this->diffuse_coeficient = other.diffuse_coeficient;
             this->ambient_coeficient = other.ambient_coeficient;
             this->specular_coeficient = other.specular_coeficient;
@@ -63,25 +56,19 @@ namespace Kraid
     {
     public:
         IndexBuffer index_buffer;
-        
-        bool has_normal_map = false;
-        Texture normal_map;
-
+        Texture* normal_map = nullptr;//NOTE(Tiago):just a reference
         Transform local_transform;
         Transform* global_transform = nullptr;
-        BlinPhongMaterial material;
-
-        PrimitiveTopology mesh_type = PrimitiveTopology::Triangle;
+        BlinPhongMaterial* material;
 
         Submesh() = default;
         Submesh(
             GPUDevice& device,
             GraphicsCommandList& command_list,
             const std::vector<uint32>& indices,
-            BlinPhongMaterial material,
+            BlinPhongMaterial* material,
             const Transform& local_transform = Transform(),
-            const std::string& normal_map_path = "",
-            PrimitiveTopology mesh_type = PrimitiveTopology::Triangle
+            const std::string& normal_map_path = ""
         );
 
         void SetGlobalTransformReference(Transform* global_transform);
@@ -94,6 +81,7 @@ namespace Kraid
         VertexBuffer<Vertex> global_vertex_buffer;
         Transform global_transform;
         std::vector<Submesh> submeshes;
+        std::vector<BlinPhongMaterial> materials;
 
         Model() = default;
         Model(
@@ -101,6 +89,7 @@ namespace Kraid
             GraphicsCommandList& command_list,
             const std::vector<Submesh>& meshes,
             const std::vector<Vertex>& vertices,
+            std::vector<BlinPhongMaterial>&& materials,
             const Transform& global_transform = Transform()
         );
         void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0, uint32 normal_map_slot = 0);

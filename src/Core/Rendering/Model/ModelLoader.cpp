@@ -31,6 +31,8 @@ namespace Kraid
             return Model();
         }
 
+        LINFO("tinyobj vertex size: %d bytes", attribute.vertices.capacity() * sizeof(tinyobj::real_t));
+
         std::vector<BlinPhongMaterial> mats;
         for(auto& material: materials)
         {
@@ -50,9 +52,8 @@ namespace Kraid
         }
 
         std::vector<Vertex> vertices;
-        std::unordered_map<UINT, UINT> index_map;
-        std::unordered_map<uint64, std::vector<uint32>> submesh_indices;//NOTE(Tiago):material id -> indices, submeshes are defined by their material
         std::vector<Submesh> submeshes;
+        std::unordered_map<uint64, std::vector<uint32>> submesh_indices;//NOTE(Tiago):material id -> indices, submeshes are defined by their material
         for (auto& shape : shapes)
         {
             uint64 index_offset = 0;
@@ -66,13 +67,6 @@ namespace Kraid
                     uint64 uv_index = shape.mesh.indices[index_offset + j].texcoord_index;
                     uint64 material_id = shape.mesh.material_ids[i];
                     
-                    //if(index_map.contains(vertex_index))
-                    //{
-                    //    uint64 index = index_map[vertex_index];
-                    //    submesh_indices[material_id].push_back(index);
-                    //}
-                    //else
-                    {
                         Vertex vert;
                         vert.position = XMFLOAT3(
                                 attribute.vertices[vertex_index * 3],
@@ -91,9 +85,7 @@ namespace Kraid
                                 1.0f - attribute.texcoords[uv_index * 2 + 1]);
 
                         vertices.push_back(vert);
-                        index_map[vertex_index] = vertices.size() - 1;
                         submesh_indices[material_id].push_back(vertices.size() - 1);
-                    }
 
                 }
                 index_offset += vertices_in_face;
@@ -108,10 +100,10 @@ namespace Kraid
             {
                 normal_map_path = basedir + "/" + normal_map_path;
             }
-            submeshes.emplace_back(device, command_list, submesh.second, mats[material_id], Transform(), normal_map_path);
+            submeshes.emplace_back(device, command_list, submesh.second, &mats[material_id], Transform(), normal_map_path);
         }
 
-        return Model(device, command_list, submeshes, vertices);
+        return Model(device, command_list, submeshes, vertices, std::move(mats));
     }
 
 }

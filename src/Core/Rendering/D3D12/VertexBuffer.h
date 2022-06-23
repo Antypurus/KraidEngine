@@ -50,9 +50,34 @@ namespace Kraid
             ):position(position), normal(normal), color(color), texture_coordinates(texture_coordinates) {};
             static D3D12_INPUT_LAYOUT_DESC GenerateVertexDescription();
 
-            bool operator==(const Vertex& other)
+            bool operator==(const Vertex& other) const
             {
-                return this->position.x == other.position.x && this->position.y == other.position.y && this->position.z == other.position.z;
+                { 
+                    XMVECTOR original = {position.x,position.y,position.z,1.0f};
+                    XMVECTOR other_vec = {other.position.x,other.position.y,other.position.z,1.0f};
+                    if(!XMVector3Equal(original,other_vec))
+                    {
+                        return false;
+                    }
+		        }
+                { 
+                    XMVECTOR original = {normal.x,normal.y,normal.z,1.0f};
+                    XMVECTOR other_vec = {other.normal.x,other.normal.y,other.normal.z,1.0f};
+                    if(!XMVector3Equal(original,other_vec))
+                    {
+                        return false;
+                    }
+		        }
+
+		        {
+                    XMVECTOR original = { texture_coordinates.x,texture_coordinates.y,1.0f,1.0f };
+                    XMVECTOR other_vec = { other.texture_coordinates.x,other.texture_coordinates.y,1.0f,1.0f };
+                    if (!XMVector3Equal(original, other_vec))
+                    {
+                        return false;
+                    }
+                }
+                return true;
             }
         };
 
@@ -104,4 +129,33 @@ namespace Kraid
 
     }
 
+}
+
+static inline void hash_combine(size_t& seed, size_t value)
+{
+	value += 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	seed ^= value;
+}
+
+namespace std
+{
+    template<> struct hash<Kraid::D3D12::Vertex>
+    {
+        size_t operator()(const Kraid::D3D12::Vertex& vertex) const
+        {
+            size_t seed = 0;
+			hash_combine(seed,static_cast<size_t>(vertex.position.x));
+			hash_combine(seed,static_cast<size_t>(vertex.position.y));
+			hash_combine(seed,static_cast<size_t>(vertex.position.z));
+            
+            hash_combine(seed,static_cast<size_t>(vertex.normal.x));
+			hash_combine(seed,static_cast<size_t>(vertex.normal.y));
+			hash_combine(seed,static_cast<size_t>(vertex.normal.z));
+            
+            hash_combine(seed,static_cast<size_t>(vertex.texture_coordinates.x));
+			hash_combine(seed,static_cast<size_t>(vertex.texture_coordinates.y));
+
+			return seed;
+        }
+    };
 }
