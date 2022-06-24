@@ -144,16 +144,16 @@ namespace std
         size_t operator()(const Kraid::D3D12::Vertex& vertex) const
         {
             size_t seed = 0;
-			hash_combine(seed,static_cast<size_t>(vertex.position.x));
-			hash_combine(seed,static_cast<size_t>(vertex.position.y));
-			hash_combine(seed,static_cast<size_t>(vertex.position.z));
+			hash_combine(seed,*((uint32*)&vertex.position.x));
+			hash_combine(seed,*((uint32*)&vertex.position.y));
+			hash_combine(seed,*((uint32*)&vertex.position.z));
             
-            hash_combine(seed,static_cast<size_t>(vertex.normal.x));
-			hash_combine(seed,static_cast<size_t>(vertex.normal.y));
-			hash_combine(seed,static_cast<size_t>(vertex.normal.z));
+            hash_combine(seed,*((uint32*)&vertex.normal.x));
+			hash_combine(seed,*((uint32*)&vertex.normal.y));
+			hash_combine(seed,*((uint32*)&vertex.normal.z));
             
-            hash_combine(seed,static_cast<size_t>(vertex.texture_coordinates.x));
-			hash_combine(seed,static_cast<size_t>(vertex.texture_coordinates.y));
+            hash_combine(seed,*((uint32*)&vertex.texture_coordinates.x));
+			hash_combine(seed,*((uint32*)&vertex.texture_coordinates.y));
 
 			return seed;
         }
