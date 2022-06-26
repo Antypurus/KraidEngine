@@ -4,6 +4,7 @@
 #include <Core/Rendering/D3D12/IndexBuffer.h>
 #include <Core/Rendering/D3D12/Texture.h>
 #include <Core/Rendering/Transform.h>
+#include <Core/Rendering/D3D12/ShaderParameter.h>
 
 #include <Core/stdcpp.h>
 
@@ -60,6 +61,7 @@ namespace Kraid
         Transform local_transform;
         Transform* global_transform = nullptr;
         BlinPhongMaterial* material;
+        ShaderParameter<XMMATRIX> model_cbuffer;
 
         Submesh() = default;
         Submesh(
@@ -72,7 +74,7 @@ namespace Kraid
         );
 
         void SetGlobalTransformReference(Transform* global_transform);
-        void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0, uint32 normal_map_slot = 0);
+        void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0,uint32 model_matrix_slot = 0, uint32 normal_map_slot = 0);
     };
 
     class Model
@@ -92,7 +94,7 @@ namespace Kraid
             std::vector<BlinPhongMaterial>&& materials,
             const Transform& global_transform = Transform()
         );
-        void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0, uint32 normal_map_slot = 0);
+        void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0, uint32 model_matrix_slot = 0, uint32 normal_map_slot = 0);
     };
 
 }

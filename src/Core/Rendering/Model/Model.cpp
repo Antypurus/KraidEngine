@@ -47,6 +47,14 @@ namespace Kraid
         this->index_buffer = IndexBuffer(device, indices, command_list);
         this->local_transform  = local_transform;
         this->material = material;
+
+        Transform final_transform = this->local_transform;
+        if(this->global_transform != nullptr)
+        {
+            final_transform = final_transform + *this->global_transform;
+        }
+        XMMATRIX model_matrix = final_transform.GetModelMatrix(); 
+        this->model_cbuffer = ShaderParameter<XMMATRIX>(device, command_list, model_matrix);
     }
 
     void Submesh::SetGlobalTransformReference(Transform* global_transform)
@@ -54,8 +62,17 @@ namespace Kraid
         this->global_transform = global_transform;
     }
 
-    void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 normal_map_slot)
+    void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 model_matrix_slot, uint32 normal_map_slot)
     {
+        Transform final_transform = this->local_transform;
+        if(this->global_transform != nullptr)
+        {
+            final_transform = final_transform + *this->global_transform;
+        }
+        XMMATRIX model_matrix = final_transform.GetModelMatrix();
+        this->model_cbuffer.UpdateData(model_matrix, command_list);
+        this->model_cbuffer.Bind(command_list, model_matrix_slot);
+
         this->index_buffer.Bind(command_list);
         if(this->material->texture != nullptr)
         {
@@ -86,14 +103,14 @@ namespace Kraid
         }
     }
 
-    void Model::Draw(GraphicsCommandList& command_list, uint32 texture_slot, uint32 normal_map_slot)
+    void Model::Draw(GraphicsCommandList& command_list, uint32 texture_slot, uint32 model_matrix_slot, uint32 normal_map_slot)
     {
         if (this->global_vertex_buffer.vertex_buffer.resource != nullptr)//TODO(Tiago): figure out better way to detect unloaded model
         {
             this->global_vertex_buffer.Bind(command_list);
             for (auto submesh : this->submeshes)
             {
-                submesh.Draw(command_list, texture_slot, normal_map_slot);
+                submesh.Draw(command_list, texture_slot,model_matrix_slot, normal_map_slot);
             }
         }
         else

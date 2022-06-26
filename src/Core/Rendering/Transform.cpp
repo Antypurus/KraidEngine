@@ -22,4 +22,23 @@ namespace Kraid
         return ret;
     }
 
+    Transform Transform::operator+(const Transform& other)
+    {
+        Transform ret = *this;
+
+        ret.translation.x += other.translation.x;
+        ret.translation.y += other.translation.y;
+        ret.translation.z += other.translation.z;
+
+        ret.scale.x += other.scale.x;
+        ret.scale.y += other.scale.y;
+        ret.scale.z += other.scale.z;
+
+        ret.rotation.x += other.rotation.x;
+        ret.rotation.y += other.rotation.y;
+        ret.rotation.z += other.rotation.z;
+
+        return ret;
+    }
+
 }

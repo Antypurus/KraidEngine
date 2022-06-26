@@ -22,6 +22,7 @@ namespace Kraid
             :translation(translation),scale(scale),rotation(rotation){};
 
         XMMATRIX GetModelMatrix() const;
+        Transform operator+(const Transform& other);
     };
 
 }
