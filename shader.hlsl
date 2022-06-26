@@ -4,10 +4,21 @@ SamplerState linear_sampler: register(s1);
 SamplerState anisotropic_sampler: register(s2);
 Texture2D mesh_texture: register(t0);
 
-cbuffer input_params: register(b0)
+cbuffer global_input: register(b0)
 {
-    float4x4 mvp;
+    float4x4 view_matrix;
+    float4x4 projection_matrix;
+    float4x4 pad1;
+    float4x4 pad2;
 };
+
+cbuffer input_model: register(b1)
+{
+   float4x4 model_matrix;
+   float4x4 pad3;
+   float4x4 pad4;
+   float4x4 pad5;
+}
 
 struct VS_OUTPUT
 {
@@ -29,7 +40,9 @@ VS_OUTPUT VSMain(VS_INPUT input)
 {
 	VS_OUTPUT output;
 
-	output.position = mul(mvp, float4(input.pos,1.0f));
+    float4x4 vp = mul(projection_matrix, view_matrix);
+    float4x4 mvp = mul(vp, model_matrix);
+	output.position = mul(float4(input.pos,1.0f), transpose(mvp));
     output.normal = input.normal;
     output.color = input.color;
     output.uv = input.uv;

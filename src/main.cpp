@@ -48,9 +48,12 @@ public:
     }
 };
 
+using namespace DirectX;
 struct cbuffer
 {
-    DirectX::XMMATRIX model_view_project_matrix;
+
+    XMMATRIX view_matrix;
+    XMMATRIX projection_matrix;
 };
 
 #define rad(x) (x*DirectX::XM_PI)/180.0f
@@ -83,8 +86,12 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     XMMATRIX model_matrix = XMMatrixScaling(1.01f,1.01f,1.01f);
     XMMATRIX projection_matrix = XMMatrixPerspectiveFovRH(rad(45.0), 1280.0f / 720.0f, 0.001f, 1000.0f);
     XMMATRIX view_matrix = camera.ViewMatrix();
-    input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
+    input.view_matrix = view_matrix;
+    input.projection_matrix = projection_matrix;
     ShaderParameter<cbuffer> color_param = ShaderParameter<cbuffer>(device, main_command_list, input);
+    ShaderParameter<XMMATRIX> model_cmatrix = ShaderParameter<XMMATRIX>(device, main_command_list, model_matrix);
+    color_param.parameter_buffer->SetName(L"Global Input Parameter");
+    model_cmatrix.parameter_buffer->SetName(L"Model Matrix cbuffer");
 
     RootSignature rs(device, {}, {},
             {//descriptor table array
@@ -102,6 +109,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
                 },
                 {
                     {CBVDescriptorTableEntry(0)}
+                },
+                {
+                    {CBVDescriptorTableEntry(1)}
                 }
             });
     GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
@@ -156,8 +166,10 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         
 
         view_matrix = camera.ViewMatrix();
-        input.model_view_project_matrix = model_matrix * view_matrix * projection_matrix;
+        input.view_matrix = view_matrix;
+        input.projection_matrix = projection_matrix;
         color_param.UpdateData(input, main_command_list);
+        model_cmatrix.UpdateData(model_matrix, main_command_list);
 
         pso.Bind(main_command_list);
 
@@ -167,6 +179,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         linear_sampler.Bind(main_command_list, 1);
         anisotropic_sampler.Bind(main_command_list, 2);
         color_param.Bind(main_command_list, 4);
+        model_cmatrix.Bind(main_command_list, 5);
+
         
         model.Draw(main_command_list, 3);
         
