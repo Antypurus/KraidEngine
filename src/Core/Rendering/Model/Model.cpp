@@ -95,7 +95,9 @@ namespace Kraid
         std::string name = ss.str();
         if(ImGui::CollapsingHeader(name.c_str()))
         {
-            ImGui::SliderFloat3(("Translation " + name).c_str(), this->local_transform.translation, -100.0f, 100.0f);
+            ImGui::SliderFloat3(("Translation " + name).c_str(), this->local_transform.translation, -3.0f, 3.0f);
+            ImGui::SliderFloat3(("Rotation " + name).c_str(), this->local_transform.rotation, 0, 2);
+            ImGui::SliderFloat3(("Scale " + name).c_str(), this->local_transform.scale, 0.00001, 5);
         }
     }
 

@@ -161,7 +161,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
         ImGui::End();
         
-
         view_matrix = camera.ViewMatrix();
         input.view_matrix = view_matrix;
         input.projection_matrix = projection_matrix;
