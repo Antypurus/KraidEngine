@@ -1,7 +1,12 @@
 #include "Model.h"
+#include "DearImGui/imgui.h"
 
 #include <Core/Rendering/D3D12/GPUDevice.h>
 #include <Core/Rendering/D3D12/CommandList.h>
+#include <Core/Rendering/GUI.h>
+
+#include <string>
+#include <sstream>
 
 namespace Kraid
 {
@@ -36,7 +41,7 @@ namespace Kraid
         GraphicsCommandList& command_list,
         const std::vector<uint32>& indices,
         BlinPhongMaterial* material,
-        const Transform& local_transform,
+        const Transform local_transform,
         const std::string& normal_map_path)
     {
         if(!normal_map_path.empty())
@@ -83,6 +88,15 @@ namespace Kraid
             this->normal_map->BindDefaultSRV(command_list, normal_map_slot);
         }
         command_list->DrawIndexedInstanced(this->index_buffer.index_count, 1, 0, 0, 0);
+        
+        std::stringstream ss;
+        ss.clear();
+        ss << this->index;  
+        std::string name = ss.str();
+        if(ImGui::CollapsingHeader(name.c_str()))
+        {
+            ImGui::SliderFloat3(("Translation " + name).c_str(), this->local_transform.translation, -100.0f, 100.0f);
+        }
     }
 
     Model::Model(
@@ -97,9 +111,13 @@ namespace Kraid
         this->global_vertex_buffer = VertexBuffer<Vertex>(device, command_list, vertices);
         this->submeshes = meshes;
         this->materials = std::move(materials);
-        for(auto& mesh: this->submeshes)
+        for (auto& mesh : this->submeshes)
         {
             mesh.SetGlobalTransformReference(&this->global_transform);
+        }
+        for (uint64 i = 0; i < this->submeshes.size(); ++i)
+        {
+            this->submeshes[i].index = i;
         }
     }
 
@@ -108,7 +126,7 @@ namespace Kraid
         if (this->global_vertex_buffer.vertex_buffer.resource != nullptr)//TODO(Tiago): figure out better way to detect unloaded model
         {
             this->global_vertex_buffer.Bind(command_list);
-            for (auto submesh : this->submeshes)
+            for (auto& submesh : this->submeshes)
             {
                 submesh.Draw(command_list, texture_slot,model_matrix_slot, normal_map_slot);
             }
@@ -116,6 +134,18 @@ namespace Kraid
         else
         {
             LERROR("Attempted to draw not loaded model");
+        }
+
+        auto mesh = this->submeshes[0];
+        if(ImGui::CollapsingHeader("Model Header"))
+        {
+            static float translation[3];
+            ImGui::SliderFloat3("Translation", translation, -100.0f, 100.0f);
+
+            this->global_transform.translation[0] = translation[0];
+            this->global_transform.translation[1] = translation[1];
+            this->global_transform.translation[2] = translation[2];
+
         }
     }
 

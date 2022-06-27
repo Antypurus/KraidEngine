@@ -62,6 +62,7 @@ namespace Kraid
         Transform* global_transform = nullptr;
         BlinPhongMaterial* material;
         ShaderParameter<XMMATRIX> model_cbuffer;
+        uint64 index;
 
         Submesh() = default;
         Submesh(
@@ -69,7 +70,7 @@ namespace Kraid
             GraphicsCommandList& command_list,
             const std::vector<uint32>& indices,
             BlinPhongMaterial* material,
-            const Transform& local_transform = Transform(),
+            const Transform local_transform = Transform(),
             const std::string& normal_map_path = ""
         );
 

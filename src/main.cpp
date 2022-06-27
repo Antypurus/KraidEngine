@@ -196,7 +196,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         auto elapsed = duration_cast<nanoseconds>(end - start).count();
         float frame_time = elapsed/1000000.0f;
         frame_times.push(frame_time);
-        
     }
 
     return 0;
