@@ -88,16 +88,21 @@ namespace Kraid
             this->normal_map->BindDefaultSRV(command_list, normal_map_slot);
         }
         command_list->DrawIndexedInstanced(this->index_buffer.index_count, 1, 0, 0, 0);
-        
-        std::stringstream ss;
-        ss.clear();
-        ss << this->index;  
-        std::string name = ss.str();
-        if(ImGui::CollapsingHeader(name.c_str()))
+    }
+
+    void Submesh::DrawDebugGUI()
+    {
+        if(ImGui::TreeNode(("Submesh #" + std::to_string(this->index)).c_str()))
         {
-            ImGui::SliderFloat3(("Translation " + name).c_str(), this->local_transform.translation, -3.0f, 3.0f);
-            ImGui::SliderFloat3(("Rotation " + name).c_str(), this->local_transform.rotation, 0, 2);
-            ImGui::SliderFloat3(("Scale " + name).c_str(), this->local_transform.scale, 0.00001, 5);
+            ImGui::SliderFloat3("Global Translation", this->local_transform.translation, -5, 5);
+            ImGui::SliderFloat3("Global Scale", this->local_transform.scale, 0.000001f, 10);
+            ImGui::SliderFloat3("Global Rotation", this->local_transform.rotation, 0, 2.14f);
+            if(ImGui::Button("Reset Transform"))
+            {
+                this->local_transform = {};
+            }
+
+            ImGui::TreePop();
         }
     }
 
@@ -138,17 +143,30 @@ namespace Kraid
             LERROR("Attempted to draw not loaded model");
         }
 
-        auto mesh = this->submeshes[0];
-        if(ImGui::CollapsingHeader("Model Header"))
+        this->DrawDebugGUI();
+    }
+
+    void Model::DrawDebugGUI()
+    {
+        ImGui::Begin("Model Debug GUI");
+
+        if(ImGui::CollapsingHeader("Global Model Transform"))
         {
-            static float translation[3];
-            ImGui::SliderFloat3("Translation", translation, -100.0f, 100.0f);
-
-            this->global_transform.translation[0] = translation[0];
-            this->global_transform.translation[1] = translation[1];
-            this->global_transform.translation[2] = translation[2];
-
+            ImGui::SliderFloat3("Global Translation", this->global_transform.translation, -5, 5);
+            ImGui::SliderFloat3("Global Scale", this->global_transform.scale, 0.000001f, 10);
+            ImGui::SliderFloat3("Global Rotation", this->global_transform.rotation, 0, 2.14f);
+            if(ImGui::Button("Reset Transform"))
+            {
+                this->global_transform = {};
+            }
         }
+
+        for(auto& submesh: this->submeshes)
+        {
+            submesh.DrawDebugGUI();
+        }
+
+        ImGui::End();
     }
 
 }

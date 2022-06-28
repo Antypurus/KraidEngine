@@ -76,6 +76,7 @@ namespace Kraid
 
         void SetGlobalTransformReference(Transform* global_transform);
         void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0,uint32 model_matrix_slot = 0, uint32 normal_map_slot = 0);
+        void DrawDebugGUI();
     };
 
     class Model
@@ -96,6 +97,7 @@ namespace Kraid
             const Transform& global_transform = Transform()
         );
         void Draw(GraphicsCommandList& command_list, uint32 texture_slot = 0, uint32 model_matrix_slot = 0, uint32 normal_map_slot = 0);
+        void DrawDebugGUI();
     };
 
 }
