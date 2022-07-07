@@ -99,20 +99,54 @@ namespace Kraid
 
     void Transform::SetTranslation(const float x, const float y, const float z)
     {
-        this->translation[0] = x;
-        this->translation[1] = y;
-        this->translation[2] = z;
+        if(this->translation[0] != x || this->translation[1] != y || this->translation[2] != z)
+        {
+            this->translation[0] = x;
+            this->translation[1] = y;
+            this->translation[2] = z;
 
-        this->has_changed = true;
+            this->has_changed = true;
+        }
     }
 
     void Transform::TranslateBy(const float x, const float y, const float z)
     {
-        this->translation[0] += x;
-        this->translation[1] += y;
-        this->translation[2] += z;
+        if(x != 0 || y != 0 || z != 0)
+        {
+            this->translation[0] += x;
+            this->translation[1] += y;
+            this->translation[2] += z;
+            
+            this->has_changed = true;
+        }
+    }
 
-        this->has_changed = true;
+    void Transform::SetScale(const float x, const float y, const float z)
+    {
+        if(this->scale[0] != x || this->scale[1] != y || this->scale[2] != z)
+        {
+            this->scale[0] = x;
+            this->scale[1] = y;
+            this->scale[2] = z;
+
+            this->has_changed = true;
+        }
+    }
+
+    void Transform::ScaleBy(const float x, const float y, const float z)
+    {
+        if(x != 0 || y != 0 || z != 0)
+        {
+            this->
+        }
+    }
+
+    void Transform::SetRotation(const float x, const float y, const float z)
+    {
+    }
+
+    void Transform::RotateBy(const float x, const float y, const float z)
+    {
     }
 
 }
