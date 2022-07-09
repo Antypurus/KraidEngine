@@ -34,6 +34,16 @@ namespace Kraid
         XMMATRIX GetModelMatrix() const;
         Transform operator+(const Transform& other);
         Transform& operator=(const Transform& other);
+
+        bool HasChanged() const
+        {
+            return this->has_changed;
+        }
+
+        void SetChangedFlag(const bool flag_value)
+        {
+            this->has_changed = flag_value;
+        }
     };
 
 }

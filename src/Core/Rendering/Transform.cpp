@@ -43,20 +43,25 @@ namespace Kraid
 
     XMMATRIX Transform::GetModelMatrix() const
     {
-        XMMATRIX ret = XMMatrixIdentity();
+        if(this->has_changed)
+        {
+            XMMATRIX ret = XMMatrixIdentity();
 
-        FXMVECTOR x_axis = {1,0,0};
-        FXMVECTOR y_axis = {0,1,0};
-        FXMVECTOR z_axis = {0,0,1};
-        ret *= XMMatrixRotationAxis(x_axis, this->rotation[0]); 
-        ret *= XMMatrixRotationAxis(y_axis, this->rotation[1]); 
-        ret *= XMMatrixRotationAxis(z_axis, this->rotation[2]);
+            FXMVECTOR x_axis = {1,0,0};
+            FXMVECTOR y_axis = {0,1,0};
+            FXMVECTOR z_axis = {0,0,1};
+            ret *= XMMatrixRotationAxis(x_axis, this->rotation[0]); 
+            ret *= XMMatrixRotationAxis(y_axis, this->rotation[1]); 
+            ret *= XMMatrixRotationAxis(z_axis, this->rotation[2]);
 
-        ret *= XMMatrixScaling(this->scale[0], this->scale[1], this->scale[2]);
+            ret *= XMMatrixScaling(this->scale[0], this->scale[1], this->scale[2]);
 
-        ret *= XMMatrixTranslation(this->translation[0], this->translation[1], this->translation[2]);
+            ret *= XMMatrixTranslation(this->translation[0], this->translation[1], this->translation[2]);
 
-        return ret;
+            this->cached_model_matrix = ret;
+            this->has_changed = false;
+        }
+        return cached_model_matrix;
     }
 
     Transform Transform::operator+(const Transform& other)
@@ -74,6 +79,8 @@ namespace Kraid
         ret.rotation[0] += other.rotation[0];
         ret.rotation[1] += other.rotation[1];
         ret.rotation[2] += other.rotation[2];
+
+        ret.has_changed = true;
 
         return ret;
     }
@@ -137,16 +144,36 @@ namespace Kraid
     {
         if(x != 0 || y != 0 || z != 0)
         {
-            this->
+            this->scale[0] += x;
+            this->scale[1] += y;
+            this->scale[2] += z;
+
+            this->has_changed = true;
         }
     }
 
     void Transform::SetRotation(const float x, const float y, const float z)
     {
+        if(this->rotation[0] != x || this->rotation[1] != y || this->rotation[2] != z)
+        {
+            this->rotation[0] = x;
+            this->rotation[1] = y;
+            this->rotation[2] = z;
+
+            this->has_changed = true;
+        }
     }
 
     void Transform::RotateBy(const float x, const float y, const float z)
     {
+        if(x != 0 || y != 0 || z != 0)
+        {
+            this->rotation[0] += x;
+            this->rotation[1] += y;
+            this->rotation[2] += z;
+
+            this->has_changed = true;
+        }
     }
 
 }

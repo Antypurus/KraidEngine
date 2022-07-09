@@ -69,13 +69,18 @@ namespace Kraid
 
     void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 model_matrix_slot, uint32 normal_map_slot)
     {
-        Transform final_transform = this->local_transform;
-        if(this->global_transform != nullptr)
+        if(this->local_transform.HasChanged() || (this->global_transform != nullptr && this->local_transform.HasChanged()))
         {
-            final_transform = final_transform + *this->global_transform;
+            this->local_transform.SetChangedFlag(false);
+            Transform final_transform = this->local_transform;
+            if(this->global_transform != nullptr)
+            {
+                this->global_transform->SetChangedFlag(false);
+                final_transform = final_transform + *this->global_transform;
+            }
+            XMMATRIX model_matrix = final_transform.GetModelMatrix();
+            this->model_cbuffer.UpdateData(model_matrix, command_list);
         }
-        XMMATRIX model_matrix = final_transform.GetModelMatrix();
-        this->model_cbuffer.UpdateData(model_matrix, command_list);
         this->model_cbuffer.Bind(command_list, model_matrix_slot);
 
         this->index_buffer.Bind(command_list);
@@ -94,9 +99,20 @@ namespace Kraid
     {
         if(ImGui::TreeNode(("Submesh #" + std::to_string(this->index)).c_str()))
         {
-            ImGui::SliderFloat3("Global Translation", this->local_transform.translation, -5, 5);
-            ImGui::SliderFloat3("Global Scale", this->local_transform.scale, 0.000001f, 10);
-            ImGui::SliderFloat3("Global Rotation", this->local_transform.rotation, 0, 2.14f);
+            float position[3];
+            float scale[3];
+            float rotation[3];
+            memcpy(position, this->local_transform.translation, 3 * sizeof(float));
+            memcpy(scale, this->local_transform.scale, 3 * sizeof(float));
+            memcpy(rotation, this->local_transform.rotation, 3 * sizeof(float));
+
+            ImGui::SliderFloat3("Translation", position, -5, 5);
+            ImGui::SliderFloat3("Scale", scale, 0.000001f, 10);
+            ImGui::SliderFloat3("Rotation", rotation, 0, 2.14f);
+            this->local_transform.SetTranslation(position[0], position[1], position[2]);
+            this->local_transform.SetScale(scale[0], scale[1], scale[2]);
+            this->local_transform.SetRotation(rotation[0], rotation[1], rotation[2]);
+
             if(ImGui::Button("Reset Transform"))
             {
                 this->local_transform = {};
@@ -152,9 +168,20 @@ namespace Kraid
 
         if(ImGui::CollapsingHeader("Global Model Transform"))
         {
-            ImGui::SliderFloat3("Global Translation", this->global_transform.translation, -5, 5);
-            ImGui::SliderFloat3("Global Scale", this->global_transform.scale, 0.000001f, 10);
-            ImGui::SliderFloat3("Global Rotation", this->global_transform.rotation, 0, 2.14f);
+            float position[3];
+            float scale[3];
+            float rotation[3];
+            memcpy(position, this->global_transform.translation, 3 * sizeof(float));
+            memcpy(scale, this->global_transform.scale, 3 * sizeof(float));
+            memcpy(rotation, this->global_transform.rotation, 3 * sizeof(float));
+
+            ImGui::SliderFloat3("Global Translation", position, -5, 5);
+            ImGui::SliderFloat3("Global Scale", scale, 0.000001f, 10);
+            ImGui::SliderFloat3("Global Rotation", rotation, 0, 2.14f);
+            this->global_transform.SetTranslation(position[0], position[1], position[2]);
+            this->global_transform.SetScale(scale[0], scale[1], scale[2]);
+            this->global_transform.SetRotation(rotation[0], rotation[1], rotation[2]);
+
             if(ImGui::Button("Reset Transform"))
             {
                 this->global_transform = {};
