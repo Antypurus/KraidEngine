@@ -67,7 +67,7 @@ namespace Kraid
         this->global_transform = global_transform;
     }
 
-    void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 model_matrix_slot, uint32 normal_map_slot)
+    void Submesh::UpdateTransformCBuffer(GraphicsCommandList& command_list, uint32 model_matrix_slot)
     {
         if(this->local_transform.HasChanged() || (this->global_transform != nullptr && this->local_transform.HasChanged()))
         {
@@ -82,6 +82,11 @@ namespace Kraid
             this->model_cbuffer.UpdateData(model_matrix, command_list);
         }
         this->model_cbuffer.Bind(command_list, model_matrix_slot);
+    }
+
+    void Submesh::Draw(GraphicsCommandList &command_list, uint32 texture_slot, uint32 model_matrix_slot, uint32 normal_map_slot)
+    {
+        this->UpdateTransformCBuffer(command_list, model_matrix_slot);
 
         this->index_buffer.Bind(command_list);
         if(this->material->texture != nullptr)
