@@ -349,7 +349,7 @@ namespace Kraid
             //defines
             for(auto& define:this->shader_defines)
             {
-                define_strings.push_back(std::move(define.DXCMacroFormat()));
+                define_strings.push_back(define.DXCMacroFormat());
                 arguments.push_back((wchar_t*)L"-D");
                 arguments.push_back((wchar_t*)define_strings[define_strings.size() - 1].data());
             }

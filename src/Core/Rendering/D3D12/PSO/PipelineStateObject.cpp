@@ -31,15 +31,15 @@ namespace D3D12
                 DepthStentilStage depth_stencil_stage,
                 Blend blending,
                 StreamingOutputBuffer so_buffer):
-        vertex_shader(&vertex_shader),
-        pixel_shader(&pixel_shader),
-        root_signature(root_signature),
-        topology_type(topology_type),
-        vertex_layout(vertex_layout),
+        blending(blending),
         rasterizer(rasterizer),
         depth_stencil_stage(depth_stencil_stage),
-        blending(blending),
-        streaming_output_buffer(so_buffer)
+        streaming_output_buffer(so_buffer),
+        topology_type(topology_type),
+        vertex_layout(vertex_layout),
+        vertex_shader(&vertex_shader),
+        pixel_shader(&pixel_shader),
+        root_signature(root_signature)
     {
         vertex_shader.RegisterShaderRecompilationNotificationCallback([this, &device](){
                     this->Compile(device);

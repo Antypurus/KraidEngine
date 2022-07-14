@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(KraidEngine LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS 
         ./src/**.cpp
@@ -52,8 +53,14 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
         <Core/stdcpp.h>
         )
 
-add_compile_options(${PROJECT_NAME} /wd26495)
 
+if(MSVC)
+    message("msvc build")
+    add_compile_options(${PROJECT_NAME} /wd26495)
+    add_compile_options(${PROJECT_NAME} /W4 /WX)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+endif()
 
 add_custom_command(
     TARGET ${CMAKE_PROJECT_NAME} POST_BUILD

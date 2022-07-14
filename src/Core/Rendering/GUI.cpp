@@ -19,7 +19,6 @@ namespace Kraid
 
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
-        ImGuiIO& io = ImGui::GetIO();
         ImGui::StyleColorsDark();
 
         ImGui_ImplWin32_Init(window.window_handle);

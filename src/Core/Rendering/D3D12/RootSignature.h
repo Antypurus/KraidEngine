@@ -44,10 +44,10 @@ namespace D3D12
         uint64 constant_buffer_size = 1;
 
         ConstantRootParameter(uint8 register_slot = 0, uint8 space_slot = 0, uint64 buffer_size = 1, ShaderVisibility visibility = ShaderVisibility::All)
-            :register_slot(register_slot),
+            :visibility(visibility),
+            register_slot(register_slot),
             space_slot(space_slot),
-            constant_buffer_size(buffer_size),
-            visibility(visibility)
+            constant_buffer_size(buffer_size)
         {}
 
         inline D3D12_ROOT_PARAMETER GetRootParameterDescription() const

@@ -98,8 +98,9 @@ namespace D3D12
             DepthStencilComparisonFunction depth_testing_comparison_function = DepthStencilComparisonFunction::Less,
             bool enable_stencil_testing = false):
             comparison_function(depth_testing_comparison_function),
-            is_sentil_testing_enabled(enable_stencil_testing),
-            is_depth_testing_enabled(enable_detph_testing) {};
+            is_depth_testing_enabled(enable_detph_testing),
+            is_sentil_testing_enabled(enable_stencil_testing)
+        {};
 
         D3D12_DEPTH_STENCIL_DESC CreateDepthStentilStageDescription() const
         {

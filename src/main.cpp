@@ -129,7 +129,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     linear_sampler.Bind(main_command_list, 1);
     anisotropic_sampler.Bind(main_command_list, 2);
 
-    bool open = true;
     auto start = std::chrono::high_resolution_clock::now();
     auto end = std::chrono::high_resolution_clock::now();
     CircularBuffer<float> frame_times(400);
@@ -138,7 +137,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     while(window.open)
     {
         float highest_time = 0;
-        float lowest_time = 0xFFFFFFFF;
+        float lowest_time = FLT_MAX;
         float cummulative_frame_time = 0;
         for(uint64 i = 0; i < frame_times.size; ++i)
         {
