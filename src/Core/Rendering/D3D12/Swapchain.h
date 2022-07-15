@@ -30,8 +30,8 @@ namespace Kraid
             DSVDescriptorHeap dsv_heap;
             uint8 render_target_count = 2;
             uint8 current_backbuffer = 0;
-            uint64 width = 0;
-            uint64 height = 0;
+            uint32 width = 0;
+            uint32 height = 0;
 
         public:
             Swapchain() = default;
