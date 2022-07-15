@@ -19,6 +19,44 @@ namespace Kraid
 
         using namespace Microsoft::WRL;
 
+        struct GPUDevice;
+
+        enum class TiledResourceSupportTier
+        {
+            None = D3D12_TILED_RESOURCES_TIER_NOT_SUPPORTED,
+            Tier1 = D3D12_TILED_RESOURCES_TIER_1,
+            Tier2 = D3D12_TILED_RESOURCES_TIER_2,
+            Tier3 = D3D12_TILED_RESOURCES_TIER_3,
+            Tier4 = D3D12_TILED_RESOURCES_TIER_4
+        };
+
+        enum class ResourceBindingTier
+        {
+            Tier1 = D3D12_RESOURCE_BINDING_TIER_1,
+            Tier2 = D3D12_RESOURCE_BINDING_TIER_2,
+            Tier3 = D3D12_RESOURCE_BINDING_TIER_3
+        };
+
+        class GPUFeatureSupport
+        {
+        public:
+            bool supports_doubles_in_shaders = false;
+            bool supports_blending_logic_operations = false;
+            bool supports_32_bit_shader_precision = true;
+            bool supports_16_bit_shader_precision = false;
+            bool supports_10_bit_shader_precision = false;
+            TiledResourceSupportTier tiled_resource_support = TiledResourceSupportTier::None;
+            ResourceBindingTier resource_binding_support = ResourceBindingTier::Tier1;
+            bool supports_pixel_shader_stencil_reference_values = false;
+
+        public:
+            GPUFeatureSupport() = default;
+            GPUFeatureSupport(GPUDevice& device);
+        
+        private:
+            void LogGPUFeatureSupport() const;
+        };
+
         struct DescriptorHandleSize
         {
             uint32 rtv = 0;
