@@ -59,7 +59,7 @@ if(MSVC)
     add_compile_options(${PROJECT_NAME} /wd26495)
     add_compile_options(${PROJECT_NAME} /W4 /WX)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 add_custom_command(

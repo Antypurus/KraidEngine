@@ -3326,7 +3326,7 @@ bool ObjReader::ParseFromString(const std::string &obj_text,
 }
 
 #ifdef __clang__
-#pragma clang diagnostic pop
+//#pragma clang diagnostic pop
 #endif
 }  // namespace tinyobj
 
