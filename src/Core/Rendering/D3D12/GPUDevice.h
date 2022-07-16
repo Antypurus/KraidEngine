@@ -45,6 +45,15 @@ namespace Kraid
             Tier3 = D3D12_RESOURCE_BINDING_TIER_3
         };
 
+        enum class DeviceCrossNodeSharingSupportTier
+        {
+            NotSupport = D3D12_CROSS_NODE_SHARING_TIER_NOT_SUPPORTED,
+            EmulatedTier1 = D3D12_CROSS_NODE_SHARING_TIER_1_EMULATED,
+            Tier1 = D3D12_CROSS_NODE_SHARING_TIER_1,
+            Tier2 = D3D12_CROSS_NODE_SHARING_TIER_2,
+            Tier3 = D3D12_CROSS_NODE_SHARING_TIER_3
+        };
+
         class GPUFeatureSupport
         {
         public:
@@ -59,7 +68,9 @@ namespace Kraid
             bool supports_extended_uav_format_list = false;
             bool supports_rasterizer_order_views = false;
             ConservativeRasterizationSupportTier conservative_rasterization_support = ConservativeRasterizationSupportTier::None;
-
+            bool supports_64KB_texture_swizzle_pattern = false;
+            DeviceCrossNodeSharingSupportTier cross_node_sharing_support = DeviceCrossNodeSharingSupportTier::NotSupport;
+            bool supports_cross_node_resource_views_on_row_major_textures = false;
 
         public:
             GPUFeatureSupport() = default;
