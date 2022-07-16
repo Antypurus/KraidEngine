@@ -30,6 +30,14 @@ namespace Kraid
             Tier4 = D3D12_TILED_RESOURCES_TIER_4
         };
 
+        enum class ConservativeRasterizationSupportTier
+        {
+            None = D3D12_CONSERVATIVE_RASTERIZATION_TIER_NOT_SUPPORTED,
+            Tier1 = D3D12_CONSERVATIVE_RASTERIZATION_TIER_1,
+            Tier2 = D3D12_CONSERVATIVE_RASTERIZATION_TIER_2,
+            Tier3 = D3D12_CONSERVATIVE_RASTERIZATION_TIER_3
+        };
+
         enum class ResourceBindingTier
         {
             Tier1 = D3D12_RESOURCE_BINDING_TIER_1,
@@ -48,6 +56,10 @@ namespace Kraid
             TiledResourceSupportTier tiled_resource_support = TiledResourceSupportTier::None;
             ResourceBindingTier resource_binding_support = ResourceBindingTier::Tier1;
             bool supports_pixel_shader_stencil_reference_values = false;
+            bool supports_extended_uav_format_list = false;
+            bool supports_rasterizer_order_views = false;
+            ConservativeRasterizationSupportTier conservative_rasterization_support = ConservativeRasterizationSupportTier::None;
+
 
         public:
             GPUFeatureSupport() = default;

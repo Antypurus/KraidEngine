@@ -52,7 +52,12 @@ namespace Kraid
 #endif
 
             this->CreateD3D12DeviceFromAdapater(adapater);
-            //TODO(Tiago): add missing method invocations that are in the constructor above
+            this->QueryDescriptorSizes();
+            this->CreateCommandAllocator();
+            this->CreateCommandQueues();
+
+            this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 2048);
+            this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 2048); //NOTE(Tiago):2048 is the max for sampler heaps
         }
 
         inline void GPUDevice::CreateD3D12Device(uint8 gpu_index)
