@@ -54,9 +54,16 @@ namespace Kraid
             Tier3 = D3D12_CROSS_NODE_SHARING_TIER_3
         };
 
+        enum class ResourceHeapSupportTier
+        {
+            Tier1 = D3D12_RESOURCE_HEAP_TIER_1,
+            Tier2 = D3D12_RESOURCE_HEAP_TIER_2
+        };
+
         class GPUFeatureSupport
         {
         public:
+        // structure 0 data
             bool supports_doubles_in_shaders = false;
             bool supports_blending_logic_operations = false;
             bool supports_32_bit_shader_precision = true;
@@ -71,6 +78,19 @@ namespace Kraid
             bool supports_64KB_texture_swizzle_pattern = false;
             DeviceCrossNodeSharingSupportTier cross_node_sharing_support = DeviceCrossNodeSharingSupportTier::NotSupport;
             bool supports_cross_node_resource_views_on_row_major_textures = false;
+            bool VPAndRTArrayIndexFromAnyShaderFeedingRasterizerSupportedWithoutGSEmulation = false;//TODO(Tiago):rename this crap once we actually understand what it means
+            ResourceHeapSupportTier resource_heap_support =  ResourceHeapSupportTier::Tier1;
+
+        // structure 1 data
+            bool supports_hlsl6_wave_operations = false;
+            uint32 minimum_simd_lanes_support_for_wave_ops = 0;
+            uint32 maximum_simd_lanes_support_for_wave_ops = 0;
+            uint32 count_of_simd_lanes_for_wave_ops_on_hardware = 0;
+            bool supports_expanded_computer_resourece_states = false; //TODO(Tiago): need to understand what the fuck this actually means, explaination on docs is not easy to understand
+            bool supports_64bit_int_ops = false;
+
+        // structure 10 data (go ask ms why this is out of order)
+
 
         public:
             GPUFeatureSupport() = default;
