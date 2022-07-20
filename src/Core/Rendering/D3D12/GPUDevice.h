@@ -110,6 +110,7 @@ namespace Kraid
 
         struct GPUDevice
         {
+        public:
             ComPtr<ID3D12Device8> device = nullptr;
             DXGIFactory factory;
 
@@ -137,13 +138,15 @@ namespace Kraid
             D3D_FEATURE_LEVEL feature_level;
             bool initialized = false;
 
+            //GPU Device Global Instance
+            static GPUDevice* instance;
+
+        public:
             //specify the index of the gpu to be used
             GPUDevice(uint8 gpu_index = 0);
             GPUDevice(IDXGIAdapter4* adapter);
 
             ID3D12Device8* operator->();
-
-        public:
             GraphicsCommandList CreateGraphicsCommandList();
             CopyCommandList CreateCopyCommandList();
             ComputeCommandList CreateComputeCommandList();

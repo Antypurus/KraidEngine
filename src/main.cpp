@@ -70,8 +70,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     GPUDevice device;
     Fence main_fence(device, 0);
-    GraphicsCommandList main_command_list(device);
-    Swapchain swapchain(device, window, main_command_list);
+    GraphicsCommandList main_command_list(*GPUDevice::instance);
+    Swapchain swapchain(*GPUDevice::instance, window, main_command_list);
 
     Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
 
