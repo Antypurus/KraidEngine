@@ -138,13 +138,16 @@ namespace Kraid
             D3D_FEATURE_LEVEL feature_level;
             bool initialized = false;
 
+        private:
             //GPU Device Global Instance
-            static GPUDevice* instance;
+            static GPUDevice* g_gpu_instance;
 
         public:
             //specify the index of the gpu to be used
             GPUDevice(uint8 gpu_index = 0);
             GPUDevice(IDXGIAdapter4* adapter);
+            static inline GPUDevice& Instance() { return *g_gpu_instance; };
+            static inline GPUDevice& GetInstance() { return *g_gpu_instance; };
 
             ID3D12Device8* operator->();
             GraphicsCommandList CreateGraphicsCommandList();

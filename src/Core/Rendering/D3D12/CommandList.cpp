@@ -70,22 +70,43 @@ namespace Kraid
                 this->command_list->SetDescriptorHeaps(2, heaps);
             }
         }
+        
+        GraphicsCommandList::GraphicsCommandList() 
+        {
+            this->CreateCommandList(GPUDevice::Instance());
+        };
 
         GraphicsCommandList::GraphicsCommandList(GPUDevice& device)
         {
-          D3DCALL(device->CreateCommandList(0,
-                D3D12_COMMAND_LIST_TYPE_DIRECT,
-                device.direct_command_allocator.Get(),
-                nullptr, 
-                IID_PPV_ARGS(&this->command_list)), 
-            "Graphics Command List Created");
-          this->command_list->Close();
-          this->command_list->Reset(device.direct_command_allocator.Get(), nullptr);
-          device.direct_command_allocator.CopyTo(&this->command_allocator);
-          this->command_queue = device.direct_command_queue;
+            this->CreateCommandList(device);
+        }
+
+        void GraphicsCommandList::CreateCommandList(GPUDevice& device)
+        {
+            D3DCALL(device->CreateCommandList(
+                    0,
+                    D3D12_COMMAND_LIST_TYPE_DIRECT,
+                    device.direct_command_allocator.Get(),
+                    nullptr, 
+                    IID_PPV_ARGS(&this->command_list)), 
+                "Graphics Command List Created");
+            this->command_list->Close();
+            this->command_list->Reset(device.direct_command_allocator.Get(), nullptr);
+            device.direct_command_allocator.CopyTo(&this->command_allocator);
+            this->command_queue = device.direct_command_queue;
+        }
+
+        CopyCommandList::CopyCommandList()
+        {
+            this->CreateCommandList(GPUDevice::Instance());
         }
 
         CopyCommandList::CopyCommandList(GPUDevice& device)
+        {
+            this->CreateCommandList(device);
+        }
+
+        void CopyCommandList::CreateCommandList(GPUDevice& device)
         {
             D3DCALL(device->CreateCommandList(0,
                 D3D12_COMMAND_LIST_TYPE_COPY,

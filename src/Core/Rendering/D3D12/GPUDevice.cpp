@@ -30,7 +30,7 @@ namespace Kraid
             {D3D_FEATURE_LEVEL_12_2, "12.2"},
         };
 
-        GPUDevice* GPUDevice::instance = nullptr;
+        GPUDevice* GPUDevice::g_gpu_instance = nullptr;
 
         GPUDevice::GPUDevice(uint8 gpu_index)
         {
@@ -46,7 +46,7 @@ namespace Kraid
             this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 2048);
             this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 2048); //NOTE(Tiago):2048 is the max for sampler heaps
 
-            GPUDevice::instance = this;
+            GPUDevice::g_gpu_instance = this;
         }
 
         GPUDevice::GPUDevice(IDXGIAdapter4* adapater)
@@ -63,7 +63,7 @@ namespace Kraid
             this->shader_resource_heap = CBV_SRV_UAVDescriptorHeap(*this, 2048);
             this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 2048); //NOTE(Tiago):2048 is the max for sampler heaps
 
-            GPUDevice::instance = this;
+            GPUDevice::g_gpu_instance = this;
         }
 
         inline void GPUDevice::CreateD3D12Device(uint8 gpu_index)

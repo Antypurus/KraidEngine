@@ -17,6 +17,7 @@ namespace Kraid
 
         struct CommandList
         {
+        public:
             ComPtr<ID3D12GraphicsCommandList6> command_list = nullptr;
             ComPtr<ID3D12CommandAllocator> command_allocator = nullptr;
             CommandQueue command_queue;
@@ -37,39 +38,52 @@ namespace Kraid
 
         struct GraphicsCommandList :public CommandList
         {
-           GraphicsCommandList() = default;
+        public:
+           GraphicsCommandList();
            GraphicsCommandList(GPUDevice& device);
+        private:
+           void CreateCommandList(GPUDevice& device);
         };
 
         struct CopyCommandList :public CommandList
         {
-            CopyCommandList() = default;
+        public:
+            CopyCommandList();
             CopyCommandList(GPUDevice& device);
+        private:
+            void CreateCommandList(GPUDevice& device);
         };
 
         struct ComputeCommandList :public CommandList
         {
+        public:
             ComputeCommandList() = default;
             ComputeCommandList(GPUDevice& device);
+        private:
+            void CreateCommandList(GPUDevice& device);
         };
 
         struct VideoDecodeCommandList
         {
+        public:
             ComPtr<ID3D12VideoDecodeCommandList2> command_list = nullptr;
             ComPtr<ID3D12CommandAllocator> command_allocator = nullptr;
             CommandQueue command_queue;
 
-            VideoDecodeCommandList() = default;
+            VideoDecodeCommandList();
             VideoDecodeCommandList(GPUDevice& device);
 
             ID3D12VideoDecodeCommandList2* operator->();
             void Close();
             void Reset();
             void Execute();
+        private:
+            void CreateCommandList(GPUDevice& device);
         };
 
         struct VideoProcessCommandList
         {
+        public:
             ComPtr<ID3D12VideoProcessCommandList2> command_list = nullptr;
             ComPtr<ID3D12CommandAllocator> command_allocator = nullptr;
             CommandQueue command_queue;
@@ -81,6 +95,8 @@ namespace Kraid
             void Close();
             void Reset();
             void Execute();
+        private:
+            void CreateCommandList(GPUDevice& device);
         };
 
     }
