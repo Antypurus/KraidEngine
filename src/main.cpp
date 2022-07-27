@@ -71,7 +71,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list;
     Swapchain swapchain(window, main_command_list);
 
-    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
+    Model model = ModelLoader::LoadOBJModel("./Resources/Models/vokselia_spawn/vokselia_spawn.obj", main_command_list);
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");

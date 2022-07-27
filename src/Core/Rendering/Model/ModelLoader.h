@@ -3,6 +3,7 @@
 #include <Core/DataStructures/StringView.h>
 #include <Core/Rendering/Model/Model.h>
 #include <Core/types.h>
+#include <Core/Rendering/D3D12/GPUDevice.h>
 
 namespace Kraid
 {
@@ -17,9 +18,9 @@ namespace Kraid
     {
     public:
         static Model LoadOBJModel(
-            GPUDevice& device,
+            const StringView& filepath,
             GraphicsCommandList& command_list,
-            const StringView& filepath
+            GPUDevice& device = GPUDevice::Instance()
         );
     };
 

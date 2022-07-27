@@ -22,7 +22,6 @@ namespace D3D12
 {
 
     TextureSampler::TextureSampler(
-            GPUDevice& device,
             SamplerDescriptorHeap& heap,
             TextureSamplingMode sample_mode,
             TextureAddressingMode addressing_mode):
@@ -34,11 +33,10 @@ namespace D3D12
         this->gpu_descriptor_handle = heap.GetGPUDescriptorByIndex(heap_index);
 
         D3D12_SAMPLER_DESC sampler_description = this->CreateSamplerDescription();
-        device->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
+        GPUDevice::Instance()->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
     }
 
     TextureSampler::TextureSampler(
-            GPUDevice& device,
             SamplerDescriptorHeap& heap,
             float border_color[4],
             TextureSamplingMode sample_mode):
@@ -52,7 +50,7 @@ namespace D3D12
         memcpy(this->border_color, border_color, sizeof(float) * 4);
 
         D3D12_SAMPLER_DESC sampler_description = this->CreateSamplerDescription();
-        device->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
+        GPUDevice::Instance()->CreateSampler(&sampler_description, this->cpu_descriptor_handle);
     }
 
     void TextureSampler::Bind(GraphicsCommandList& command_list, uint64 slot)

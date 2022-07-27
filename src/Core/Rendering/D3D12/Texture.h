@@ -41,12 +41,10 @@ namespace D3D12
 
         TextureSampler() = default;
         TextureSampler(
-                GPUDevice& device,
                 SamplerDescriptorHeap& heap,
                 TextureSamplingMode sample_mode = TextureSamplingMode::Linear,
                 TextureAddressingMode addressing_mode = TextureAddressingMode::Wrap);
         TextureSampler(
-                GPUDevice& device,
                 SamplerDescriptorHeap& heap,
                 float border_color[4],
                 TextureSamplingMode sampling_mode = TextureSamplingMode::Linear);
@@ -69,12 +67,12 @@ namespace D3D12
 
     public:
         Texture() = default;
-        static Texture& LoadTexture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list);
+        static Texture& LoadTexture(const StringView& filepath, GraphicsCommandList& command_list);
         void BindDefaultSRV(GraphicsCommandList& command_list ,uint32 texture_slot = 0);
     
     private:
         void CreateDefaultSRV(GPUDevice& device);
-        Texture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list);
+        Texture(const StringView& filepath, GraphicsCommandList& command_list);
     };
 
 }
