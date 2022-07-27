@@ -71,14 +71,14 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list;
     Swapchain swapchain(window, main_command_list);
 
-    Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
+    Model model = ModelLoader::LoadOBJModel("./Resources/Models/vokselia_spawn/vokselia_spawn.obj", main_command_list);
 
     VertexShader vs(L"./shader.hlsl", "VSMain");
     PixelShader ps(L"./shader.hlsl", "PSMain");
 
-    TextureSampler point_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Point);
-    TextureSampler linear_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Linear);
-    TextureSampler anisotropic_sampler(device, device.sampler_descriptior_heap, TextureSamplingMode::Anisotropic);
+    TextureSampler point_sampler(device.sampler_descriptior_heap, TextureSamplingMode::Point);
+    TextureSampler linear_sampler(device.sampler_descriptior_heap, TextureSamplingMode::Linear);
+    TextureSampler anisotropic_sampler(device.sampler_descriptior_heap, TextureSamplingMode::Anisotropic);
 
     cbuffer input;
     XMMATRIX projection_matrix = XMMatrixPerspectiveFovRH(rad(45.0), 1280.0f / 720.0f, 0.001f, 1000.0f);

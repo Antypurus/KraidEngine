@@ -14,9 +14,9 @@ namespace Kraid
 {
 
     Model ModelLoader::LoadOBJModel(
-        GPUDevice& device,
+        const StringView& filepath,
         GraphicsCommandList& command_list,
-        const StringView& filepath)
+        GPUDevice& device)
     {
         tinyobj::attrib_t attribute;
         std::vector<tinyobj::shape_t> shapes;

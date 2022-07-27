@@ -33,7 +33,7 @@ namespace Kraid
         this->specular_coeficient = specular_coeficient;
         this->diffuse_coeficient = diffuse_coeficient;
 
-        this->texture = &Texture::LoadTexture(texture_path, device, command_list);
+        this->texture = &Texture::LoadTexture(texture_path, command_list);
     }
 
     Submesh::Submesh(
@@ -46,7 +46,7 @@ namespace Kraid
     {
         if(!normal_map_path.empty())
         {
-            this->normal_map = &Texture::LoadTexture(normal_map_path, device, command_list);
+            this->normal_map = &Texture::LoadTexture(normal_map_path, command_list);
         }
 
         this->index_buffer = IndexBuffer(device, indices, command_list);
