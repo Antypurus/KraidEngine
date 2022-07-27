@@ -35,6 +35,7 @@ namespace Kraid
 
         public:
             Swapchain() = default;
+            Swapchain(Window& window, GraphicsCommandList& command_list);
             Swapchain(GPUDevice& device, Window& window, GraphicsCommandList& command_list);
             IDXGISwapChain4* operator->();
             void Clear(GraphicsCommandList& command_list);

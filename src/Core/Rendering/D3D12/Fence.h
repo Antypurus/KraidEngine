@@ -19,7 +19,7 @@ namespace Kraid
             ComPtr<ID3D12Fence1> fence = nullptr;
             uint64 current_value = 0;
 
-            Fence() = default;
+            Fence(uint64 initial_value = 0);
             Fence(GPUDevice& device, uint64 initial_value = 0);
 
             ID3D12Fence1* operator->();

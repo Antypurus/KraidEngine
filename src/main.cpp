@@ -58,8 +58,6 @@ struct cbuffer
 
 #define rad(x) (x*DirectX::XM_PI)/180.0f
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
     using namespace Kraid;
@@ -69,9 +67,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
 
     GPUDevice device;
-    Fence main_fence(device, 0);
-    GraphicsCommandList main_command_list(GPUDevice::Instance());
-    Swapchain swapchain(GPUDevice::Instance(), window, main_command_list);
+    Fence main_fence;
+    GraphicsCommandList main_command_list;
+    Swapchain swapchain(window, main_command_list);
 
     Model model = ModelLoader::LoadOBJModel(device,main_command_list,"./Resources/Models/vokselia_spawn/vokselia_spawn.obj");
 

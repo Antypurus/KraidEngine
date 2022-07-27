@@ -9,6 +9,11 @@ namespace Kraid
     namespace D3D12
     {
 
+        Fence::Fence(uint64 initial_value)
+        {
+            D3DCALL(GPUDevice::Instance()->CreateFence(initial_value, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&this->fence)), "Fence with initial value of %llu created", initial_value);
+        }
+
         Fence::Fence(GPUDevice& device, uint64 initial_value)
             :current_value(initial_value)
         {

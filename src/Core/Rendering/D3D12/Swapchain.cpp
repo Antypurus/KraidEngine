@@ -13,6 +13,20 @@ namespace Kraid
     namespace D3D12
     {
 
+        Swapchain::Swapchain(Window& window, GraphicsCommandList& command_list)
+        {
+            this->rtv_heap = RTVDescriptorHeap(GPUDevice::Instance(), this->render_target_count);
+            this->dsv_heap = DSVDescriptorHeap(GPUDevice::Instance(), 1);
+            //TODO(Tiago):needs to be cleaned up to update when we change the window size 
+            this->height = window.height;
+            this->width = window.width;
+
+            this->CreateSwapchain(GPUDevice::Instance(), window);
+            this->CreateRenderTargetViews(GPUDevice::Instance());
+            this->CreateDepthStencilView(GPUDevice::Instance(), window, command_list);
+            this->SetViewport(command_list, width, height);
+        }
+
         Swapchain::Swapchain(GPUDevice& device, Window& window, GraphicsCommandList& command_list)
         {
             this->rtv_heap = RTVDescriptorHeap(device, this->render_target_count);
