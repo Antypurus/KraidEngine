@@ -120,7 +120,17 @@ namespace Kraid
             this->command_queue = device.copy_command_queue;
         }
 
+        ComputeCommandList::ComputeCommandList()
+        {
+            this->CreateCommandList(GPUDevice::Instance());
+        }
+
         ComputeCommandList::ComputeCommandList(GPUDevice& device)
+        {
+            this->CreateCommandList(device);
+        }
+        
+        void ComputeCommandList::CreateCommandList(GPUDevice& device)
         {
             D3DCALL(device->CreateCommandList(0, 
                 D3D12_COMMAND_LIST_TYPE_COMPUTE, 
@@ -133,7 +143,17 @@ namespace Kraid
             this->command_queue = device.compute_command_queue;
         }
 
+        VideoDecodeCommandList::VideoDecodeCommandList()
+        {
+            this->CreateCommandList(GPUDevice::Instance());
+        }
+
         VideoDecodeCommandList::VideoDecodeCommandList(GPUDevice& device)
+        {
+            this->CreateCommandList(device);
+        }
+
+        void VideoDecodeCommandList::CreateCommandList(GPUDevice& device)
         {
             D3DCALL(device->CreateCommandList(0,
                         D3D12_COMMAND_LIST_TYPE_VIDEO_DECODE,
@@ -168,7 +188,17 @@ namespace Kraid
             this->command_queue->ExecuteCommandLists(1, lists);
         }
 
+        VideoProcessCommandList::VideoProcessCommandList()
+        {
+            this->CreateCommandList(GPUDevice::Instance());
+        }
+
         VideoProcessCommandList::VideoProcessCommandList(GPUDevice& device)
+        {
+            this->CreateCommandList(device);
+        }
+
+        void VideoProcessCommandList::CreateCommandList(GPUDevice& device)
         {
             D3DCALL(device->CreateCommandList(0,
                         D3D12_COMMAND_LIST_TYPE_VIDEO_PROCESS,

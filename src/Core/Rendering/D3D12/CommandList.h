@@ -57,7 +57,7 @@ namespace Kraid
         struct ComputeCommandList :public CommandList
         {
         public:
-            ComputeCommandList() = default;
+            ComputeCommandList();
             ComputeCommandList(GPUDevice& device);
         private:
             void CreateCommandList(GPUDevice& device);
@@ -88,7 +88,7 @@ namespace Kraid
             ComPtr<ID3D12CommandAllocator> command_allocator = nullptr;
             CommandQueue command_queue;
 
-            VideoProcessCommandList() = default;
+            VideoProcessCommandList();
             VideoProcessCommandList(GPUDevice& device);
 
             ID3D12VideoProcessCommandList2* operator->();
