@@ -20,15 +20,15 @@ namespace D3D12
         ConstantBufferView buffer_cbv;
         
         ShaderParameter() = default;
-        ShaderParameter(GPUDevice& device, GraphicsCommandList& command_list, T value = T())
+        ShaderParameter(GraphicsCommandList& command_list, T value = T())
         {
             uint64 size_t = sizeof(T) + (256 - (sizeof(T) % 256));
-            this->parameter_buffer = UploadBufferResource(device, size_t);
+            this->parameter_buffer = UploadBufferResource(GPUDevice::Instance(), size_t);
 
             this->UpdateData(value, command_list);
 
-            uint64 heap_index = device.shader_resource_heap.AllocateIndex();
-            this->buffer_cbv = ConstantBufferView(device, this->parameter_buffer, device.shader_resource_heap, heap_index);
+            uint64 heap_index = GPUDevice::Instance().shader_resource_heap.AllocateIndex();
+            this->buffer_cbv = ConstantBufferView(GPUDevice::Instance(), this->parameter_buffer, GPUDevice::Instance().shader_resource_heap, heap_index);
         }
 
         inline void UpdateData(T value, GraphicsCommandList& command_list)

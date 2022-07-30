@@ -78,7 +78,7 @@ namespace D3D12
         return ret;
     }
 
-    Texture::Texture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list)
+    Texture::Texture(const StringView& filepath, GraphicsCommandList& command_list)
     {
         uint8* texture_data = stbi_load(filepath.Get(), (int*)&this->width, (int*)&this->height, (int*)&this->channel_count, 0);
         if(texture_data == nullptr)
@@ -131,10 +131,10 @@ namespace D3D12
         }
         //TODO(Tiago):needs to clean up this calculation and figure out why its like this again
         uint64 buffer_size = ((((this->width * this->channel_count) + 255) & ~255) * (this->height - 1)) + (this->width * this->channel_count);
-        this->upload_buffer = UploadBufferResource(device, buffer_size);
+        this->upload_buffer = UploadBufferResource(GPUDevice::Instance(), buffer_size);
         this->upload_buffer.SetTextureData(texture_data, this->width, this->height, this->channel_count);
 
-        this->texture = Texture2DResource(device, this->width, this->height, format);
+        this->texture = Texture2DResource(GPUDevice::Instance(), this->width, this->height, format);
         
         D3D12_TEXTURE_COPY_LOCATION source = {};
         source.Type = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
@@ -155,7 +155,7 @@ namespace D3D12
 
         stbi_image_free(texture_data);
 
-        this->CreateDefaultSRV(device);
+        this->CreateDefaultSRV(GPUDevice::Instance());
     }
 
     void Texture::BindDefaultSRV(GraphicsCommandList& command_list, uint32 texture_bind_slot)
@@ -170,14 +170,14 @@ namespace D3D12
     }
 
     static std::unordered_map<std::string, Texture> loaded_textures;
-    Texture& Texture::LoadTexture(const StringView& filepath, GPUDevice& device, GraphicsCommandList& command_list)
+    Texture& Texture::LoadTexture(const StringView& filepath, GraphicsCommandList& command_list)
     {
         if(loaded_textures.contains(filepath.Get()))
         {
             return loaded_textures[filepath.Get()];
         }
 
-        loaded_textures.emplace(filepath.Get(), Texture(filepath, device, command_list));
+        loaded_textures.emplace(filepath.Get(), Texture(filepath, command_list));
         return loaded_textures[filepath.Get()];
     }
 
