@@ -69,13 +69,12 @@ namespace Kraid
 
     void Submesh::UpdateTransformCBuffer(GraphicsCommandList& command_list, uint32 model_matrix_slot)
     {
-        if(this->local_transform.HasChanged() || (this->global_transform != nullptr && this->local_transform.HasChanged()))
+        if(this->local_transform.HasChanged() || (this->global_transform != nullptr && this->global_transform->HasChanged()))
         {
             this->local_transform.SetChangedFlag(false);
             Transform final_transform = this->local_transform;
             if(this->global_transform != nullptr)
             {
-                this->global_transform->SetChangedFlag(false);
                 final_transform = final_transform + *this->global_transform;
             }
             XMMATRIX model_matrix = final_transform.GetModelMatrix();
@@ -158,6 +157,7 @@ namespace Kraid
             {
                 submesh.Draw(command_list, texture_slot,model_matrix_slot, normal_map_slot);
             }
+            this->global_transform.SetChangedFlag(false);
         }
         else
         {

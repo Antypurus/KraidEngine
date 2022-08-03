@@ -213,7 +213,6 @@ namespace D3D12
 
         RootSignature() = default;
         RootSignature(
-                GPUDevice& device,
                 const std::vector<ConstantRootParameter>& constant_root_parameters = {},
                 const std::vector<RootDescriptorParameter>& root_descriptor_parameters = {},
                 const std::vector<DescriptorTableRootParameter>& descriptor_table_root_parameters = {});

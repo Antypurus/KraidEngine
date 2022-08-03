@@ -88,7 +88,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     ShaderParameter<cbuffer> color_param = ShaderParameter<cbuffer>(main_command_list, input);
     color_param.parameter_buffer->SetName(L"Global Input Parameter");
 
-    RootSignature rs(device, {}, {},
+    RootSignature rs({}, {},
             {//descriptor table array
                 {//descriptor table for point sampling
                     {SamplerDescriptorTableEntry(0)}
