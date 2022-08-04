@@ -21,7 +21,6 @@ namespace D3D12
     };
     
     GraphicsPipelineStateObject::GraphicsPipelineStateObject(
-                GPUDevice& device,
                 VertexShader& vertex_shader,
                 PixelShader& pixel_shader,
                 const RootSignature& root_signature,
@@ -41,14 +40,14 @@ namespace D3D12
         pixel_shader(&pixel_shader),
         root_signature(root_signature)
     {
-        vertex_shader.RegisterShaderRecompilationNotificationCallback([this, &device](){
-                    this->Compile(device);
+        vertex_shader.RegisterShaderRecompilationNotificationCallback([this](){
+                    this->Compile();
                 });
-        pixel_shader.RegisterShaderRecompilationNotificationCallback([this, &device](){
-                    this->Compile(device);
+        pixel_shader.RegisterShaderRecompilationNotificationCallback([this](){
+                    this->Compile();
                 });
 
-        this->Compile(device);
+        this->Compile();
     }
 
     GraphicsPipelineStateObject::~GraphicsPipelineStateObject()
@@ -56,10 +55,10 @@ namespace D3D12
         free((void*)this->vertex_layout.pInputElementDescs);
     }
 
-    void GraphicsPipelineStateObject::Compile(GPUDevice& device)
+    void GraphicsPipelineStateObject::Compile()
     {
-
         D3D12_SHADER_BYTECODE null_bytecode = {};
+        GPUDevice& device = GPUDevice::Instance();
 
         D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_desc = {};
         pso_desc.pRootSignature = this->root_signature.root_signature.Get();

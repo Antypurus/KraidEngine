@@ -23,7 +23,7 @@ namespace Kraid
         CBV_SRV_UAVDescriptorHeap gui_descriptor_heap;
 
         ImGUI() = default;
-        ImGUI(GPUDevice& device, Window& window);
+        ImGUI(Window& window);
         void StartFrame();
         void EndFrame(GraphicsCommandList& command_list);
     };

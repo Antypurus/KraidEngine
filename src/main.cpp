@@ -109,7 +109,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
                     {CBVDescriptorTableEntry(1)}
                 }
             });
-    GraphicsPipelineStateObject pso(device, vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
+    GraphicsPipelineStateObject pso(vs, ps, rs, PrimitiveTopology::Triangle, Vertex::GenerateVertexDescription());
 
     main_command_list.Close();
     main_command_list.Execute();
@@ -131,7 +131,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     auto end = std::chrono::high_resolution_clock::now();
     CircularBuffer<float> frame_times(400);
 
-    ImGUI gui(device, window);
+    ImGUI gui(window);
     while(window.open)
     {
         float highest_time = 0;

@@ -49,7 +49,6 @@ namespace D3D12
     public:
         GraphicsPipelineStateObject() = default;
         GraphicsPipelineStateObject(
-                GPUDevice& device,
                 VertexShader& vertex_shader,
                 PixelShader& pixel_shader,
                 const RootSignature& root_signature,
@@ -60,7 +59,7 @@ namespace D3D12
                 Blend blending = {},
                 StreamingOutputBuffer so_buffer = {});
         ~GraphicsPipelineStateObject();
-        void Compile(GPUDevice& device);
+        void Compile();
         void Bind(GraphicsCommandList& command_list);
     };
 

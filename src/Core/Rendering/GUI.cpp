@@ -13,8 +13,9 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 namespace Kraid
 {
 
-    ImGUI::ImGUI(GPUDevice& device, Window& window)
+    ImGUI::ImGUI(Window& window)
     {
+        GPUDevice& device = GPUDevice::Instance();
         this->gui_descriptor_heap = CBV_SRV_UAVDescriptorHeap(device, 10);
 
         IMGUI_CHECKVERSION();
