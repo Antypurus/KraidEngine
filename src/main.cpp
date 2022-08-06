@@ -19,8 +19,9 @@
 #include <Core/Rendering/D3D12/ShaderParameter.h>
 #include <Core/Rendering/Camera.h>
 #include <Core/Rendering/Model/ModelLoader.h>
-
 #include <Core/Rendering/GUI.h>
+
+#include <Core/Threading/JobSystem.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -62,7 +63,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 {
     using namespace Kraid;
     using namespace Kraid::D3D12;
-
+#if 0
     Window window(hInst, L"Kraid Engine", 1280, 720);
     Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
 
@@ -193,6 +194,12 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         float frame_time = elapsed/1000000.0f;
         frame_times.push(frame_time);
     }
+#endif
+    Job job;
+    job.job = [](void* args) { printf("Hello world"); };
+    JobRunnerThread runner;
+    runner.AddJob(job);
+    while(true){};
 
     return 0;
 }

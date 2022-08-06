@@ -211,7 +211,6 @@ namespace D3D12
         std::vector<RootDescriptorParameter> root_descriptor_parameters;
         std::vector<DescriptorTableRootParameter> descriptor_table_root_parameters;
 
-        RootSignature() = default;
         RootSignature(
                 const std::vector<ConstantRootParameter>& constant_root_parameters = {},
                 const std::vector<RootDescriptorParameter>& root_descriptor_parameters = {},
