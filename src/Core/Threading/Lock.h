@@ -6,20 +6,42 @@
 namespace Kraid
 {
 
-    struct Mutex
+    class HardMutex
     {
     public:
         HANDLE mutex_handle = nullptr;
     public:
-        Mutex();
-        ~Mutex();
+        HardMutex();
+        ~HardMutex();
         void Lock();
         void Unlock();
 
-        Mutex(const Mutex& other) = delete;
-        Mutex(Mutex&& other);
-        Mutex& operator=(const Mutex& other) = delete;
-        Mutex& operator=(Mutex&& other);
+        HardMutex(const HardMutex& other) = delete;
+        HardMutex(HardMutex&& other);
+        HardMutex& operator=(const HardMutex& other) = delete;
+        HardMutex& operator=(HardMutex&& other);
     };
 
+    class Mutex
+    {
+    };
+
+    class SlimMutex
+    {
+    };
+
+/*
+    class ConditionVariable
+    {
+    public:
+        CONDITION_VARIABLE cond_var;
+        Mutex associated_mutex;
+
+    public:
+        ConditionVariable();
+        void Sleep();
+        void Wake();
+        Mutex& operator->();
+    };
+*/
 }

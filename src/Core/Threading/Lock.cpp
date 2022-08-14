@@ -6,7 +6,7 @@
 namespace Kraid
 {
 
-    Mutex::Mutex()
+    HardMutex::HardMutex()
     {
         this->mutex_handle = CreateMutexW(nullptr, false, nullptr);
         if(this->mutex_handle == nullptr)
@@ -16,7 +16,7 @@ namespace Kraid
         }
     }
 
-    Mutex::Mutex(Mutex&& other)
+    HardMutex::HardMutex(HardMutex&& other)
     {
         if(this == &other) return;
 
@@ -28,7 +28,7 @@ namespace Kraid
         this->Unlock();
     }
 
-    Mutex& Mutex::operator=(Mutex&& other)
+    HardMutex& HardMutex::operator=(HardMutex&& other)
     {
         if(this == &other) return *this;
 
@@ -42,7 +42,7 @@ namespace Kraid
         return *this;
     }
 
-    Mutex::~Mutex()
+    HardMutex::~HardMutex()
     {
         if(this->mutex_handle != nullptr)
         {
@@ -50,7 +50,7 @@ namespace Kraid
         }
     }
 
-    void Mutex::Lock()
+    void HardMutex::Lock()
     {
         auto result = WaitForSingleObject(this->mutex_handle, INFINITE);
         while( result != WAIT_OBJECT_0)
@@ -59,7 +59,7 @@ namespace Kraid
         }
     }
 
-    void Mutex::Unlock()
+    void HardMutex::Unlock()
     {
         bool result = ReleaseMutex(this->mutex_handle);
         if(result == false)
@@ -68,4 +68,25 @@ namespace Kraid
         }
     }
 
+/*
+    ConditionVariable::ConditionVariable()
+    {
+        InitializeConditionVariable(&this->cond_var);
+    }
+
+    void ConditionVariable::Sleep()
+    {
+        bool result = SleepConditionVariableSRW(&this->cond_var, this->associated_mutex.mutex_handle, INFINITE, NULL);
+        if(result == 0)
+        {
+            LERROR("Failed to sleep on condition variable");
+            PRINT_WINERROR();
+        }
+    }
+
+    Mutex& ConditionVariable::operator->()
+    {
+        return this->associated_mutex;
+    }
+*/
 }
