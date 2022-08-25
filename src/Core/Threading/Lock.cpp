@@ -5,6 +5,8 @@
 
 namespace Kraid
 {
+    
+    /* ================ Start of Hard/True/Pure Mutex Implementation ================================*/
 
     HardMutex::HardMutex()
     {
@@ -67,6 +69,66 @@ namespace Kraid
             PRINT_WINERROR();
         }
     }
+
+    /* ================ End of Hard/True/Pure Mutex Implementation ================================*/
+
+    /* ================ Start of Standard Hybrid Mutex Implementation =============================*/
+   
+    Mutex::Mutex()
+    {
+        if(!InitializeCriticalSectionAndSpinCount(&this->mutex, this->spin_limit))
+        {
+            PRINT_WINERROR();
+            return;
+        }
+    }
+
+    Mutex::~Mutex()
+    {
+        DeleteCriticalSection(&this->mutex);
+    }
+
+    Mutex::Mutex(Mutex&& other)
+    {
+        if(this == &other) return;
+
+        other.Lock();
+
+        this->mutex = other.mutex;
+        this->spin_limit = other.spin_limit;
+        other.mutex = {};
+        other.spin_limit = 0;
+
+        this->Unlock();
+    }
+
+    Mutex& Mutex::operator=(Mutex &&other)
+    {
+        if(this == &other) return *this;
+
+        other.Lock();
+
+        this->mutex = other.mutex;
+        this->spin_limit = other.spin_limit;
+        other.mutex = {};
+        other.spin_limit = 0;
+
+        this->Unlock();
+
+        return *this;
+    }
+    
+    void Mutex::Unlock()
+    {
+        LeaveCriticalSection(&this->mutex);
+    }
+        
+    void Mutex::Lock()
+    {
+        EnterCriticalSection(&this->mutex);
+    }
+
+    /* ================ End of Standard Hybrid Mutex Implementation =============================*/
 
 /*
     ConditionVariable::ConditionVariable()

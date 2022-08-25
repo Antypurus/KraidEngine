@@ -24,6 +24,19 @@ namespace Kraid
 
     class Mutex
     {
+    public:
+        CRITICAL_SECTION mutex = {};
+        uint64 spin_limit = 1000;
+    public:
+        Mutex();
+        ~Mutex();
+        void Lock();
+        void Unlock();
+
+        Mutex(const Mutex& other) = delete;
+        Mutex(Mutex&& other);
+        Mutex& operator=(const Mutex& other) = delete;
+        Mutex& operator=(Mutex&& other);
     };
 
     class SlimMutex

@@ -63,7 +63,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 {
     using namespace Kraid;
     using namespace Kraid::D3D12;
-#if 0
+#if 1
     Window window(hInst, L"Kraid Engine", 1280, 720);
     Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
 
@@ -194,12 +194,12 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         float frame_time = elapsed/1000000.0f;
         frame_times.push(frame_time);
     }
-#endif
+#else
     Job job;
     job.job = [](void* args) { printf("Hello world"); };
     JobRunnerThread runner;
     runner.AddJob(job);
     while(true){};
-
+#endif
     return 0;
 }
