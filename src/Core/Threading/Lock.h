@@ -41,6 +41,18 @@ namespace Kraid
 
     class SlimMutex
     {
+    public:
+        SRWLOCK mutex = {};
+    public:
+        SlimMutex();
+        ~SlimMutex();
+        void Lock();
+        void Unlock();
+
+        SlimMutex(const SlimMutex& other) = delete;
+        SlimMutex(Mutex&& other);
+        SlimMutex& operator=(const SlimMutex& other) = delete;
+        SlimMutex& operator=(SlimMutex&& other);
     };
 
 /*

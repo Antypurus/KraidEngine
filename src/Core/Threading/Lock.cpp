@@ -128,7 +128,22 @@ namespace Kraid
         EnterCriticalSection(&this->mutex);
     }
 
-    /* ================ End of Standard Hybrid Mutex Implementation =============================*/
+    /* ================ End of Standard Hybrid Mutex Implementation ============================= */
+
+    
+    /* ================ Start of Lightweight Hybrid Mutex Implementation ============================= */
+    
+    SlimMutex::SlimMutex()
+    {
+        InitializeSRWLock(&this->mutex);
+    }
+
+    SlimMutex::~SlimMutex()
+    {
+
+    }
+
+    /* ================ End of Lightweight Hybrid Mutex Implementation ============================= */
 
 /*
     ConditionVariable::ConditionVariable()
