@@ -5,25 +5,38 @@ namespace Kraid
 
     JobRunnerThread::JobRunnerThread()
     {
+        this->job_queue_lock = {};
         this->job_running_thread = Thread([this](void* data) -> DWORD {
                 //runner code
                 while(this->is_running)
                 {
+                    this->job_queue_lock.associated_mutex.Lock();
+                    if(this->job_queue.empty())
+                    {
+                        this->job_queue_lock.Sleep();
+                    }
+                    this->job_queue_lock.associated_mutex.Unlock();
+
                     while(!this->job_queue.empty())
                     {
-                        this->queue_lock.Lock();
-                        Job job = this->job_queue.front();
+                        Job job;
+                        this->job_queue_lock.associated_mutex.Lock();
+                        
+                        job = this->job_queue.front();
                         this->job_queue.pop();
-                        this->queue_lock.Unlock();
+                        this->job_queue_lock.associated_mutex.Unlock();
 
-                        job.job(job.job_data);
-                        if(job.callback)
+                        if(job.initialized)
                         {
-                            job.callback();
-                        }
-                        if(job.deleter)
-                        {
-                            job.deleter(job.job_data);
+                            job.job(job.job_data);
+                            if(job.callback)
+                            {
+                                job.callback();
+                            }
+                            if(job.deleter)
+                            {
+                                job.deleter(job.job_data);
+                            }
                         }
                     }
                 }
@@ -38,9 +51,10 @@ namespace Kraid
 
     void JobRunnerThread::AddJob(Job job)
     {
-        this->queue_lock.Lock();
+        this->job_queue_lock.associated_mutex.Lock();
         this->job_queue.push(job);
-        this->queue_lock.Unlock();
+        this->job_queue_lock.associated_mutex.Unlock();
+        this->job_queue_lock.Wake();
     }
 
 }

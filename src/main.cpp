@@ -59,11 +59,16 @@ struct cbuffer
 
 #define rad(x) (x*DirectX::XM_PI)/180.0f
 
+void test(void* args)
+{
+    printf("Hello world");
+}
+
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
     using namespace Kraid;
     using namespace Kraid::D3D12;
-#if 1
+#if 0
     Window window(hInst, L"Kraid Engine", 1280, 720);
     Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
 
@@ -196,9 +201,13 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 #else
     Job job;
-    job.job = [](void* args) { printf("Hello world"); };
+    job.job = test;
+    job.initialized = true;
     JobRunnerThread runner;
-    runner.AddJob(job);
+    while(true)
+    {
+        runner.AddJob(job);
+    }
     while(true){};
 #endif
     return 0;

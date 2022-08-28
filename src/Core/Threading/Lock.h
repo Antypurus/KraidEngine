@@ -28,6 +28,7 @@ namespace Kraid
         CRITICAL_SECTION mutex = {};
         uint64 spin_limit = 1000;
     public:
+        //TODO(Tiago): allow the spin limit to be configured in the constructor?
         Mutex();
         ~Mutex();
         void Lock();
@@ -45,28 +46,26 @@ namespace Kraid
         SRWLOCK mutex = {};
     public:
         SlimMutex();
-        ~SlimMutex();
+        ~SlimMutex() = default;
         void Lock();
         void Unlock();
 
         SlimMutex(const SlimMutex& other) = delete;
-        SlimMutex(Mutex&& other);
+        SlimMutex(SlimMutex&& other);
         SlimMutex& operator=(const SlimMutex& other) = delete;
         SlimMutex& operator=(SlimMutex&& other);
     };
 
-/*
     class ConditionVariable
     {
     public:
         CONDITION_VARIABLE cond_var;
-        Mutex associated_mutex;
+        SlimMutex associated_mutex;
 
     public:
         ConditionVariable();
         void Sleep();
         void Wake();
-        Mutex& operator->();
+        SlimMutex& operator->();
     };
-*/
 }

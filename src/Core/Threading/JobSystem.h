@@ -9,10 +9,33 @@ namespace Kraid
 
     struct Job
     {
-        std::function<void(void*)> job;
-        uint8* job_data = nullptr;
+    public:
+        //std::function<void(void*)> job;
+        void (*job)(void*) = nullptr;
         std::function<void(void*)> deleter;
         std::function<void(void)> callback;
+        uint8* job_data = nullptr;
+        volatile bool initialized = false;
+
+    public:
+        Job() = default;
+        Job(const Job& other)
+        {
+            this->job = other.job;
+            this->deleter = other.deleter;
+            this->callback = other.callback;
+            this->job_data = other.job_data;
+            this->initialized = other.initialized;
+        }
+        Job& operator=(const Job& other)
+        {
+            this->job = other.job;
+            this->deleter = other.deleter;
+            this->callback = other.callback;
+            this->job_data = other.job_data;
+            this->initialized = other.initialized;
+            return *this;
+        }
     };
 
     class JobRunnerThread
@@ -20,8 +43,8 @@ namespace Kraid
     private:
         Thread job_running_thread;
         std::queue<Job> job_queue;
-        Mutex queue_lock;
-        bool is_running = true;
+        ConditionVariable job_queue_lock;
+        volatile bool is_running = true;
     public:
         JobRunnerThread();
         ~JobRunnerThread();

@@ -138,22 +138,53 @@ namespace Kraid
         InitializeSRWLock(&this->mutex);
     }
 
-    SlimMutex::~SlimMutex()
+    SlimMutex::SlimMutex(SlimMutex&& other)
     {
+        if(this == &other) return;
 
+        other.Lock();
+
+        this->mutex = other.mutex;
+        other.mutex = {};
+
+        this->Unlock();
+    }
+
+    SlimMutex& SlimMutex::operator=(SlimMutex &&other)
+    {
+        if(this == &other) return *this;
+
+        other.Lock();
+
+        this->mutex = other.mutex;
+        other.mutex = {};
+
+        this->Unlock();
+
+        return *this;
+    }
+
+    void SlimMutex::Lock()
+    {
+        AcquireSRWLockExclusive(&this->mutex);
+    }
+
+    void SlimMutex::Unlock()
+    {
+        ReleaseSRWLockExclusive(&this->mutex);
     }
 
     /* ================ End of Lightweight Hybrid Mutex Implementation ============================= */
 
-/*
     ConditionVariable::ConditionVariable()
     {
+        this->associated_mutex = {};
         InitializeConditionVariable(&this->cond_var);
     }
 
     void ConditionVariable::Sleep()
     {
-        bool result = SleepConditionVariableSRW(&this->cond_var, this->associated_mutex.mutex_handle, INFINITE, NULL);
+        bool result = SleepConditionVariableSRW(&this->cond_var, &this->associated_mutex.mutex, INFINITE, NULL);
         if(result == 0)
         {
             LERROR("Failed to sleep on condition variable");
@@ -161,9 +192,13 @@ namespace Kraid
         }
     }
 
-    Mutex& ConditionVariable::operator->()
+    void ConditionVariable::Wake()
+    {
+        WakeAllConditionVariable(&this->cond_var);
+    }
+
+    SlimMutex& ConditionVariable::operator->()
     {
         return this->associated_mutex;
     }
-*/
 }
