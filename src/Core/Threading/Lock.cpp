@@ -138,32 +138,6 @@ namespace Kraid
         InitializeSRWLock(&this->mutex);
     }
 
-    SlimMutex::SlimMutex(SlimMutex&& other)
-    {
-        if(this == &other) return;
-
-        other.Lock();
-
-        this->mutex = other.mutex;
-        other.mutex = {};
-
-        this->Unlock();
-    }
-
-    SlimMutex& SlimMutex::operator=(SlimMutex &&other)
-    {
-        if(this == &other) return *this;
-
-        other.Lock();
-
-        this->mutex = other.mutex;
-        other.mutex = {};
-
-        this->Unlock();
-
-        return *this;
-    }
-
     void SlimMutex::Lock()
     {
         AcquireSRWLockExclusive(&this->mutex);
@@ -178,7 +152,6 @@ namespace Kraid
 
     ConditionVariable::ConditionVariable()
     {
-        this->associated_mutex = {};
         InitializeConditionVariable(&this->cond_var);
     }
 
@@ -197,8 +170,18 @@ namespace Kraid
         WakeAllConditionVariable(&this->cond_var);
     }
 
-    SlimMutex& ConditionVariable::operator->()
+    void ConditionVariable::Lock()
     {
-        return this->associated_mutex;
+        this->associated_mutex.Lock();
+    }
+
+    void ConditionVariable::Unlock()
+    {
+        this->associated_mutex.Unlock();
+    }
+
+    SlimMutex* ConditionVariable::operator->()
+    {
+        return &this->associated_mutex;
     }
 }

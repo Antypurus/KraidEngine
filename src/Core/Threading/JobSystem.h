@@ -10,35 +10,13 @@ namespace Kraid
     struct Job
     {
     public:
-        //std::function<void(void*)> job;
-        void (*job)(void*) = nullptr;
+        std::function<void(void*)> job;
         std::function<void(void*)> deleter;
         std::function<void(void)> callback;
         uint8* job_data = nullptr;
-        volatile bool initialized = false;
-
-    public:
-        Job() = default;
-        Job(const Job& other)
-        {
-            this->job = other.job;
-            this->deleter = other.deleter;
-            this->callback = other.callback;
-            this->job_data = other.job_data;
-            this->initialized = other.initialized;
-        }
-        Job& operator=(const Job& other)
-        {
-            this->job = other.job;
-            this->deleter = other.deleter;
-            this->callback = other.callback;
-            this->job_data = other.job_data;
-            this->initialized = other.initialized;
-            return *this;
-        }
     };
 
-    class JobRunnerThread
+    class JobRunner
     {
     private:
         Thread job_running_thread;
@@ -46,8 +24,25 @@ namespace Kraid
         ConditionVariable job_queue_lock;
         volatile bool is_running = true;
     public:
-        JobRunnerThread();
-        ~JobRunnerThread();
+        JobRunner();
+        ~JobRunner();
+        void AddJob(Job job);
+        //NOTE(Tiago): Condition variables cannot be copies or moved, therefore neither can a job runner.
+        JobRunner(JobRunner&& other) = delete;
+        JobRunner(const JobRunner& other) = delete;
+        JobRunner& operator=(JobRunner&& other) = delete;
+        JobRunner& operator=(const JobRunner& other) = delete;
+    };
+
+    class JobPoolManager
+    {
+    private:
+        std::vector<JobRunner*> runner_pool;
+        std::atomic_uchar current_submission_runner = 0;
+    public:
+        JobPoolManager() = default;
+        JobPoolManager(uint8 runner_count);
+        ~JobPoolManager();
         void AddJob(Job job);
     };
 

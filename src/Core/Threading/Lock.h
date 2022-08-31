@@ -50,10 +50,15 @@ namespace Kraid
         void Lock();
         void Unlock();
 
+        //NOTE(Tiago):copying and/or moving around an SRW lock is generally not safe. While MS states it can be done when the lock is not taken
+        //and there are no waiting threads, the details on how it should be done are non-existent coupled with the generally hard to understand
+        //inner working on this structure I prefer to disallow copies/moves of it, this will however extend this restriction to the condition
+        //variable class. The other thing to consider is that doing the move/copy while not protected by a lock will probably lead to issues and
+        //require the SRW lock to keep a secondary lock that is used to protect during copies and that would likely add overhead to other ops.
         SlimMutex(const SlimMutex& other) = delete;
-        SlimMutex(SlimMutex&& other);
+        SlimMutex(SlimMutex&& other) = delete;
         SlimMutex& operator=(const SlimMutex& other) = delete;
-        SlimMutex& operator=(SlimMutex&& other);
+        SlimMutex& operator=(SlimMutex&& other) = delete;
     };
 
     class ConditionVariable
@@ -61,11 +66,18 @@ namespace Kraid
     public:
         CONDITION_VARIABLE cond_var;
         SlimMutex associated_mutex;
-
     public:
         ConditionVariable();
         void Sleep();
         void Wake();
-        SlimMutex& operator->();
+        void Lock();
+        void Unlock();
+        SlimMutex* operator->();
+        //NOTE(Tiago): The slim mutex class cannot be copied or moved around. Therefore unless we start keeping a pointer to one instead of
+        //having the actuall class embedded as a member, moves and copies will also not be allowed for the condition variable.
+        ConditionVariable(ConditionVariable&& other) = delete;
+        ConditionVariable& operator=(ConditionVariable&& other) = delete;
+        ConditionVariable(const ConditionVariable& other) = delete;
+        ConditionVariable& operator=(const ConditionVariable& other) = delete;
     };
 }

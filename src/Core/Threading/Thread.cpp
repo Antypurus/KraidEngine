@@ -5,10 +5,6 @@
 
 namespace Kraid {
 
-    Thread::Thread()
-    {
-    }
-
     Thread::Thread(DWORD (*thread_function)(void*), void* parameters)
     {
         this->thread_handle = CreateThread(NULL, NULL, thread_function, parameters, 0, &this->thread_id);
@@ -23,6 +19,48 @@ namespace Kraid {
         {
             LSUCCESS("Thread created");
         }
+    }
+
+    Thread::Thread(const Thread& other)
+    {
+        this->thread_handle = other.thread_handle;
+        this->thread_id = other.thread_id;
+    }
+
+    Thread::Thread(Thread&& other)
+    {
+        if(this == &other) return;
+
+        this->thread_handle = other.thread_handle;
+        this->thread_id = other.thread_id;
+
+        other.thread_id = NULL;
+        other.thread_handle = NULL;
+    }
+
+    Thread& Thread::operator=(const Thread& other)
+    {
+        this->thread_handle = other.thread_handle;
+        this->thread_id = other.thread_id;
+        return *this;
+    }
+
+    Thread& Thread::operator=(Thread&& other)
+    {
+        if(this == &other) return *this;
+
+        this->thread_handle = other.thread_handle;
+        this->thread_id = other.thread_id;
+
+        other.thread_id = NULL;
+        other.thread_handle = NULL;
+
+        return *this;
+    }
+
+    void Thread::SetName(WideStringView name)
+    {
+        SetThreadDescription(this->thread_handle, name.Get());
     }
 
     DWORD Thread::lambda_thread_function_caller(void* args)

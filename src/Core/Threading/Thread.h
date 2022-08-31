@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/stdcpp.h>
+#include <Core/DataStructures/StringView.h>
 
 namespace Kraid
 {
@@ -16,9 +17,15 @@ namespace Kraid
         DWORD thread_id = NULL;
 
     public:
-        Thread();
+        Thread() = default;
         Thread(DWORD (*thread_function)(void*), void* parameters);
+        Thread(const Thread& other);
+        Thread(Thread&& other);
+        void SetName(WideStringView name);
+
         explicit Thread(const std::function<DWORD(void*)>& thread_function, void* parameters = nullptr);
+        Thread& operator=(const Thread& other);
+        Thread& operator=(Thread&& other);
 
     private:
         static DWORD lambda_thread_function_caller(void* args);
