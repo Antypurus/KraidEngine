@@ -46,4 +46,30 @@ namespace Kraid
         void AddJob(Job job);
     };
 
+    enum class JobPriority
+    {
+        Low,
+        Medium,
+        High
+    };
+
+    class JobSystem
+    {
+    private:
+        JobPoolManager high_priority_pool;
+        JobPoolManager medium_priority_pool;
+        JobPoolManager low_priority_pool;
+        static JobSystem m_instance;
+    private:
+        JobSystem();
+        ~JobSystem() = default;
+    public:
+        static void AddJob(Job job, JobPriority priority = JobPriority::Low);
+        static void AddJob(const std::function<void(void*)>& job,
+                    JobPriority priority = JobPriority::Low,
+                    uint8* data = nullptr,
+                    const std::function<void(void*)>& deleter = {},
+                    const std::function<void(void)>& callback = {});
+    };
+
 }

@@ -202,10 +202,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 #else
     Job job;
     job.job = test;
-    JobPoolManager pool(4);
     while(true)
     {
-        pool.AddJob(job);
+        JobSystem::AddJob(job);
     }
     while(true){};
 #endif
