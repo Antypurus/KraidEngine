@@ -68,7 +68,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 {
     using namespace Kraid;
     using namespace Kraid::D3D12;
-#if 0
+#if 1
     Window window(hInst, L"Kraid Engine", 1280, 720);
     Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
 
@@ -204,7 +204,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     job.job = test;
     while(true)
     {
-        JobSystem::AddJob(job);
+        JobSystem::AddJob(job, JobPriority::Low);
     }
     while(true){};
 #endif

@@ -5,6 +5,7 @@
 #include <Core/Rendering/D3D12/Texture.h>
 #include <Core/Rendering/Transform.h>
 #include <Core/Rendering/D3D12/ShaderParameter.h>
+#include <Core/Rendering/Model/AABB.h>
 
 #include <Core/stdcpp.h>
 
@@ -88,6 +89,7 @@ namespace Kraid
         Transform global_transform;
         std::vector<Submesh> submeshes;
         std::vector<BlinPhongMaterial> materials;
+        AABB global_aabb = {};
 
         Model() = default;
         Model(

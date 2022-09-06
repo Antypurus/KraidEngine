@@ -138,6 +138,13 @@ namespace Kraid
         this->global_vertex_buffer = VertexBuffer<Vertex>(device, command_list, vertices);
         this->submeshes = meshes;
         this->materials = std::move(materials);
+        for(uint64 i = 0; i < vertices.size(); ++i)
+        {
+            this->global_aabb.UpdateBounds(
+                        vertices[i].position.x,
+                        vertices[i].position.y,
+                        vertices[i].position.z);
+        }
         for (auto& mesh : this->submeshes)
         {
             mesh.SetGlobalTransformReference(&this->global_transform);
@@ -170,6 +177,16 @@ namespace Kraid
     void Model::DrawDebugGUI()
     {
         ImGui::Begin("Model Debug GUI");
+
+        ImGui::Text("AABB Lower Bound x:%f y:%f z:%f",
+                        this->global_aabb.lower_bound[0],
+                        this->global_aabb.lower_bound[1],
+                        this->global_aabb.lower_bound[2]);
+        ImGui::Text("AABB Upper Bound x:%f y:%f z:%f",
+                        this->global_aabb.upper_bound[0],
+                        this->global_aabb.upper_bound[1],
+                        this->global_aabb.upper_bound[2]);
+                                               
 
         if(ImGui::CollapsingHeader("Global Model Transform"))
         {
