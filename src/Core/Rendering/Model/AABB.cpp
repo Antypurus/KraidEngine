@@ -10,9 +10,9 @@ namespace Kraid
         this->lower_bound[1] = FLT_MAX;
         this->lower_bound[2] = FLT_MAX;
         //TODO(Tiago):initialize the upper bound to the smaller possible float vlaue, such that any initial point will be larger than it
-        this->upper_bound[0] = FLT_MIN;
-        this->upper_bound[1] = FLT_MIN;
-        this->upper_bound[2] = FLT_MIN;
+        this->upper_bound[0] = -FLT_MAX;
+        this->upper_bound[1] = -FLT_MAX;
+        this->upper_bound[2] = -FLT_MAX;
     }
 
     void AABB::UpdateBounds(float x, float y, float z)
