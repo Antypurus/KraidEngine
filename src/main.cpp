@@ -157,13 +157,13 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         start = high_resolution_clock::now();
 
         swapchain.StartFrame(main_command_list);
-        
+
         gui.StartFrame();
 
         ImGui::Begin("Frame time");
         ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
         ImGui::End();
-        
+
         view_matrix = camera.ViewMatrix();
         input.view_matrix = view_matrix;
         input.projection_matrix = projection_matrix;
@@ -177,9 +177,9 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         linear_sampler.Bind(main_command_list, 1);
         anisotropic_sampler.Bind(main_command_list, 2);
         color_param.Bind(main_command_list, 4);
-        
+
         model.Draw(main_command_list, 3, 5);
-        
+
         gui.EndFrame(main_command_list);
 
         swapchain.EndFrame(main_command_list);
@@ -187,14 +187,14 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         main_command_list.Close();
         main_command_list.Execute();
         swapchain.Present();
-     
+
         main_fence.Increment(device.direct_command_queue);
         main_fence.WaitForCompletion();
-         
+
         main_command_list.Reset();
 
         end = high_resolution_clock::now();
-        
+
         auto elapsed = duration_cast<nanoseconds>(end - start).count();
         float frame_time = elapsed/1000000.0f;
         frame_times.push(frame_time);
