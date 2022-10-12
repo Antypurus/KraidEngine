@@ -67,3 +67,15 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${PROJECT_SOURCE_DIR}/ThirdParty/DXC/"
     "${CMAKE_BINARY_DIR}")
+
+add_custom_command(
+        TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${PROJECT_SOURCE_DIR}/Resources"
+        "${CMAKE_BINARY_DIR}/Resources")
+
+add_custom_command(
+            TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/Shaders"
+            "${CMAKE_BINARY_DIR}/Shaders")

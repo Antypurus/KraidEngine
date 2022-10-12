@@ -56,8 +56,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
     Model model = ModelLoader::LoadOBJModel("./Resources/Models/vokselia_spawn/vokselia_spawn.obj", main_command_list);
 
-    VertexShader vs(L"./shader.hlsl", "VSMain");
-    PixelShader ps(L"./shader.hlsl", "PSMain");
+    VertexShader vs(L"./Shaders/shader.hlsl", "VSMain");
+    PixelShader ps(L"./Shaders/shader.hlsl", "PSMain");
 
     TextureSampler point_sampler(device.sampler_descriptior_heap, TextureSamplingMode::Point);
     TextureSampler linear_sampler(device.sampler_descriptior_heap, TextureSamplingMode::Linear);

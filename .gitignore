@@ -62,6 +62,5 @@ compile_commands.json
 
 #special test files
 *test.txt
-*shader.hlsl
 tags
 imgui.ini
