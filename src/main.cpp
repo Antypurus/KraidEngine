@@ -1,13 +1,5 @@
 #include <Core/Core.h>
-#include <Core/Rendering/D3D12/GPUDevice.h>
-#include <Core/Rendering/D3D12/Fence.h>
-#include <Core/Rendering/D3D12/CommandList.h>
-#include <Core/Rendering/D3D12/Swapchain.h>
-#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
-#include <Core/Rendering/D3D12/Resource/Resource.h>
-#include <Core/Rendering/D3D12/VertexBuffer.h>
-#include <Core/Rendering/D3D12/IndexBuffer.h>
-#include <Core/Rendering/D3D12/Shader.h>
+#include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Utils/Log.h>
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Filesystem/Directory.h>
@@ -15,8 +7,6 @@
 #include "Core/Rendering/D3D12/RootSignature.h"
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
-#include <Core/Rendering/D3D12/Texture.h>
-#include <Core/Rendering/D3D12/ShaderParameter.h>
 #include <Core/Rendering/Camera.h>
 #include <Core/Rendering/Model/ModelLoader.h>
 #include <Core/Rendering/GUI.h>
