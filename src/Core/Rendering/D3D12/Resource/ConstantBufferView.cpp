@@ -28,13 +28,13 @@ namespace Kraid
             this->cpu_descriptor_handle = descriptor_handle;
             device->CreateConstantBufferView(&cbuffer_desc, descriptor_handle);
         }
-        
+
         ConstantBufferView::ConstantBufferView(GPUDevice& device, Texture2DResource& resource, D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle)
         {
            D3D12_CONSTANT_BUFFER_VIEW_DESC cbuffer_desc = {};
            cbuffer_desc.BufferLocation = resource.resource->GetGPUVirtualAddress();
            cbuffer_desc.SizeInBytes = resource.width * resource.height;//TODO(Tiago):we need to multiply by the size of each element which needs to be computed from the format
-            
+
             this->cpu_descriptor_handle = descriptor_handle;
             device->CreateConstantBufferView(&cbuffer_desc, descriptor_handle);
         }

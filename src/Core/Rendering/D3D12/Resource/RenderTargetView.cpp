@@ -32,7 +32,7 @@ namespace Kraid
             this->descriptor_handle = descriptor_handle;
             this->width = resource.width;
             this->height = 0;
-            
+
             D3D12_RENDER_TARGET_VIEW_DESC rtv_desc = {};
             rtv_desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE1D;
             rtv_desc.Format = format;

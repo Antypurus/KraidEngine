@@ -44,12 +44,12 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
         <functional>
         <thread>
         <chrono>
-        
+
         <DearImGui/imgui.h>
         <tinyobjloader/tiny_obj_loader.h>
-        
+
         <Core/Windows.h>
-        <Core/Rendering/D3D12/D3D12.h>
+        <Core/Rendering/D3D12/D3D12SDK.h>
         <Core/stdcpp.h>
         )
 

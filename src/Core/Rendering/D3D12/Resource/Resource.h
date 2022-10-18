@@ -2,13 +2,13 @@
 
 #include "Core/Rendering/D3D12/CommandList.h"
 #include <Core/stdcpp.h>
-#include <Core/Rendering/D3D12/D3D12.h>
+#include <Core/Rendering/D3D12/D3D12SDK.h>
 
 #include <Core/types.h>
 
 namespace Kraid
 {
-    
+
     namespace D3D12
     {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <d3d12.h>
+#include <Core/Rendering/D3D12/D3D12SDK.h>
 
 #include <Core/types.h>
 #include <Core/Rendering/D3D12/CommandQueue.h>
