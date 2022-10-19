@@ -51,6 +51,7 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
         <Core/Windows.h>
         <Core/Rendering/D3D12/D3D12.h>
         <Core/Rendering/D3D12/D3D12SDK.h>
+        <Core/Rendering/Rendering.h>
         <Core/stdcpp.h>
         )
 

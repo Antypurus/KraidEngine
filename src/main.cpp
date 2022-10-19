@@ -1,17 +1,13 @@
 #include <Core/Core.h>
-#include <Core/Rendering/D3D12/D3D12.h>
 #include <Core/Utils/Log.h>
 #include <Core/Filesystem/Filesystem.h>
 #include <Core/Filesystem/Directory.h>
-#include <Core/Rendering/D3D12/PSO/PipelineStateObject.h>
-#include "Core/Rendering/D3D12/RootSignature.h"
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
-#include <Core/Rendering/Camera.h>
-#include <Core/Rendering/Model/ModelLoader.h>
-#include <Core/Rendering/GUI.h>
 #include <Core/DataStructures/RingBuffer.h>
 #include <Core/Threading/JobSystem.h>
+
+#include <Core/Rendering/Rendering.h>
 
 #include <chrono>
 using namespace std::chrono;

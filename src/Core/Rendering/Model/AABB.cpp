@@ -20,7 +20,7 @@ namespace Kraid
         if(x < this->lower_bound[0]) lower_bound[0] = x;
         if(y < this->lower_bound[1]) lower_bound[1] = y;
         if(z < this->lower_bound[2]) lower_bound[2] = z;
-        
+
         if(x > this->upper_bound[0]) upper_bound[0] = x;
         if(y > this->upper_bound[1]) upper_bound[1] = y;
         if(z > this->upper_bound[2]) upper_bound[2] = z;
