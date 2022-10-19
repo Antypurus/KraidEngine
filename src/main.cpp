@@ -1,13 +1,4 @@
 #include <Core/Core.h>
-#include <Core/Utils/Log.h>
-#include <Core/Filesystem/Filesystem.h>
-#include <Core/Filesystem/Directory.h>
-#include <Core/Windows.h>
-#include <Core/Utils/Log.h>
-#include <Core/DataStructures/RingBuffer.h>
-#include <Core/Threading/JobSystem.h>
-
-#include <Core/Rendering/Rendering.h>
 
 #include <chrono>
 using namespace std::chrono;
@@ -21,11 +12,6 @@ struct cbuffer
 };
 
 #define rad(x) (x*DirectX::XM_PI)/180.0f
-
-void test(void* args)
-{
-    printf("Hello world");
-}
 
 int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmdshow)
 {
