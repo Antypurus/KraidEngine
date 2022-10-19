@@ -168,7 +168,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     }
 #else
     Job job;
-    job.job = test;
+    job.job = [](void*){ printf("Hello world"); };
     while(true)
     {
         JobSystem::AddJob(job, JobPriority::Low);
