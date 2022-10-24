@@ -107,7 +107,7 @@ namespace Kraid
 				//position
 				CW_USEDEFAULT, CW_USEDEFAULT,
                 //size (width, heigth)
-				client_rect.right - client_rect.left, client_rect.bottom - client_rect.top,	
+				client_rect.right - client_rect.left, client_rect.bottom - client_rect.top,
 				NULL,
 				NULL,
 				instance,
@@ -166,7 +166,7 @@ namespace Kraid
     {
         //execute universal callbacks
         {
-            auto [start,end] = this->event_callbacks.equal_range(0); 
+            auto [start,end] = this->event_callbacks.equal_range(0);
             while(start != end)
             {
                 start->second(window_handle,event,wParam,lParam);

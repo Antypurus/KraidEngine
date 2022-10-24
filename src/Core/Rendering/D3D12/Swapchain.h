@@ -13,7 +13,7 @@ namespace Kraid
 
     namespace D3D12
     {
-        
+
         struct GPUDevice;
         struct GraphicsCommandList;
 
