@@ -17,7 +17,7 @@ namespace Kraid
         {
             this->rtv_heap = RTVDescriptorHeap(GPUDevice::Instance(), this->render_target_count);
             this->dsv_heap = DSVDescriptorHeap(GPUDevice::Instance(), 1);
-            //TODO(Tiago):needs to be cleaned up to update when we change the window size 
+            //TODO(Tiago):needs to be cleaned up to update when we change the window size
             this->height = window.height;
             this->width = window.width;
 
@@ -31,7 +31,7 @@ namespace Kraid
         {
             this->rtv_heap = RTVDescriptorHeap(device, this->render_target_count);
             this->dsv_heap = DSVDescriptorHeap(device, 1);
-            //TODO(Tiago):needs to be cleaned up to update when we change the window size 
+            //TODO(Tiago):needs to be cleaned up to update when we change the window size
             this->height = window.height;
             this->width = window.width;
 
@@ -93,7 +93,7 @@ namespace Kraid
             this->depth_stencil_view = DepthStencilView(device, this->depth_stencil_buffer, this->dsv_heap[0]);
             this->depth_stencil_buffer.TransitionStateTo(ResourceState::DepthWrite, command_list);
         }
-        
+
         void Swapchain::Clear(GraphicsCommandList& command_list)
         {
             this->render_target_views[this->current_backbuffer].Clear(command_list);

@@ -61,7 +61,8 @@ if(MSVC)
     add_compile_options(${PROJECT_NAME} /wd26495)
     add_compile_options(${PROJECT_NAME} /W4 /WX)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+    message("Clang build")
+    add_compile_options(${PROJECT_NAME} -Wall -Wextra -Wpedantic)
 endif()
 
 add_custom_command(
@@ -71,13 +72,13 @@ add_custom_command(
     "${CMAKE_BINARY_DIR}")
 
 add_custom_command(
-        TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${PROJECT_SOURCE_DIR}/Resources"
-        "${CMAKE_BINARY_DIR}/Resources")
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/Resources"
+    "${CMAKE_BINARY_DIR}/Resources")
 
 add_custom_command(
-            TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${PROJECT_SOURCE_DIR}/Shaders"
-            "${CMAKE_BINARY_DIR}/Shaders")
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/Shaders"
+    "${CMAKE_BINARY_DIR}/Shaders")
