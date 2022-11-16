@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Core/Window/Window.h"
 
 //our includes
 #include <Core/Threading/Thread.h>
@@ -143,7 +144,8 @@ namespace Kraid
 		};
 
 		Thread create_window_thread(thread_function, nullptr);
-		while (!windows_was_created);
+		while (!windows_was_created) {}
+        this->RegisterSpecializedEventCallbacks();
 	}
 
 	Window::~Window()
@@ -154,37 +156,54 @@ namespace Kraid
 
     void Window::RegisterUniversalEventCallback(const std::function<LRESULT (HWND, uint32, WPARAM, LPARAM)> &callback)
     {
-        this->event_callbacks.insert({0,callback});
+        if(this->m_event_callbacks.contains(0))
+        {
+            this->m_event_callbacks[0].push_back(callback);
+        }
+        else
+        {
+            this->m_event_callbacks[0] = {callback};
+        }
     }
 
     void Window::RegisterEventCallback(uint32 event, const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback)
     {
-        this->event_callbacks.insert({event,callback});
+        if(this->m_event_callbacks.contains(event))
+        {
+            this->m_event_callbacks[event].push_back(callback);
+        }
+        else
+        {
+            this->m_event_callbacks[event] = {callback};
+        }
     }
 
     LRESULT Window::ExecuteEventCallbacks(uint32 event, HWND window_handle, WPARAM wParam, LPARAM lParam)
     {
         //execute universal callbacks
-        {
-            auto [start,end] = this->event_callbacks.equal_range(0);
-            while(start != end)
+        if(this->m_event_callbacks.contains(0)){
+            std::vector<std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>>& global_callbacks = this->m_event_callbacks[0];
+            for(uint32 i = 0; i < global_callbacks.size(); ++i)
             {
-                start->second(window_handle,event,wParam,lParam);
-                start++;
+                global_callbacks[i](window_handle,event,wParam,lParam);
             }
         }
 
         //execute callbacks registered to this event specifically
-        {
-            auto [start,end] = this->event_callbacks.equal_range(event);
-            while(start != end)
+        if(this->m_event_callbacks.contains(event)){
+            std::vector<std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>>& callbacks = this->m_event_callbacks[event];
+            for(uint32 i = 0; i < callbacks.size(); ++i)
             {
-                start->second(window_handle,event,wParam,lParam);
-                start++;
+                callbacks[i](window_handle,event,wParam,lParam);
             }
         }
 
         return 0;
+    }
+
+    void Window::RegisterSpecializedEventCallbacks()
+    {
+        this->RegisterEventCallback((uint32)WindowEventMessage::Size, )
     }
 }
 

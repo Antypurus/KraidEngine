@@ -6,6 +6,9 @@
 #include <Core/types.h>
 #include <winuser.h>
 
+#include <parallel_hashmap/phmap.h>
+
+
 namespace Kraid
 {
 
@@ -54,7 +57,14 @@ namespace Kraid
         uint16 width = 0;
         uint16 height = 0;
         volatile bool open = false;
-        std::unordered_multimap<uint32, std::function<LRESULT(HWND, uint32, WPARAM, LPARAM)>> event_callbacks;
+    private:
+        phmap::flat_hash_map<
+            uint32,
+            std::vector<
+                std::function<LRESULT(HWND, uint32, WPARAM, LPARAM)>
+            >
+        > m_event_callbacks;
+        std::vector<std::function<void(uint32, uint32)>> m_window_resize_callbacks;
 
     public:
         Window(HINSTANCE instance,const std::wstring& title, uint16 width, uint16 heigth);
@@ -64,5 +74,6 @@ namespace Kraid
     private:
         LRESULT ExecuteEventCallbacks(uint32 event,HWND window_handle, WPARAM wParam, LPARAM lParam);
         static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+        void RegisterSpecializedEventCallbacks();
     };
 }

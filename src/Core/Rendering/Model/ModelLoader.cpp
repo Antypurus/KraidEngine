@@ -69,7 +69,7 @@ namespace Kraid
                     uint64 normal_index = shape.mesh.indices[index_offset + j].normal_index;
                     uint64 uv_index = shape.mesh.indices[index_offset + j].texcoord_index;
                     uint64 material_id = shape.mesh.material_ids[i];
-            
+
                     Vertex vert;
                     vert.position = XMFLOAT3(
                             attribute.vertices[vertex_index * 3],
