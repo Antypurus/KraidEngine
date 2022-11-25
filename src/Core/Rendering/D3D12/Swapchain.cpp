@@ -117,9 +117,7 @@ namespace Kraid
 
         void Swapchain::Present()
         {
-            DXGI_PRESENT_PARAMETERS PresentDesc;
-            ZeroMemory(&PresentDesc, sizeof(PresentDesc));
-            this->swapchain->Present1(0, DXGI_PRESENT_ALLOW_TEARING, &PresentDesc);
+            this->swapchain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
             this->current_backbuffer = this->current_backbuffer==1?0:1;
         }
 

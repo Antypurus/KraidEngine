@@ -25,6 +25,7 @@ namespace Kraid
         Paint = WM_PAINT,
         Close = WM_CLOSE,
         Quit = WM_QUIT,
+        Size = WM_SIZE,
         ShowWindow = WM_SHOWWINDOW,
         SetCursor = WM_SETCURSOR,
         Power = WM_POWER,
@@ -71,6 +72,7 @@ namespace Kraid
         ~Window();
         void RegisterUniversalEventCallback(const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback);
         void RegisterEventCallback(uint32 event,const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback);
+        void RegisterWindowResizeEventCallback(const std::function<void(uint32,uint32)>& callback);
     private:
         LRESULT ExecuteEventCallbacks(uint32 event,HWND window_handle, WPARAM wParam, LPARAM lParam);
         static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

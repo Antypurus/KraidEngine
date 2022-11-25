@@ -22,11 +22,6 @@ namespace Kraid
             window->ExecuteEventCallbacks(uMsg,hwnd,wParam,lParam);
         }
 
-        //NOTE(Tiago):I think that for now the way I want to handle this is that callbacks are
-        //called at the begginig outside of the switch. And, then any special behavior we want
-        //from inside the window class itself will be inside this switch. This way we kinda
-        //have a pretty clear seperation between the "user" code that gets called and the internal
-        //window class code.
 		switch (uMsg)
 		{
             case WM_CLOSE:
@@ -39,28 +34,9 @@ namespace Kraid
                 DestroyWindow(hwnd);
                 return 0;
             }
-            case WM_SIZE:
-            {
-                uint32 new_width = LOWORD(lParam);
-                uint32 new_height = HIWORD(lParam);
-
-                if(window != nullptr)
-                {
-                    window->height = new_height;
-                    window->width = new_width;
-                }
-            }
             case WM_DESTROY:
             {
                 PostQuitMessage(0);
-                return 0;
-            }
-            case WM_PAINT:
-            {
-                PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(hwnd, &ps);
-                FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-                EndPaint(hwnd, &ps);
                 return 0;
             }
             default: return DefWindowProcW(hwnd, uMsg, wParam, lParam);
@@ -144,8 +120,8 @@ namespace Kraid
 		};
 
 		Thread create_window_thread(thread_function, nullptr);
-		while (!windows_was_created) {}
         this->RegisterSpecializedEventCallbacks();
+		while (!windows_was_created) {}
 	}
 
 	Window::~Window()
@@ -203,7 +179,21 @@ namespace Kraid
 
     void Window::RegisterSpecializedEventCallbacks()
     {
-        this->RegisterEventCallback((uint32)WindowEventMessage::Size, )
+        //window resize callback handler
+        this->RegisterEventCallback((UINT)WindowEventMessage::Size,
+            [this](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
+            {
+                uint32 new_width = LOWORD(lParam);
+                uint32 new_height = HIWORD(lParam);
+                this->height = new_height;
+                this->width = new_width;
+
+                for(auto& callback: this->m_window_resize_callbacks)
+                {
+                    callback(this->width, this->height);
+                }
+                return 0;
+            });
     }
 }
 
