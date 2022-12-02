@@ -4,8 +4,11 @@
 #include <Core/Utils/Log.h>
 
 #include <Core/Rendering/D3D12/CommandList.h>
+#include <Core/Window/Window.h>
+#include <functional>
 #include "GPUDevice.h"
 #include "DXGIFactory.h"
+#include <dxgiformat.h>
 
 namespace Kraid
 {
@@ -25,6 +28,17 @@ namespace Kraid
             this->CreateRenderTargetViews(GPUDevice::Instance());
             this->CreateDepthStencilView(GPUDevice::Instance(), window, command_list);
             this->SetViewport(command_list, width, height);
+
+            window.RegisterWindowResizeEventCallback([this](uint32 new_width, uint32 new_height) -> void
+                    {
+                        D3DCALL(this->swapchain->ResizeBuffers(
+                                this->render_target_count,
+                                new_width, new_height,
+                                DXGI_FORMAT_R8G8B8A8_UNORM,
+                                DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)
+                            , "Resized Swapchain Buffers");
+                        return;
+                    });
         }
 
         Swapchain::Swapchain(GPUDevice& device, Window& window, GraphicsCommandList& command_list)

@@ -154,6 +154,12 @@ namespace Kraid
         }
     }
 
+    void Window::RegisterWindowResizeEventCallback(const std::function<void(uint32,uint32)>& callback)
+    {
+        this->m_window_resize_callbacks.push_back(std::move(callback));
+    }
+
+
     LRESULT Window::ExecuteEventCallbacks(uint32 event, HWND window_handle, WPARAM wParam, LPARAM lParam)
     {
         //execute universal callbacks
