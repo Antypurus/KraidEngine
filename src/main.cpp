@@ -1,5 +1,5 @@
 #include <Core/Core.h>
-
+#include <dxgidebug.h>
 #include <chrono>
 using namespace std::chrono;
 
@@ -19,7 +19,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     using namespace Kraid::D3D12;
 #if 1
     Window window(hInst, L"Kraid Engine", 1280, 720);
-    Camera camera(window,{ 0,0,-10 }, { 0,0,1 } );
+    Camera camera(window,{ 0, 0, 0 }, { 0,0,1 } );
 
     GPUDevice device;
     Fence main_fence;
@@ -86,6 +86,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     auto end = std::chrono::high_resolution_clock::now();
     CircularBuffer<float> frame_times(400);
 
+    HANDLE m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+
     ImGUI gui(window);
     while(window.open)
     {
@@ -105,6 +107,15 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         start = high_resolution_clock::now();
 
+        // Schedule a Signal command in the queue.
+        device.direct_command_queue->Signal(main_fence.fence.Get(), main_fence.current_value+1);
+
+        // Wait until the fence has been processed.
+        main_fence.fence->SetEventOnCompletion(main_fence.current_value + 1, m_fenceEvent);
+        WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
+
+        main_fence.current_value++;
+
         swapchain.StartFrame(main_command_list);
 
         gui.StartFrame();
@@ -115,7 +126,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         view_matrix = camera.ViewMatrix();
         input.view_matrix = view_matrix;
-        input.projection_matrix = projection_matrix;
+        input.projection_matrix = XMMatrixPerspectiveFovRH(rad(45.0), (float)window.width / (float)window.height, 0.001f, 1000.0f);
         color_param.UpdateData(input, main_command_list);
 
         pso.Bind(main_command_list);

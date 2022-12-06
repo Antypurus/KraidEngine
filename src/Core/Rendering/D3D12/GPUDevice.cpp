@@ -6,6 +6,8 @@
 
 #include "CommandList.h"
 
+#include <dxgidebug.h>
+
 namespace Kraid
 {
 
@@ -51,10 +53,6 @@ namespace Kraid
 
         GPUDevice::GPUDevice(IDXGIAdapter4* adapater)
         {
-#ifndef NDEBUG
-            this->EnableDebugLayer();
-#endif
-
             this->CreateD3D12DeviceFromAdapater(adapater);
             this->QueryDescriptorSizes();
             this->CreateCommandAllocator();
@@ -64,6 +62,16 @@ namespace Kraid
             this->sampler_descriptior_heap = SamplerDescriptorHeap(*this, 2048); //NOTE(Tiago):2048 is the max for sampler heaps
 
             GPUDevice::g_gpu_instance = this;
+        }
+
+        GPUDevice::~GPUDevice()
+        {
+            //TODO(Tiago):temporary code for window resizing development, need to figure out how I want to handle this at a later date
+#ifndef NDEBUG
+            IDXGIDebug1* idxgi_debug_interface = nullptr;
+            DXGIGetDebugInterface1(0, IID_PPV_ARGS(&idxgi_debug_interface));
+            idxgi_debug_interface->ReportLiveObjects(DXGI_DEBUG_ALL,DXGI_DEBUG_RLO_ALL);
+#endif
         }
 
         inline void GPUDevice::CreateD3D12Device(uint8 gpu_index)
@@ -98,7 +106,7 @@ namespace Kraid
                 LERROR("Failed to created D3D12 device, no supported feature level was found");
             }
         }
-     
+
         inline void GPUDevice::QueryDescriptorSizes()
         {
             //query render target descriptor size

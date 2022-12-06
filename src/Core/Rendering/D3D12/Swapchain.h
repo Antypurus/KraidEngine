@@ -28,10 +28,12 @@ namespace Kraid
             DepthStencilView depth_stencil_view;
             RTVDescriptorHeap rtv_heap;
             DSVDescriptorHeap dsv_heap;
-            uint8 render_target_count = 2;
-            uint8 current_backbuffer = 0;
             uint32 width = 0;
             uint32 height = 0;
+            uint8 render_target_count = 2;
+            uint8 current_backbuffer = 0;
+            volatile bool swapchain_should_resize = false;
+
 
         public:
             Swapchain() = default;
@@ -46,7 +48,7 @@ namespace Kraid
         private:
             void CreateSwapchain(GPUDevice& device, Window& window);
             void CreateRenderTargetViews(GPUDevice& device);
-            void CreateDepthStencilView(GPUDevice& device, Window& window, GraphicsCommandList&  command_list);
+            void CreateDepthStencilView(GPUDevice& device, GraphicsCommandList&  command_list);
             void SetViewport(GraphicsCommandList& command_list, uint64 width, uint64 height);
             void SetScisorRect(GraphicsCommandList& command_list, uint64 width, uint64 height);
             void SetRenderTarget(GraphicsCommandList& command_list);

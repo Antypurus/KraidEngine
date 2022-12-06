@@ -95,7 +95,7 @@ namespace Kraid
         public:
             GPUFeatureSupport() = default;
             GPUFeatureSupport(GPUDevice& device);
-        
+
         private:
             void LogGPUFeatureSupport() const;
         };
@@ -146,6 +146,7 @@ namespace Kraid
             //specify the index of the gpu to be used
             GPUDevice(uint8 gpu_index = 0);
             GPUDevice(IDXGIAdapter4* adapter);
+            ~GPUDevice();
             static inline GPUDevice& Instance() { return *g_gpu_instance; };
             static inline GPUDevice& GetInstance() { return *g_gpu_instance; };
 

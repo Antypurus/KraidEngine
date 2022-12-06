@@ -21,6 +21,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     "d3d12.lib"
     "dxgi.lib"
+    "dxguid.lib"
     "D3DCompiler.lib"
     "dxcompiler.lib"
 )

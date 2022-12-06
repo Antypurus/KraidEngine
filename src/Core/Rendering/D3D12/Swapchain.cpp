@@ -26,17 +26,18 @@ namespace Kraid
 
             this->CreateSwapchain(GPUDevice::Instance(), window);
             this->CreateRenderTargetViews(GPUDevice::Instance());
-            this->CreateDepthStencilView(GPUDevice::Instance(), window, command_list);
+            this->CreateDepthStencilView(GPUDevice::Instance(), command_list);
             this->SetViewport(command_list, width, height);
 
             window.RegisterWindowResizeEventCallback([this](uint32 new_width, uint32 new_height) -> void
                     {
-                        D3DCALL(this->swapchain->ResizeBuffers(
-                                this->render_target_count,
-                                new_width, new_height,
-                                DXGI_FORMAT_R8G8B8A8_UNORM,
-                                DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)
-                            , "Resized Swapchain Buffers");
+                        if(new_width == 0 || new_height == 0) return;
+
+                        this->width = new_width;
+                        this->height = new_height;
+
+                        this->swapchain_should_resize = true;
+
                         return;
                     });
         }
@@ -51,7 +52,7 @@ namespace Kraid
 
             this->CreateSwapchain(device, window);
             this->CreateRenderTargetViews(device);
-            this->CreateDepthStencilView(device, window, command_list);
+            this->CreateDepthStencilView(device, command_list);
             this->SetViewport(command_list, width, height);
         }
 
@@ -95,10 +96,10 @@ namespace Kraid
             }
         }
 
-        void Swapchain::CreateDepthStencilView(GPUDevice& device, Window& window, GraphicsCommandList& command_list)
+        void Swapchain::CreateDepthStencilView(GPUDevice& device, GraphicsCommandList& command_list)
         {
             this->depth_stencil_buffer = Texture2DResource(device,
-                    window.width, window.height,
+                    this->width, this->height,
                     DXGI_FORMAT_D32_FLOAT_S8X24_UINT,
                     1.0f,0.0f,
                     ResourceState::Common,
@@ -116,6 +117,29 @@ namespace Kraid
 
         void Swapchain::StartFrame(GraphicsCommandList& command_list)
         {
+            if(this->swapchain_should_resize)
+            {
+                for(uint32 i = 0; i < this->render_target_count; ++i)
+                {
+                    this->render_target_buffers[i].Reset();
+                }
+
+                D3DCALL(this->swapchain->ResizeBuffers(
+                        this->render_target_count,
+                        this->width, this->height,
+                        DXGI_FORMAT_R8G8B8A8_UNORM,
+                        DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)
+                    , "Resized Swapchain Buffers");
+
+                this->render_target_views.clear();
+                this->CreateRenderTargetViews(GPUDevice::Instance());
+                this->CreateDepthStencilView(GPUDevice::Instance(), command_list);
+                this->current_backbuffer = this->swapchain->GetCurrentBackBufferIndex();
+
+                this->swapchain_should_resize = false;
+            }
+
+
             D3D12_RESOURCE_BARRIER barrier = {};
             barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
             barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;

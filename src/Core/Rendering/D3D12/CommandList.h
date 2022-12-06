@@ -19,11 +19,14 @@ namespace Kraid
         {
         public:
             ComPtr<ID3D12GraphicsCommandList6> command_list = nullptr;
+        protected:
             ComPtr<ID3D12CommandAllocator> command_allocator = nullptr;
             CommandQueue command_queue;
             CBV_SRV_UAVDescriptorHeap* shader_resource_heap = nullptr;//TODO(Tiago):maybe i need some kind of way to clearly demark references
             SamplerDescriptorHeap* sampler_heap = nullptr;
+            volatile bool work_submission_is_blocked = false;
 
+        public:
             CommandList() = default;
             ID3D12GraphicsCommandList6* operator->();
             void Close();
@@ -31,6 +34,8 @@ namespace Kraid
             void Execute();
             void SetShaderResourceHeap(CBV_SRV_UAVDescriptorHeap& heap);
             void SetSamplerHeap(SamplerDescriptorHeap& heap);
+            void BlockWorkSubmission();
+            void UnblockWorkSubmission();
 
         private:
             void SetDescriptorHeaps();
@@ -98,6 +103,12 @@ namespace Kraid
         private:
             void CreateCommandList(GPUDevice& device);
         };
+
+        const std::vector<GraphicsCommandList*>& GetAllGraphicsCommandLists();
+        const std::vector<CopyCommandList*>& GetAllCopyCommandLists();
+        const std::vector<ComputeCommandList*>& GetAllComputeCommandLists();
+        const std::vector<VideoDecodeCommandList*>& GetAllVideoDecodeCommandLists();
+        const std::vector<VideoProcessCommandList*>& GetAllVideoProcessCommandLists();
 
     }
 
