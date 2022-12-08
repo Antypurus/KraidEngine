@@ -85,8 +85,28 @@ namespace Kraid
             D3DCALL(intermediate_swapchain.As(&this->swapchain), "Converted From Swapchain1 to Swapchain4");
         }
 
+        void Swapchain::ResizeSwapchain(GPUDevice& device, GraphicsCommandList& command_list, uint32 width, uint32 height)
+        {
+            for(uint32 i = 0; i < this->render_target_count; ++i)
+            {
+                this->render_target_buffers[i].Reset();
+            }
+
+            D3DCALL(this->swapchain->ResizeBuffers(
+                    this->render_target_count,
+                    this->width, this->height,
+                    DXGI_FORMAT_R8G8B8A8_UNORM,
+                    DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)
+                , "Resized Swapchain Buffers");
+
+            this->CreateRenderTargetViews(GPUDevice::Instance());
+            this->CreateDepthStencilView(GPUDevice::Instance(), command_list);
+            this->current_backbuffer = this->swapchain->GetCurrentBackBufferIndex();
+        }
+
         void Swapchain::CreateRenderTargetViews(GPUDevice& device)
         {
+            this->render_target_views.clear();
             this->render_target_buffers.resize(this->render_target_count);
             for(uint8 i = 0; i < this->render_target_count; ++i)
             {
@@ -119,23 +139,7 @@ namespace Kraid
         {
             if(this->swapchain_should_resize)
             {
-                for(uint32 i = 0; i < this->render_target_count; ++i)
-                {
-                    this->render_target_buffers[i].Reset();
-                }
-
-                D3DCALL(this->swapchain->ResizeBuffers(
-                        this->render_target_count,
-                        this->width, this->height,
-                        DXGI_FORMAT_R8G8B8A8_UNORM,
-                        DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING)
-                    , "Resized Swapchain Buffers");
-
-                this->render_target_views.clear();
-                this->CreateRenderTargetViews(GPUDevice::Instance());
-                this->CreateDepthStencilView(GPUDevice::Instance(), command_list);
-                this->current_backbuffer = this->swapchain->GetCurrentBackBufferIndex();
-
+                this->ResizeSwapchain(GPUDevice::Instance(), command_list, this->width, this->height);
                 this->swapchain_should_resize = false;
             }
 

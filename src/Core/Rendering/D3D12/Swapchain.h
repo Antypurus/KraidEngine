@@ -47,6 +47,7 @@ namespace Kraid
 
         private:
             void CreateSwapchain(GPUDevice& device, Window& window);
+            void ResizeSwapchain(GPUDevice& device, GraphicsCommandList& command_list, uint32 width, uint32 height);
             void CreateRenderTargetViews(GPUDevice& device);
             void CreateDepthStencilView(GPUDevice& device, GraphicsCommandList&  command_list);
             void SetViewport(GraphicsCommandList& command_list, uint64 width, uint64 height);
