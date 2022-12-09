@@ -21,6 +21,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 target_link_libraries(${PROJECT_NAME} PRIVATE
     "d3d12.lib"
     "dxgi.lib"
+    "dxguid.lib"
     "D3DCompiler.lib"
     "dxcompiler.lib"
 )
@@ -44,12 +45,14 @@ target_precompile_headers(${PROJECT_NAME} PRIVATE
         <functional>
         <thread>
         <chrono>
-        
+
         <DearImGui/imgui.h>
         <tinyobjloader/tiny_obj_loader.h>
-        
+
         <Core/Windows.h>
         <Core/Rendering/D3D12/D3D12.h>
+        <Core/Rendering/D3D12/D3D12SDK.h>
+        <Core/Rendering/Rendering.h>
         <Core/stdcpp.h>
         )
 
@@ -59,7 +62,8 @@ if(MSVC)
     add_compile_options(${PROJECT_NAME} /wd26495)
     add_compile_options(${PROJECT_NAME} /W4 /WX)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+    message("Clang build")
+    add_compile_options(${PROJECT_NAME} -Wall -Wextra -Wpedantic)
 endif()
 
 add_custom_command(
@@ -67,3 +71,15 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${PROJECT_SOURCE_DIR}/ThirdParty/DXC/"
     "${CMAKE_BINARY_DIR}")
+
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/Resources"
+    "${CMAKE_BINARY_DIR}/Resources")
+
+add_custom_command(
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${PROJECT_SOURCE_DIR}/Shaders"
+    "${CMAKE_BINARY_DIR}/Shaders")

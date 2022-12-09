@@ -2,7 +2,7 @@
 
 #include <Core/Windows.h>
 #include <Core/Utils/Log.h>
-#include <d3d12.h>
+#include <Core/Rendering/D3D12/D3D12SDK.h>
 
 #include "../GPUDevice.h"
 

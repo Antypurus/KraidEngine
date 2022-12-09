@@ -1,16 +1,21 @@
-#ifndef D3D12_H
-#define D3D12_H
+#pragma once
 
-#define UNICODE
-#define _UNICODEcp
-
-#include <d3d12.h>
-#include <wrl.h>
-#include <d3d12video.h>
-#include <dxgi1_6.h>
-#include <dxcapi.h>
-#include <d3d12shader.h>
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
-
-#endif
+#include <Core/Rendering/D3D12/GPUDevice.h>
+#include <Core/Rendering/D3D12/Fence.h>
+#include <Core/Rendering/D3D12/CommandList.h>
+#include <Core/Rendering/D3D12/CommandQueue.h>
+#include <Core/Rendering/D3D12/Swapchain.h>
+#include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
+#include <Core/Rendering/D3D12/Resource/ConstantBufferView.h>
+#include <Core/Rendering/D3D12/Resource/DepthStencilView.h>
+#include <Core/Rendering/D3D12/Resource/RenderTargetView.h>
+#include <Core/Rendering/D3D12/Resource/Resource.h>
+#include <Core/Rendering/D3D12/Resource/ShaderResourceView.h>
+#include <Core/Rendering/D3D12/Resource/Resource.h>
+#include <Core/Rendering/D3D12/VertexBuffer.h>
+#include <Core/Rendering/D3D12/IndexBuffer.h>
+#include <Core/Rendering/D3D12/Shader.h>
+#include <Core/Rendering/D3D12/Texture.h>
+#include <Core/Rendering/D3D12/ShaderParameter.h>
+#include <Core/Rendering/D3D12/PSO/PipelineStateObject.h>
+#include <Core/Rendering/D3D12/RootSignature.h>

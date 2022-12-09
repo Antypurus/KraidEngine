@@ -36,7 +36,7 @@ namespace Kraid
                 //release the local reference to the adapater which is no longer needed
                 adapter->Release();
                 adapter = nullptr;
-                
+
                 gpu_index++;
             }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/Rendering/D3D12/D3D12.h>
+#include <Core/Rendering/D3D12/D3D12SDK.h>
 #include <Core/Rendering/D3D12/Resource/DescriptorHeap.h>
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/Resource/DepthStencilView.h>
@@ -13,11 +13,12 @@ namespace Kraid
 
     namespace D3D12
     {
-        
+
         struct GPUDevice;
         struct GraphicsCommandList;
 
         using namespace Microsoft::WRL;
+        using namespace DirectX;
 
         struct Swapchain
         {
@@ -28,10 +29,12 @@ namespace Kraid
             DepthStencilView depth_stencil_view;
             RTVDescriptorHeap rtv_heap;
             DSVDescriptorHeap dsv_heap;
-            uint8 render_target_count = 2;
-            uint8 current_backbuffer = 0;
             uint32 width = 0;
             uint32 height = 0;
+            uint8 render_target_count = 2;
+            uint8 current_backbuffer = 0;
+            volatile bool swapchain_should_resize = false;
+
 
         public:
             Swapchain() = default;
@@ -42,11 +45,13 @@ namespace Kraid
             void StartFrame(GraphicsCommandList& command_list);
             void EndFrame(GraphicsCommandList& command_list);
             void Present();
+            XMMATRIX ProjectionMatrix(float FoV = 45.0f) const;
 
         private:
             void CreateSwapchain(GPUDevice& device, Window& window);
+            void ResizeSwapchain(GPUDevice& device, GraphicsCommandList& command_list, uint32 width, uint32 height);
             void CreateRenderTargetViews(GPUDevice& device);
-            void CreateDepthStencilView(GPUDevice& device, Window& window, GraphicsCommandList&  command_list);
+            void CreateDepthStencilView(GPUDevice& device, GraphicsCommandList&  command_list);
             void SetViewport(GraphicsCommandList& command_list, uint64 width, uint64 height);
             void SetScisorRect(GraphicsCommandList& command_list, uint64 width, uint64 height);
             void SetRenderTarget(GraphicsCommandList& command_list);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/Rendering/D3D12/D3D12.h>
+#include <Core/Rendering/D3D12/D3D12SDK.h>
 #include <Core/Rendering/D3D12/Resource/Resource.h>
 #include <Core/Rendering/D3D12/Resource/ShaderResourceView.h>
 #include <Core/DataStructures/StringView.h>

@@ -28,7 +28,7 @@ namespace D3D12
         StreamingOutputBuffer streaming_output_buffer;
         PrimitiveTopology topology_type = PrimitiveTopology::Undefined;
         D3D12_INPUT_LAYOUT_DESC vertex_layout = {};
-       
+
         //shaders
         VertexShader* vertex_shader = nullptr;
         PixelShader* pixel_shader = nullptr;

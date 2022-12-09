@@ -145,6 +145,19 @@ namespace Kraid
                         vertices[i].position.y,
                         vertices[i].position.z);
         }
+        float model_scale = this->global_aabb.ComputeUnitScaleTransform();
+        this->global_transform.SetScale(
+                    model_scale,
+                    model_scale,
+                    model_scale
+                );
+
+        std::tuple<float,float,float> model_center = this->global_aabb.ComputeUnitCenterPoint();
+        this->global_transform.SetTranslation(
+                std::get<0>(model_center),
+                std::get<1>(model_center),
+                std::get<2>(model_center));
+
         for (auto& mesh : this->submeshes)
         {
             mesh.SetGlobalTransformReference(&this->global_transform);
@@ -186,7 +199,6 @@ namespace Kraid
                         this->global_aabb.upper_bound[0],
                         this->global_aabb.upper_bound[1],
                         this->global_aabb.upper_bound[2]);
-                                               
 
         if(ImGui::CollapsingHeader("Global Model Transform"))
         {

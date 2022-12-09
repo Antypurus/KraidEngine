@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Core/Window/Window.h"
 
 //our includes
 #include <Core/Threading/Thread.h>
@@ -21,11 +22,6 @@ namespace Kraid
             window->ExecuteEventCallbacks(uMsg,hwnd,wParam,lParam);
         }
 
-        //NOTE(Tiago):I think that for now the way I want to handle this is that callbacks are
-        //called at the begginig outside of the switch. And, then any special behavior we want
-        //from inside the window class itself will be inside this switch. This way we kinda
-        //have a pretty clear seperation between the "user" code that gets called and the internal
-        //window class code.
 		switch (uMsg)
 		{
             case WM_CLOSE:
@@ -38,28 +34,9 @@ namespace Kraid
                 DestroyWindow(hwnd);
                 return 0;
             }
-            case WM_SIZE:
-            {
-                uint32 new_width = LOWORD(lParam);
-                uint32 new_height = HIWORD(lParam);
-
-                if(window != nullptr)
-                {
-                    window->height = new_height;
-                    window->width = new_width;
-                }
-            }
             case WM_DESTROY:
             {
                 PostQuitMessage(0);
-                return 0;
-            }
-            case WM_PAINT:
-            {
-                PAINTSTRUCT ps;
-                HDC hdc = BeginPaint(hwnd, &ps);
-                FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-                EndPaint(hwnd, &ps);
                 return 0;
             }
             default: return DefWindowProcW(hwnd, uMsg, wParam, lParam);
@@ -107,7 +84,7 @@ namespace Kraid
 				//position
 				CW_USEDEFAULT, CW_USEDEFAULT,
                 //size (width, heigth)
-				client_rect.right - client_rect.left, client_rect.bottom - client_rect.top,	
+				client_rect.right - client_rect.left, client_rect.bottom - client_rect.top,
 				NULL,
 				NULL,
 				instance,
@@ -143,7 +120,8 @@ namespace Kraid
 		};
 
 		Thread create_window_thread(thread_function, nullptr);
-		while (!windows_was_created);
+        this->RegisterSpecializedEventCallbacks();
+		while (!windows_was_created) {}
 	}
 
 	Window::~Window()
@@ -154,37 +132,74 @@ namespace Kraid
 
     void Window::RegisterUniversalEventCallback(const std::function<LRESULT (HWND, uint32, WPARAM, LPARAM)> &callback)
     {
-        this->event_callbacks.insert({0,callback});
+        if(this->m_event_callbacks.contains(0))
+        {
+            this->m_event_callbacks[0].push_back(callback);
+        }
+        else
+        {
+            this->m_event_callbacks[0] = {callback};
+        }
     }
 
     void Window::RegisterEventCallback(uint32 event, const std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>& callback)
     {
-        this->event_callbacks.insert({event,callback});
+        if(this->m_event_callbacks.contains(event))
+        {
+            this->m_event_callbacks[event].push_back(callback);
+        }
+        else
+        {
+            this->m_event_callbacks[event] = {callback};
+        }
     }
+
+    void Window::RegisterWindowResizeEventCallback(const std::function<void(uint32,uint32)>& callback)
+    {
+        this->m_window_resize_callbacks.push_back(std::move(callback));
+    }
+
 
     LRESULT Window::ExecuteEventCallbacks(uint32 event, HWND window_handle, WPARAM wParam, LPARAM lParam)
     {
         //execute universal callbacks
-        {
-            auto [start,end] = this->event_callbacks.equal_range(0); 
-            while(start != end)
+        if(this->m_event_callbacks.contains(0)){
+            std::vector<std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>>& global_callbacks = this->m_event_callbacks[0];
+            for(uint32 i = 0; i < global_callbacks.size(); ++i)
             {
-                start->second(window_handle,event,wParam,lParam);
-                start++;
+                global_callbacks[i](window_handle,event,wParam,lParam);
             }
         }
 
         //execute callbacks registered to this event specifically
-        {
-            auto [start,end] = this->event_callbacks.equal_range(event);
-            while(start != end)
+        if(this->m_event_callbacks.contains(event)){
+            std::vector<std::function<LRESULT(HWND,uint32,WPARAM,LPARAM)>>& callbacks = this->m_event_callbacks[event];
+            for(uint32 i = 0; i < callbacks.size(); ++i)
             {
-                start->second(window_handle,event,wParam,lParam);
-                start++;
+                callbacks[i](window_handle,event,wParam,lParam);
             }
         }
 
         return 0;
+    }
+
+    void Window::RegisterSpecializedEventCallbacks()
+    {
+        //window resize callback handler
+        this->RegisterEventCallback((UINT)WindowEventMessage::Size,
+            [this](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) -> LRESULT
+            {
+                uint32 new_width = LOWORD(lParam);
+                uint32 new_height = HIWORD(lParam);
+                this->height = new_height;
+                this->width = new_width;
+
+                for(auto& callback: this->m_window_resize_callbacks)
+                {
+                    callback(this->width, this->height);
+                }
+                return 0;
+            });
     }
 }
 

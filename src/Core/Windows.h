@@ -5,6 +5,7 @@
 
 #include <Windows.h>
 #include "BuildDefs.h"
+#include <Core/Windows.h>
 
 inline wchar_t* FormatErrorMessage(HRESULT res)
 {
@@ -34,6 +35,7 @@ inline wchar_t* FormatErrorMessage(HRESULT res)
 		wchar_t* CAT(error_message,__LINE__) = FormatErrorMessage(CAT(result_code,__LINE__));\
 		LERROR(CAT(error_message,__LINE__));\
 		LocalFree(CAT(error_message,__LINE__));\
+		__debugbreak(); \
 	}\
 	else\
 	{\
