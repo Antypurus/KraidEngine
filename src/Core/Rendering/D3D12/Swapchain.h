@@ -18,6 +18,7 @@ namespace Kraid
         struct GraphicsCommandList;
 
         using namespace Microsoft::WRL;
+        using namespace DirectX;
 
         struct Swapchain
         {
@@ -44,6 +45,7 @@ namespace Kraid
             void StartFrame(GraphicsCommandList& command_list);
             void EndFrame(GraphicsCommandList& command_list);
             void Present();
+            XMMATRIX ProjectionMatrix(float FoV = 45.0f) const;
 
         private:
             void CreateSwapchain(GPUDevice& device, Window& window);

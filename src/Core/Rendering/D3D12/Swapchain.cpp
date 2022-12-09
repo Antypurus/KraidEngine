@@ -5,10 +5,8 @@
 
 #include <Core/Rendering/D3D12/CommandList.h>
 #include <Core/Window/Window.h>
-#include <functional>
-#include "GPUDevice.h"
-#include "DXGIFactory.h"
-#include <dxgiformat.h>
+
+#define rad(x) (x*DirectX::XM_PI)/180.0f
 
 namespace Kraid
 {
@@ -207,6 +205,11 @@ namespace Kraid
         IDXGISwapChain4* Swapchain::operator->()
         {
             return this->swapchain.Get();
+        }
+
+        XMMATRIX Swapchain::ProjectionMatrix(float FoV) const
+        {
+            return XMMatrixPerspectiveFovRH(rad(FoV), (double)this->width / (double)this->height, 0.001f, 1000.0f);
         }
 
     }

@@ -170,7 +170,7 @@ namespace Kraid
                     uint32 size,
                     ResourceState initial_state     = ResourceState::GenericRead,
                     ResourceFlags flags             = ResourceFlags::None);
-            
+
             //TODO(Tiago): at some point we might want to allow for the addressing range to be specified
             void SetBufferData(const uint8* data, uint64 size);
             void SetTextureData(const uint8*data, uint64 width, uint64 height, uint8 bytes_per_pixel);

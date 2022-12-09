@@ -53,6 +53,10 @@ namespace Kraid
 
         GPUDevice::GPUDevice(IDXGIAdapter4* adapater)
         {
+#ifndef NDEBUG
+            this->EnableDebugLayer();
+#endif
+
             this->CreateD3D12DeviceFromAdapater(adapater);
             this->QueryDescriptorSizes();
             this->CreateCommandAllocator();

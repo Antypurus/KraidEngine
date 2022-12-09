@@ -1,6 +1,7 @@
 #include <Core/Core.h>
 #include <dxgidebug.h>
 #include <chrono>
+#include <functional>
 using namespace std::chrono;
 
 using namespace DirectX;
@@ -36,7 +37,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     TextureSampler anisotropic_sampler(device.sampler_descriptior_heap, TextureSamplingMode::Anisotropic);
 
     cbuffer input;
-    XMMATRIX projection_matrix = XMMatrixPerspectiveFovRH(rad(45.0), 1280.0f / 720.0f, 0.001f, 1000.0f);
+    XMMATRIX projection_matrix = swapchain.ProjectionMatrix();
     XMMATRIX view_matrix = camera.ViewMatrix();
     input.view_matrix = view_matrix;
     input.projection_matrix = projection_matrix;
@@ -107,15 +108,6 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
 
         start = high_resolution_clock::now();
 
-        // Schedule a Signal command in the queue.
-        device.direct_command_queue->Signal(main_fence.fence.Get(), main_fence.current_value+1);
-
-        // Wait until the fence has been processed.
-        main_fence.fence->SetEventOnCompletion(main_fence.current_value + 1, m_fenceEvent);
-        WaitForSingleObjectEx(m_fenceEvent, INFINITE, FALSE);
-
-        main_fence.current_value++;
-
         swapchain.StartFrame(main_command_list);
 
         gui.StartFrame();
@@ -124,9 +116,8 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
         ImGui::End();
 
-        view_matrix = camera.ViewMatrix();
-        input.view_matrix = view_matrix;
-        input.projection_matrix = XMMatrixPerspectiveFovRH(rad(45.0), (float)window.width / (float)window.height, 0.001f, 1000.0f);
+        input.view_matrix = camera.ViewMatrix();
+        input.projection_matrix = swapchain.ProjectionMatrix();
         color_param.UpdateData(input, main_command_list);
 
         pso.Bind(main_command_list);

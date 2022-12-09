@@ -35,6 +35,7 @@
 .clangd
 .vim
 .cache
+remedy.rdbg
 
 #vs
 .vs
