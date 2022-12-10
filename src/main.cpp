@@ -27,7 +27,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
     GraphicsCommandList main_command_list;
     Swapchain swapchain(window, main_command_list);
 
-    Model model = ModelLoader::LoadOBJModel("./Resources/Models/vokselia_spawn/vokselia_spawn.obj", main_command_list);
+    Model model = ModelLoader::LoadOBJModel("./Resources/Models/sponza/sponza.obj", main_command_list);
 
     VertexShader vs(L"./Shaders/shader.hlsl", "VSMain");
     PixelShader ps(L"./Shaders/shader.hlsl", "PSMain");
@@ -113,6 +113,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         gui.StartFrame();
 
         ImGui::Begin("Frame time");
+        if (frame_times.buffer >= frame_times.buffer + frame_times.size) __debugbreak();
         ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
         ImGui::End();
 
