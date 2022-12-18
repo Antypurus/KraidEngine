@@ -31,7 +31,7 @@ namespace Kraid
         //NOTE(Tiago):when the reference counted object decrements the object, only the last one to decrement will have a null pointer,
         //which means that only that threads copy of the refcounter will return on this, ensuring that only one thread tries to release
         //their data.
-        bool inline ShouldFree() const 
+        bool inline ShouldFree() const
         {
             return this->refcounter==nullptr && this->refcounter_mutex == nullptr;
         }
