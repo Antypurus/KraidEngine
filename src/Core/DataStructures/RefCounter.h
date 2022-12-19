@@ -6,24 +6,16 @@
 namespace Kraid
 {
 
-    struct ReferenceCounterInternal
+    class ReferenceCounter
     {
-        mutable uint64 refcount = 0;
-
-        ReferenceCounterInternal() = default;
-        ReferenceCounterInternal(const ReferenceCounterInternal& other) = delete;
-        ReferenceCounterInternal& operator=(const ReferenceCounterInternal& other) = delete;
-    };
-
-    struct ReferenceCounter
-    {
-        mutable ReferenceCounterInternal* refcounter = nullptr;
-        mutable Mutex* refcounter_mutex = nullptr;
-
+    private:
+        mutable uint64* m_refcounter = nullptr;
+        mutable Mutex* m_refcounter_mutex = nullptr;
+    public:
         ReferenceCounter();
         ReferenceCounter(const ReferenceCounter& other);
         ReferenceCounter& operator=(const ReferenceCounter& other);
-        ReferenceCounterInternal* operator->() const;
+        uint64* operator->() const;
 
         void Increment() const;
         void Decrement() const;
@@ -33,7 +25,7 @@ namespace Kraid
         //their data.
         bool inline ShouldFree() const
         {
-            return this->refcounter==nullptr && this->refcounter_mutex == nullptr;
+            return this->m_refcounter==nullptr;
         }
     };
 

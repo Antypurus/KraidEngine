@@ -5,14 +5,14 @@ namespace Kraid
 
     ReferenceCounter::ReferenceCounter()
     {
-        this->refcounter = new ReferenceCounterInternal();
-        this->refcounter_mutex = new Mutex();
+        this->m_refcounter = new uint64(0);
+        this->m_refcounter_mutex = new Mutex();
     }
 
     ReferenceCounter::ReferenceCounter(const ReferenceCounter& other)
     {
-        this->refcounter = other.refcounter;
-        this->refcounter_mutex = other.refcounter_mutex;
+        this->m_refcounter = other.m_refcounter;
+        this->m_refcounter_mutex = other.m_refcounter_mutex;
         this->Increment();
     }
 
@@ -20,45 +20,45 @@ namespace Kraid
     {
         if(this == &other) return *this;
 
-        this->refcounter = other.refcounter;
-        this->refcounter_mutex = other.refcounter_mutex;
+        this->m_refcounter = other.m_refcounter;
+        this->m_refcounter_mutex = other.m_refcounter_mutex;
         this->Increment();
 
         return *this;
     }
 
-    ReferenceCounterInternal* ReferenceCounter::operator->() const
+    uint64* ReferenceCounter::operator->() const
     {
-        return this->refcounter;
+        return this->m_refcounter;
     }
 
     void ReferenceCounter::Increment() const
     {
-        this->refcounter_mutex->Lock();
-        this->refcounter->refcount++;
-        this->refcounter_mutex->Lock();
+        this->m_refcounter_mutex->Lock();
+        (*this->m_refcounter)++;
+        this->m_refcounter_mutex->Lock();
     }
 
     void ReferenceCounter::Decrement() const
     {
         bool should_free_mutex = false;
 
-        this->refcounter_mutex->Lock();
+        this->m_refcounter_mutex->Lock();
 
-        this->refcounter->refcount--;
-        if(this->refcounter_mutex == 0)
+        (*this->m_refcounter)--;
+        if(*this->m_refcounter == 0)
         {
-            free(this->refcounter);
-            this->refcounter = nullptr;
+            free(this->m_refcounter);
+            this->m_refcounter = nullptr;
             should_free_mutex = true;
         }
 
-        this->refcounter_mutex->Unlock();
+        this->m_refcounter_mutex->Unlock();
 
         if(should_free_mutex)
         {
-            free(this->refcounter_mutex);
-            this->refcounter_mutex = nullptr;
+            free(this->m_refcounter_mutex);
+            this->m_refcounter_mutex = nullptr;
         }
     }
 
