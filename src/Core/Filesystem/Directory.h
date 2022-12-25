@@ -28,13 +28,13 @@ namespace Kraid
     class DirectoryWatcher
     {
     friend Directory;
-    public:
-        HANDLE wait_event_handle = nullptr;
-        Directory watched_dir;
-        Thread watch_thread;
-        std::unordered_map<std::wstring, std::vector<std::function<void(void)>>> file_change_callbacks;
-        Mutex file_callback_mutex = {};
     private:
+        HANDLE m_wait_event_handle = nullptr;
+        Directory m_watched_dir;
+        Thread m_watch_thread;
+        std::unordered_map<std::wstring, std::vector<std::function<void(void)>>> m_file_change_callbacks;
+        Mutex m_file_callback_mutex = {};
+
         inline static std::unordered_map<std::wstring, DirectoryWatcher> directory_watcher_instances = {};
         inline static Mutex watcher_instance_mutex = {};
     public:

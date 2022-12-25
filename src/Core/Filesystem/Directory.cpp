@@ -91,26 +91,26 @@ namespace Kraid
 
     DirectoryWatcher::DirectoryWatcher(const wchar_t* directory)
     {
-        this->watched_dir = {directory};
-        this->wait_event_handle = FindFirstChangeNotificationW(directory, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
-        if(this->wait_event_handle == INVALID_HANDLE_VALUE)
+        this->m_watched_dir = {directory};
+        this->m_wait_event_handle = FindFirstChangeNotificationW(directory, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+        if(this->m_wait_event_handle == INVALID_HANDLE_VALUE)
         {
             PRINT_WINERROR();
             return;
         }
 
-        this->watch_thread = Thread([this](void* args) -> DWORD
+        this->m_watch_thread = Thread([this](void* args) -> DWORD
         {
-            while(this->watched_dir.m_directory_handle != nullptr)
+            while(this->m_watched_dir.m_directory_handle != nullptr)
             {
-                uint32 wait_status = WaitForMultipleObjects(1, &this->wait_event_handle, TRUE, INFINITE);
+                uint32 wait_status = WaitForMultipleObjects(1, &this->m_wait_event_handle, TRUE, INFINITE);
                 if(wait_status == WAIT_OBJECT_0)
                 {
-                    auto changed_files = this->watched_dir.GetChangedFiles();
+                    auto changed_files = this->m_watched_dir.GetChangedFiles();
                     for(auto& file: changed_files)
                     {
-                        this->file_callback_mutex.Lock();
-                        auto callbacks = this->file_change_callbacks[file];
+                        this->m_file_callback_mutex.Lock();
+                        auto callbacks = this->m_file_change_callbacks[file];
                         for(auto& callback: callbacks)
                         {
                             if(callback)
@@ -122,7 +122,7 @@ namespace Kraid
                                 LWARNING(L"Attempt to invoke null callback for file change");
                             }
                         }
-                        this->file_callback_mutex.Unlock();
+                        this->m_file_callback_mutex.Unlock();
                     }
                 }
             }
@@ -132,7 +132,7 @@ namespace Kraid
 
     bool DirectoryWatcher::operator==(const DirectoryWatcher &other)
     {
-        return this->wait_event_handle == other.wait_event_handle;
+        return this->m_wait_event_handle == other.m_wait_event_handle;
     }
 
     void DirectoryWatcher::RegisterFileChangeCallback(const std::wstring& filename, const std::function<void(void)>& callback)
@@ -143,9 +143,9 @@ namespace Kraid
             return;
         }
 
-        this->file_callback_mutex.Lock();
-        this->file_change_callbacks[filename].push_back(callback);
-        this->file_callback_mutex.Unlock();
+        this->m_file_callback_mutex.Lock();
+        this->m_file_change_callbacks[filename].push_back(callback);
+        this->m_file_callback_mutex.Unlock();
     }
 
     //TODO(Tiago):associative containers in C++ are dogs ass, remember to implement your own hash
