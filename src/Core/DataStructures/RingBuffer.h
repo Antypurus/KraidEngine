@@ -5,27 +5,35 @@
 
 namespace Kraid
 {
-        template<typename T>
+    template<typename T>
     class CircularBuffer
     {
     public:
-        T* buffer = nullptr;
-        T* backbuffer = nullptr;
+        T* ring_buffer = nullptr;
+        uint64 head = 0;
+        uint64 tail = 0;
+        uint64 capacity = 0;
         uint64 size = 0;
+
     public:
-        CircularBuffer(uint64 size):size(size)
+        CircularBuffer(uint64 capacity)
         {
-            buffer = (T*)malloc(size * sizeof(T));
-            backbuffer = (T*)malloc(size * sizeof(T));
-            memset(buffer, 0, size * sizeof(T));
+            this->capacity = capacity;
+            this->size = capacity * sizeof(T);
+            this->ring_buffer = (T*) malloc(capacity * sizeof(T));
+            memset(this->ring_buffer, 0, this->capacity * sizeof(T));
         }
 
-        void push(T value)
+        void Push(T value)
         {
-            memcpy(backbuffer, buffer + 1, (size - 1) * sizeof(T));
-            backbuffer[size - 1] = value;
-            memcpy(buffer, backbuffer, size * sizeof(T));
+            return;
         }
+
+        T* Data()
+        {
+            return ring_buffer;
+        }
+
     };
 
 }
