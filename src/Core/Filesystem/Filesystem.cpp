@@ -29,8 +29,9 @@ namespace Kraid
 
     File::File(const File& other)
     {
-        this->file_handle = other.file_handle;
-        this->refcount.Increment();
+        this->m_file_handle = other.m_file_handle;
+        this->m_refcount = other.m_refcount;
+        this->m_refcount.Increment();
     }
 
     File::File(const wchar_t* filepath, bool append)
@@ -50,12 +51,12 @@ namespace Kraid
         {
             open_mode = CREATE_ALWAYS;
         }
-        this->file_handle = CreateFile2(filepath, 
+        this->m_file_handle = CreateFile2(filepath, 
             GENERIC_READ|GENERIC_WRITE,
             FILE_SHARE_READ|FILE_SHARE_WRITE,
             open_mode,
             nullptr);
-        if(this->file_handle == INVALID_HANDLE_VALUE)
+        if(this->m_file_handle == INVALID_HANDLE_VALUE)
         {
             LERROR(FormatErrorMessage(GetLastError()));
             return;
@@ -80,12 +81,12 @@ namespace Kraid
         {
             open_mode = CREATE_ALWAYS;
         }
-        this->file_handle = CreateFile2(filepath, 
+        this->m_file_handle = CreateFile2(filepath, 
             FILE_GENERIC_READ|FILE_GENERIC_WRITE,
             FILE_SHARE_READ|FILE_SHARE_WRITE,
             open_mode,
             nullptr);
-        if(this->file_handle == INVALID_HANDLE_VALUE)
+        if(this->m_file_handle == INVALID_HANDLE_VALUE)
         {
             LERROR(FormatErrorMessage(GetLastError()));
             return;
@@ -107,17 +108,17 @@ namespace Kraid
 
     File& File::operator=(const File& other)
     {
-        this->file_handle = other.file_handle;
+        this->m_file_handle = other.m_file_handle;
         return *this;
     }
 
     bool File::Write(const uint8* data, uint64 size)
     {
-        SetFilePointer(this->file_handle, 0, NULL, FILE_BEGIN);
+        SetFilePointer(this->m_file_handle, 0, NULL, FILE_BEGIN);
         //NOTE(Tiago):not using the EX version leads to cleaner code in my opinion, at no loss to functionality
         uint32 written = 0;
         bool result = WriteFile(
-                this->file_handle,
+                this->m_file_handle,
                 (void*)data, size,
                 (DWORD*)&written,
                 NULL);
@@ -128,7 +129,7 @@ namespace Kraid
             free(message);
             return false;
         }
-        uint32 result_code = WaitForSingleObjectEx(this->file_handle, INFINITE, true);
+        uint32 result_code = WaitForSingleObjectEx(this->m_file_handle, INFINITE, true);
         if(result_code == WAIT_FAILED)
         {
             wchar_t* message = FormatErrorMessage(GetLastError());
@@ -142,10 +143,10 @@ namespace Kraid
 
     bool File::Append(const uint8 *data, uint64 size)
     {
-        SetFilePointer(this->file_handle, 0, NULL, FILE_END);
+        SetFilePointer(this->m_file_handle, 0, NULL, FILE_END);
         uint32 written = 0;
         bool result = WriteFile(
-                this->file_handle,
+                this->m_file_handle,
                 (void*)data, size,
                 (DWORD*)&written,
                 NULL);
@@ -156,7 +157,7 @@ namespace Kraid
             free(message);
             return false;
         }
-        uint32 result_code = WaitForSingleObjectEx(this->file_handle, INFINITE, true);
+        uint32 result_code = WaitForSingleObjectEx(this->m_file_handle, INFINITE, true);
         if(result_code == WAIT_FAILED)
         {
             wchar_t* message = FormatErrorMessage(GetLastError());
@@ -170,7 +171,7 @@ namespace Kraid
 
     Buffer File::Read()
     {
-        SetFilePointer(this->file_handle, 0, NULL, FILE_BEGIN);
+        SetFilePointer(this->m_file_handle, 0, NULL, FILE_BEGIN);
 
         uint64 file_size = this->GetSize();
         uint32 dummy_var = 0;
@@ -185,7 +186,7 @@ namespace Kraid
         while(total_amount_left_to_read > UINT32_MAX)
         {
             uint32 amount_to_read = UINT32_MAX;
-            bool result = ReadFile(this->file_handle, buffer + (file_size - total_amount_left_to_read), amount_to_read, (DWORD*)&dummy_var, NULL);
+            bool result = ReadFile(this->m_file_handle, buffer + (file_size - total_amount_left_to_read), amount_to_read, (DWORD*)&dummy_var, NULL);
             if(result == false)
             {
                 PRINT_WINERROR();
@@ -194,7 +195,7 @@ namespace Kraid
             }
             total_amount_left_to_read -= UINT32_MAX;
         }
-        bool result = ReadFile(this->file_handle, buffer + (file_size - total_amount_left_to_read), (uint32)total_amount_left_to_read, (DWORD*)&dummy_var, NULL);
+        bool result = ReadFile(this->m_file_handle, buffer + (file_size - total_amount_left_to_read), (uint32)total_amount_left_to_read, (DWORD*)&dummy_var, NULL);
         if(result == false)
         {
             PRINT_WINERROR();
@@ -209,7 +210,7 @@ namespace Kraid
     uint64 File::GetSize() const 
     {
         uint32 file_size_high_word = 0;//NOTE(Tiago):contaisn the high 32-bits of data from a 64-bit filesize
-        uint32 file_size_low_word = GetFileSize(this->file_handle, (DWORD*)&file_size_high_word);
+        uint32 file_size_low_word = GetFileSize(this->m_file_handle, (DWORD*)&file_size_high_word);
         if(file_size_low_word == INVALID_FILE_SIZE)
         {
             PRINT_WINERROR();
@@ -220,12 +221,12 @@ namespace Kraid
 
     File::~File()
     {
-        if(this->file_handle == INVALID_HANDLE_VALUE || this->file_handle == nullptr) return;
+        if(this->m_file_handle == INVALID_HANDLE_VALUE || this->m_file_handle == nullptr) return;
 
-        refcount.Decrement();
-        if(refcount.ShouldFree())
+        m_refcount.Decrement();
+        if(m_refcount.ShouldFree())
         {
-            if(!CloseHandle(this->file_handle))
+            if(!CloseHandle(this->m_file_handle))
             {
                 LERROR(FormatErrorMessage(GetLastError()));
                 return;
