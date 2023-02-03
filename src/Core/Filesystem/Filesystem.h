@@ -13,9 +13,9 @@ namespace Kraid
 
     struct File
     {
-    public:
-        HANDLE file_handle = nullptr;
-        ReferenceCounter refcount;
+    private:
+        HANDLE m_file_handle = nullptr;
+        ReferenceCounter m_refcount;
 
     public:
         File() = default;

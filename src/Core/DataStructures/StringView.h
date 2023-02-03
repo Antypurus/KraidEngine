@@ -6,8 +6,8 @@
 
 namespace Kraid
 {
-    
-    class StringView:public ArrayView<const char>
+
+    class StringView: public ArrayView<const char>
     {
     public:
         StringView(const char* string):ArrayView(string, strlen(string)){};
@@ -15,6 +15,7 @@ namespace Kraid
         StringView(const std::string& string): ArrayView(string.data(), string.length()){};
 
         const char* Get() const {return this->data;};
+        operator const char*() const {return this->data;};
     };
 
     class WideStringView:public ArrayView<const wchar_t>
@@ -25,6 +26,7 @@ namespace Kraid
         WideStringView(const std::wstring& string): ArrayView(string.data(), string.length()){};
 
         const wchar_t* Get() const { return this->data; };
+        operator const wchar_t*() const { return this->data; };
     };
 
 }
