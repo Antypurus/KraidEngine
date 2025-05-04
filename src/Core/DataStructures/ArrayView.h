@@ -9,38 +9,23 @@ namespace Kraid
 {
 
     template<typename T>
-    struct ArrayView
+    class ArrayView
     {
-        T* data;
-        uint64 size;
+    public:
+        const T* const data;
+        const uint64 size;
+    public:
+        ArrayView(const std::vector<T>& vector):
+            data(vector.data()),
+            size(vector.size()) {}
 
-        ArrayView(const std::vector<T>& vector)
-        {
-            this->data = vector.data();
-            this->size = vector.size();
-        }
+        ArrayView(const Buffer& buffer):
+            data(buffer.data),
+            size(buffer.size) {}
 
-        ArrayView(const Buffer& buffer)
-        {
-            this->data = buffer.data;
-            this->size = buffer.size;
-        }
-
-        ArrayView(const T* buffer, uint64 size)
-        {
-            this->data = buffer;
-            this->size = size;
-        }
-
-        inline uint64 GetSize()
-        {
-            return this->size;
-        }
-
-        inline T* GetArray()
-        {
-            return this->data;
-        }
+        ArrayView(const T* buffer, uint64 size):
+            data(buffer),
+            size(size) {}
 
         inline T& operator[](const uint64 index)
         {

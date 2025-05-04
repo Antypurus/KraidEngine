@@ -6,11 +6,12 @@
 namespace Kraid
 {
 
-    struct Buffer
+    class Buffer
     {
+    public:
         uint8* data = nullptr;
         uint64 size = 0;
-
+    public:
         Buffer() = default;
         Buffer(uint64 size);
         Buffer(const Buffer& other);

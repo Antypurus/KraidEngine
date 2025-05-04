@@ -15,7 +15,7 @@ namespace Kraid
         memcpy(this->data, other.data, other.size);
         this->size = other.size;
     };
-    
+
     Buffer::Buffer(Buffer&& other)
     {
         if (this->data == other.data) return;
@@ -23,7 +23,7 @@ namespace Kraid
         this->data = other.data;
         other.data = nullptr;
     }
-        
+
     Buffer::Buffer(uint8* data, uint64 size) :data(data), size(size) {}
 
     Buffer& Buffer::operator=(const Buffer& other)
@@ -39,7 +39,7 @@ namespace Kraid
 
         return *this;
     }
-        
+
     Buffer::~Buffer()
     {
         if (data == nullptr) return;
@@ -47,7 +47,6 @@ namespace Kraid
         free(data);
         data = nullptr;
         size = 0;
-        LINFO("Freed");
     }
 
 }

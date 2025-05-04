@@ -97,7 +97,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         float cummulative_frame_time = 0;
         for(uint64 i = 0; i < frame_times.size; ++i)
         {
-            float frame_time = frame_times.buffer[i];
+            float frame_time = frame_times[i];
             cummulative_frame_time += frame_time;
             if(frame_time > highest_time) highest_time = frame_time;
             if(frame_time < lowest_time) lowest_time = frame_time;
@@ -113,8 +113,7 @@ int APIENTRY WinMain(HINSTANCE hInst, HINSTANCE hInstPrev, PSTR cmdline, int cmd
         gui.StartFrame();
 
         ImGui::Begin("Frame time");
-        if (frame_times.buffer >= frame_times.buffer + frame_times.size) __debugbreak();
-        ImGui::PlotLines("", frame_times.buffer, frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
+        ImGui::PlotLines("", frame_times.data(), frame_times.size, 0, average_fps_string.c_str(), lowest_time, highest_time, ImVec2(0.0f, 100.0f));
         ImGui::End();
 
         input.view_matrix = camera.ViewMatrix();
